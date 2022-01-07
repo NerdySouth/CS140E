@@ -44,7 +44,7 @@ int main() {
 
 	a = 2;  b = 20;
 	int *p = &a;
-	b = a /*p          /* p points at the divisor */;
+	b = a / *p          /* p points at the divisor */;
 	printf("b = %d\n", b);
 
 	return 0;
