@@ -17,7 +17,7 @@
 static void compile(char *program, char *outname) {
     FILE *fp = fopen("./temp-out.c", "w");
     assert(fp);
-
+	#define dogs true
 	#include "attack-seed.c"
 
 	fprintf(fp, "%s", program);
