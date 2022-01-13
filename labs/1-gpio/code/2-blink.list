@@ -51,7 +51,7 @@ Disassembly of section .text:
     8084:	e2544001 	subs	r4, r4, #1, 0
     8088:	1afffffc 	bne	8080 <notmain+0x60>
     808c:	eaffffec 	b	8044 <notmain+0x24>
-    8090:	eb00004a 	bl	81c0 <reboot>
+    8090:	eb000088 	bl	82b8 <reboot>
     8094:	e8bd81f0 	pop	{r4, r5, r6, r7, r8, pc}
     8098:	002dc6c0 	eoreq	ip, sp, r0, asr #13
 
@@ -140,24 +140,90 @@ Disassembly of section .text:
     81b8:	e8bd8010 	pop	{r4, pc}
     81bc:	20200034 	eorcs	r0, r0, r4, lsr r0
 
-000081c0 <reboot>:
-    81c0:	e92d4010 	push	{r4, lr}
-    81c4:	e59f4024 	ldr	r4, [pc, #36]	; 81f0 <reboot+0x30>
+000081c0 <gpio_set_pullup>:
+    81c0:	e92d41f0 	push	{r4, r5, r6, r7, r8, lr}
+    81c4:	e1a07000 	mov	r7, r0
     81c8:	ebffff93 	bl	801c <nop>
-    81cc:	e2544001 	subs	r4, r4, #1, 0
-    81d0:	1afffffc 	bne	81c8 <reboot+0x8>
-    81d4:	e59f1018 	ldr	r1, [pc, #24]	; 81f4 <reboot+0x34>
-    81d8:	e59f0018 	ldr	r0, [pc, #24]	; 81f8 <reboot+0x38>
-    81dc:	ebffff8a 	bl	800c <PUT32>
-    81e0:	e59f1014 	ldr	r1, [pc, #20]	; 81fc <reboot+0x3c>
-    81e4:	e59f0014 	ldr	r0, [pc, #20]	; 8200 <reboot+0x40>
-    81e8:	ebffff87 	bl	800c <PUT32>
-    81ec:	eafffffe 	b	81ec <reboot+0x2c>
-    81f0:	000186a0 	andeq	r8, r1, r0, lsr #13
-    81f4:	5a000001 	bpl	8200 <reboot+0x40>
-    81f8:	20100024 	andscs	r0, r0, r4, lsr #32
-    81fc:	5a000020 	bpl	8284 <reboot+0xc4>
-    8200:	2010001c 	andscs	r0, r0, ip, lsl r0
+    81cc:	e3a01002 	mov	r1, #2, 0
+    81d0:	e59f0058 	ldr	r0, [pc, #88]	; 8230 <gpio_set_pullup+0x70>
+    81d4:	ebffff8c 	bl	800c <PUT32>
+    81d8:	e3a04f4b 	mov	r4, #300	; 0x12c
+    81dc:	ebffff8e 	bl	801c <nop>
+    81e0:	e2544001 	subs	r4, r4, #1, 0
+    81e4:	1afffffc 	bne	81dc <gpio_set_pullup+0x1c>
+    81e8:	e59f5044 	ldr	r5, [pc, #68]	; 8234 <gpio_set_pullup+0x74>
+    81ec:	e59f3044 	ldr	r3, [pc, #68]	; 8238 <gpio_set_pullup+0x78>
+    81f0:	e357001f 	cmp	r7, #31, 0
+    81f4:	81a05003 	movhi	r5, r3
+    81f8:	e3a06001 	mov	r6, #1, 0
+    81fc:	e1a06716 	lsl	r6, r6, r7
+    8200:	e1a01006 	mov	r1, r6
+    8204:	e1a00005 	mov	r0, r5
+    8208:	ebffff7f 	bl	800c <PUT32>
+    820c:	e3a04f4b 	mov	r4, #300	; 0x12c
+    8210:	ebffff81 	bl	801c <nop>
+    8214:	e2544001 	subs	r4, r4, #1, 0
+    8218:	1afffffc 	bne	8210 <gpio_set_pullup+0x50>
+    821c:	e1a01006 	mov	r1, r6
+    8220:	e1a00005 	mov	r0, r5
+    8224:	ebffff78 	bl	800c <PUT32>
+    8228:	ebffff7b 	bl	801c <nop>
+    822c:	e8bd81f0 	pop	{r4, r5, r6, r7, r8, pc}
+    8230:	20200094 	mlacs	r0, r4, r0, r0
+    8234:	20200098 	mlacs	r0, r8, r0, r0
+    8238:	2020009c 	mlacs	r0, ip, r0, r0
+
+0000823c <gpio_set_pulldown>:
+    823c:	e92d41f0 	push	{r4, r5, r6, r7, r8, lr}
+    8240:	e1a07000 	mov	r7, r0
+    8244:	ebffff74 	bl	801c <nop>
+    8248:	e3a01001 	mov	r1, #1, 0
+    824c:	e59f0058 	ldr	r0, [pc, #88]	; 82ac <gpio_set_pulldown+0x70>
+    8250:	ebffff6d 	bl	800c <PUT32>
+    8254:	e3a04f4b 	mov	r4, #300	; 0x12c
+    8258:	ebffff6f 	bl	801c <nop>
+    825c:	e2544001 	subs	r4, r4, #1, 0
+    8260:	1afffffc 	bne	8258 <gpio_set_pulldown+0x1c>
+    8264:	e59f5044 	ldr	r5, [pc, #68]	; 82b0 <gpio_set_pulldown+0x74>
+    8268:	e59f3044 	ldr	r3, [pc, #68]	; 82b4 <gpio_set_pulldown+0x78>
+    826c:	e357001f 	cmp	r7, #31, 0
+    8270:	81a05003 	movhi	r5, r3
+    8274:	e3a06001 	mov	r6, #1, 0
+    8278:	e1a06716 	lsl	r6, r6, r7
+    827c:	e1a01006 	mov	r1, r6
+    8280:	e1a00005 	mov	r0, r5
+    8284:	ebffff60 	bl	800c <PUT32>
+    8288:	e3a04f4b 	mov	r4, #300	; 0x12c
+    828c:	ebffff62 	bl	801c <nop>
+    8290:	e2544001 	subs	r4, r4, #1, 0
+    8294:	1afffffc 	bne	828c <gpio_set_pulldown+0x50>
+    8298:	e1a01006 	mov	r1, r6
+    829c:	e1a00005 	mov	r0, r5
+    82a0:	ebffff59 	bl	800c <PUT32>
+    82a4:	ebffff5c 	bl	801c <nop>
+    82a8:	e8bd81f0 	pop	{r4, r5, r6, r7, r8, pc}
+    82ac:	20200094 	mlacs	r0, r4, r0, r0
+    82b0:	20200098 	mlacs	r0, r8, r0, r0
+    82b4:	2020009c 	mlacs	r0, ip, r0, r0
+
+000082b8 <reboot>:
+    82b8:	e92d4010 	push	{r4, lr}
+    82bc:	e59f4024 	ldr	r4, [pc, #36]	; 82e8 <reboot+0x30>
+    82c0:	ebffff55 	bl	801c <nop>
+    82c4:	e2544001 	subs	r4, r4, #1, 0
+    82c8:	1afffffc 	bne	82c0 <reboot+0x8>
+    82cc:	e59f1018 	ldr	r1, [pc, #24]	; 82ec <reboot+0x34>
+    82d0:	e59f0018 	ldr	r0, [pc, #24]	; 82f0 <reboot+0x38>
+    82d4:	ebffff4c 	bl	800c <PUT32>
+    82d8:	e59f1014 	ldr	r1, [pc, #20]	; 82f4 <reboot+0x3c>
+    82dc:	e59f0014 	ldr	r0, [pc, #20]	; 82f8 <reboot+0x40>
+    82e0:	ebffff49 	bl	800c <PUT32>
+    82e4:	eafffffe 	b	82e4 <reboot+0x2c>
+    82e8:	000186a0 	andeq	r8, r1, r0, lsr #13
+    82ec:	5a000001 	bpl	82f8 <reboot+0x40>
+    82f0:	20100024 	andscs	r0, r0, r4, lsr #32
+    82f4:	5a000020 	bpl	837c <reboot+0xc4>
+    82f8:	2010001c 	andscs	r0, r0, ip, lsl r0
 
 Disassembly of section .ARM.attributes:
 
@@ -170,14 +236,14 @@ Disassembly of section .ARM.attributes:
   14:	09010806 	stmdbeq	r1, {r1, r2, fp}
   18:	14041201 	strne	r1, [r4], #-513	; 0xfffffdff
   1c:	17011501 	strne	r1, [r1, -r1, lsl #10]
-  20:	1a011803 	bne	46034 <reboot+0x3de74>
+  20:	1a011803 	bne	46034 <reboot+0x3dd7c>
   24:	Address 0x0000000000000024 is out of bounds.
 
 
 Disassembly of section .comment:
 
 00000000 <.comment>:
-   0:	3a434347 	bcc	10d0d24 <reboot+0x10c8b64>
+   0:	3a434347 	bcc	10d0d24 <reboot+0x10c8a6c>
    4:	4e472820 	cdpmi	8, 4, cr2, cr7, cr0, {1}
    8:	6f542055 	svcvs	0x00542055
    c:	20736c6f 	rsbscs	r6, r3, pc, ror #24

@@ -14,6 +14,10 @@
 static const unsigned gpio_set0  = (GPIO_BASE + 0x1C);
 static const unsigned gpio_clr0  = (GPIO_BASE + 0x28);
 static const unsigned gpio_lev0  = (GPIO_BASE + 0x34);
+static const unsigned gppud = (GPIO_BASE + 0x94);
+static const unsigned gppud_clk0 = (GPIO_BASE + 0x98);
+static const unsigned gppud_clk1 = (GPIO_BASE + 0x9c);
+
 
 // set <pin> to be an output pin.  
 //
@@ -106,6 +110,46 @@ int gpio_read(unsigned pin) {
 	v >>= pin;
 	v &= 1;
     return v;
+}
+
+void gpio_set_pullup(unsigned pin) {
+	//mem barrier at start
+	nop();
+	//step 1 in broadcom docs: write 10 to gppud to set pullup
+	PUT32(gppud, 1 << 1);
+	//step 2: delay for 150usec, or multiple of 150 clock cycles until i figure out how to delay
+	//by microseconds
+	for(unsigned i = 0; i < 300; i++) { nop(); }
+	//step 3: write to gppud_clk0/1 depending which pin we want to set for
+	// _clk0 controls pins 0-31, _clk1 controls pins 32-53
+	const unsigned clock_reg = (pin < 32) ? gppud_clk0 : gppud_clk1;
+	PUT32(clock_reg, 1 << pin);
+	//step 4: wait again
+	for (unsigned i = 0; i < 300; i++) { nop(); }
+	//step 5 gets skipped, straight to step 6
+	PUT32(clock_reg, 1 << pin);
+	//mem barrrier at  end
+	nop();
+}
+
+void gpio_set_pulldown(unsigned pin) {
+	//mem barrier at start
+	nop();
+	//step 1 in broadcom docs: write 01 to gppud to set pulldown
+	PUT32(gppud, 0b1);
+	//step 2: delay for 150usec, or multiple of 150 clock cycles until i figure out how to delay
+	//by microseconds
+	for(unsigned i = 0; i < 300; i++) { nop(); }
+	//step 3: write to gppud_clk0/1 depending which pin we want to set for
+	// _clk0 controls pins 0-31, _clk1 controls pins 32-53
+	const unsigned clock_reg = (pin < 32) ? gppud_clk0 : gppud_clk1;
+	PUT32(clock_reg, 1 << pin);
+	//step 4: wait again
+	for (unsigned i = 0; i < 300; i++) { nop(); }
+	//step 5 gets skipped, straight to step 6
+	PUT32(clock_reg, 1 << pin);
+	//mem barrrier at  end
+	nop();
 }
 
  // define: dummy to immediately return and PUT32 as above.
