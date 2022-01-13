@@ -131,6 +131,25 @@ Disassembly of section .text:
     8194:	e8bd8010 	pop	{r4, pc}
     8198:	20200034 	eorcs	r0, r0, r4, lsr r0
 
+0000819c <reboot>:
+    819c:	e92d4010 	push	{r4, lr}
+    81a0:	e59f4024 	ldr	r4, [pc, #36]	; 81cc <reboot+0x30>
+    81a4:	ebffff9c 	bl	801c <nop>
+    81a8:	e2544001 	subs	r4, r4, #1, 0
+    81ac:	1afffffc 	bne	81a4 <reboot+0x8>
+    81b0:	e59f1018 	ldr	r1, [pc, #24]	; 81d0 <reboot+0x34>
+    81b4:	e59f0018 	ldr	r0, [pc, #24]	; 81d4 <reboot+0x38>
+    81b8:	ebffff93 	bl	800c <PUT32>
+    81bc:	e59f1014 	ldr	r1, [pc, #20]	; 81d8 <reboot+0x3c>
+    81c0:	e59f0014 	ldr	r0, [pc, #20]	; 81dc <reboot+0x40>
+    81c4:	ebffff90 	bl	800c <PUT32>
+    81c8:	eafffffe 	b	81c8 <reboot+0x2c>
+    81cc:	000186a0 	andeq	r8, r1, r0, lsr #13
+    81d0:	5a000001 	bpl	81dc <reboot+0x40>
+    81d4:	20100024 	andscs	r0, r0, r4, lsr #32
+    81d8:	5a000020 	bpl	8260 <reboot+0xc4>
+    81dc:	2010001c 	andscs	r0, r0, ip, lsl r0
+
 Disassembly of section .ARM.attributes:
 
 00000000 <.ARM.attributes>:
@@ -142,14 +161,14 @@ Disassembly of section .ARM.attributes:
   14:	09010806 	stmdbeq	r1, {r1, r2, fp}
   18:	14041201 	strne	r1, [r4], #-513	; 0xfffffdff
   1c:	17011501 	strne	r1, [r1, -r1, lsl #10]
-  20:	1a011803 	bne	46034 <gpio_read+0x3deb8>
+  20:	1a011803 	bne	46034 <reboot+0x3de98>
   24:	Address 0x0000000000000024 is out of bounds.
 
 
 Disassembly of section .comment:
 
 00000000 <.comment>:
-   0:	3a434347 	bcc	10d0d24 <gpio_read+0x10c8ba8>
+   0:	3a434347 	bcc	10d0d24 <reboot+0x10c8b88>
    4:	4e472820 	cdpmi	8, 4, cr2, cr7, cr0, {1}
    8:	6f542055 	svcvs	0x00542055
    c:	20736c6f 	rsbscs	r6, r3, pc, ror #24

@@ -61,4 +61,7 @@ void gpio_write(unsigned pin, unsigned v);
 // return the value of <pin>.
 int gpio_read(unsigned pin);
 
+//reboot func to avoid unplugging pi every time
+void reboot(void);
+
 #endif
