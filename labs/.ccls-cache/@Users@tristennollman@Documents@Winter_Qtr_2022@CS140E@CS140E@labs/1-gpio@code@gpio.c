@@ -69,9 +69,10 @@ void gpio_write(unsigned pin, unsigned v) {
 // set <pin> to input.
 void gpio_set_input(unsigned pin) {
 	if (pin > 32) {return;}
-	/* find which GPFSELn word to write to for pin n
+	/* find which GPFSELn word to write to for pin 'n'
 	 * each  word controls 10 pins
-	 * so GPFSEL0 controls pins 0-9, etc 
+	 * so GPFSEL0 controls pins 0-9, 
+	 * GPFSEL1 controls pins 10-19, etc 
 	 */
 	const unsigned GPFSELN = pin / 10;
 	uint32_t addr = (GPIO_BASE + (4 * GPFSELN));
