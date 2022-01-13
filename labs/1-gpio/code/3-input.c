@@ -4,7 +4,7 @@
 
 void notmain(void) {
     const int led = 20;
-    const int input = 21;
+    const int input = 26;
 
     gpio_set_output(led);
     gpio_set_input(input);

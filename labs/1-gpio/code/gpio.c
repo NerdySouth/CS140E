@@ -24,20 +24,38 @@ static const unsigned gpio_lev0  = (GPIO_BASE + 0x34);
 // note: fsel0, fsel1, fsel2 are contiguous in memory, so you 
 // can (and should) use array calculations!
 void gpio_set_output(unsigned pin) {
-    // implement this
-    // use <gpio_fsel0>
+	if (pin > 32) {return;}
+	//find which GPFSELn word to write to for pin n
+	//each  word controls 10 pins
+	//so GPFSEL0 controls pins 0-9, etc
+	const unsigned GPFSELN = pin / 10;
+	uint32_t addr = (GPIO_BASE + (4 * GPFSELN));
+	uint32_t addr_val = GET32(addr);
+	//set proper bit to be output
+	//done by setting a sepcific bit within the addr word to 1
+	const unsigned FSELN = pin % 10;
+	//want the pins 3 bits to be 001
+	//since we may be setting a pin in the middle of
+	//our word, we should shift by multiples of 3
+	//depending on where our pin lives in the word
+	addr_val &= ~(0b111 << (3 * FSELN)); //clear bits we want to set
+	addr_val |= (1 << (3 * FSELN));
+	PUT32(addr, addr_val);
 }
 
 // set GPIO <pin> on.
 void gpio_set_on(unsigned pin) {
     // implement this
     // use <gpio_set0>
+	//set bit 'pin' to 1 within gpio_set0
+	PUT32(gpio_set0, 1 << pin);
 }
 
 // set GPIO <pin> off
 void gpio_set_off(unsigned pin) {
     // implement this
     // use <gpio_clr0>
+	PUT32(gpio_clr0, 1 << pin);
 }
 
 // set <pin> to <v> (v \in {0,1})
@@ -54,13 +72,29 @@ void gpio_write(unsigned pin, unsigned v) {
 
 // set <pin> to input.
 void gpio_set_input(unsigned pin) {
-    // implement.
+
+	if (pin > 32) {return;}
+	//similar to set output
+	const unsigned GPFSELN = pin  / 10;
+	uint32_t addr = (GPIO_BASE + (4 * GPFSELN));
+	uint32_t addr_val = GET32(addr);
+	//set proper bit to be input
+	//done by setting a sepcific bit within the addr word to 0
+	const unsigned FSELN = pin % 10;
+	//want the pins 3 bits to be 000
+	//since we may be setting a pin in the middle of
+	//our word, we should shift by multiples of 3
+	//depending on where our pin lives in the word
+	addr_val &= ~(0b111 << (3 * FSELN)); //clear bits we want to set
+	addr_val |= (0 << (3 * FSELN));
+	PUT32(addr, addr_val);
 }
 
 // return the value of <pin>
 int gpio_read(unsigned pin) {
-    unsigned v = 0;
-
+    unsigned v = GET32(gpio_lev0);;
+	v >>= pin;
+	v &= 1;
     // implement.
     return v;
 }
