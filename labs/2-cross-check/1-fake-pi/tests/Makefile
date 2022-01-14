@@ -6,16 +6,20 @@ MAKEFLAGS += --no-print-directory
 
 # makefile variables: last writer wins (just like C), so 
 # you don't need to comment out assignments.
-
+# TEST_SRC := $(wildcard ./[5]-*.c)
 # hardest; tell makefile to make everything.
-#TEST_SRC := $(wildcard ./*.c) 
+TEST_SRC := $(wildcard ./*.c) 
+
+# TEST_SRC := $(wildcard ./[12]-*.c) $(wildcard ./prog-*.c)
 
 # easier: tell makefile to make the second batch of tests
-#TEST_SRC := $(wildcard ./[2]-*.c) 
+# TEST_SRC := $(wildcard ./[2]-*.c) 
 
 # easiest: tell makefile to make the first batch of tests.
-TEST_SRC := $(wildcard ./[1]-*.c) 
-TEST_SRC := 1-gpio-read.c
+# TEST_SRC := $(wildcard ./[1]-*.c) 
+# TEST_SRC := 1-gpio-read.c
+
+# TEST_SRC := $(wildcard ./[12]-*.c) $(wildcard ./prog-*.c)
 
 
 # make them local to this directory

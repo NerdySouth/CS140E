@@ -29,6 +29,9 @@ uint32_t get32(const volatile void *addr);
 // same but takes <addr> as a uint32_t
 uint32_t GET32(uint32_t addr);
 
+//used to create a DataMemoryBarrier
+void memBarrier(void);
+
 // asm routine that does nothing: used so compiler cannot 
 // optimize away loops.
 void nop(void);
@@ -63,5 +66,20 @@ int gpio_read(unsigned pin);
 
 //reboot func to avoid unplugging pi every time
 void reboot(void);
+
+typedef enum {
+    GPIO_FUNC_INPUT   = 0,
+    GPIO_FUNC_OUTPUT  = 1,
+    GPIO_FUNC_ALT0    = 4,
+    GPIO_FUNC_ALT1    = 5,
+    GPIO_FUNC_ALT2    = 6,
+    GPIO_FUNC_ALT3    = 7,
+    GPIO_FUNC_ALT4    = 3,
+    GPIO_FUNC_ALT5    = 2,
+} gpio_func_t;
+
+// set GPIO function for <pin> (input, output, alt...).  settings for other
+// pins should be unchanged.
+void gpio_set_function(unsigned pin, gpio_func_t function);
 
 #endif
