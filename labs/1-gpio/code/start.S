@@ -40,3 +40,8 @@ GET32:
 .globl nop
 nop:
     bx lr
+
+@ memory barrier call so that we can set a memory barrier in c code
+.globl memBarrier
+memBarrier:
+	mcr p15 0 <Rd> c7 c10 5
