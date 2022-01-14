@@ -18,17 +18,27 @@ static const unsigned gppud = (GPIO_BASE + 0x94);
 static const unsigned gppud_clk0 = (GPIO_BASE + 0x98);
 static const unsigned gppud_clk1 = (GPIO_BASE + 0x9c);
 
+//these are here because they were  defined in the gpio/rpi.h but not libpi/include/rpi.h
+static void nop() {
+
+}
+static void delay(unsigned ticks) {
+	for (int i = 0; i < ticks; i++){
+		nop();
+	}
+}
+
 
 // set GPIO <pin> on.
 void gpio_set_on(unsigned pin) {
-	if(pin >= 32 || pin == 47) { return; }
+	if(pin >= 32 && pin != 47) { return; }
 	//set bit 'pin' to 1 within gpio_set0
 	PUT32(gpio_set0, 1 << pin);
 }
 
 // set GPIO <pin> off
 void gpio_set_off(unsigned pin) {
-	if(pin >= 32 || pin == 47) { return; }
+	if(pin >= 32 && pin != 47) { return; }
 	//set bit 'pin; to 1 withinn gpio_clr0
 	PUT32(gpio_clr0, 1 << pin);
 }
@@ -70,7 +80,7 @@ int gpio_read(unsigned pin) {
 
 void gpio_set_pullup(unsigned pin) {
 	//mem barrier at start
-	nop();
+	// nop();
 	//step 1 in broadcom docs: write 10 to gppud to set pullup
 	PUT32(gppud, 1 << 1);
 	//step 2: delay for 150usec, or multiple of 150 clock cycles until i figure out how to delay
@@ -85,12 +95,12 @@ void gpio_set_pullup(unsigned pin) {
 	//step 5 gets skipped, straight to step 6
 	PUT32(clock_reg, 1 << pin);
 	//mem barrrier at  end
-	nop();
+	// nop();
 }
 
 void gpio_set_pulldown(unsigned pin) {
 	//mem barrier at start
-	nop();
+	// nop();
 	//step 1 in broadcom docs: write 01 to gppud to set pulldown
 	PUT32(gppud, 0b1);
 	//step 2: delay for 150usec, or multiple of 150 clock cycles until i figure out how to delay
@@ -105,7 +115,7 @@ void gpio_set_pulldown(unsigned pin) {
 	//step 5 gets skipped, straight to step 6
 	PUT32(clock_reg, 1 << pin);
 	//mem barrrier at  end
-	nop();
+	// nop();
 }
 
 // set <pin> to be an output pin.  
@@ -147,7 +157,7 @@ void gpio_set_function(unsigned pin, gpio_func_t function) {
 	const int PM_RSTC_WRCFG_FULL_RESET = 0x00000020;
 	int i;
 	for(i = 0; i < 100000; i++)
-		nop();
+		//nop(); commented out bc libpi/ does not have this defined in rpi.h
 	PUT32(PM_WDOG, PM_PASSWORD | 1);
 	PUT32(PM_RSTC, PM_PASSWORD | PM_RSTC_WRCFG_FULL_RESET);
 	while(1);	

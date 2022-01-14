@@ -166,6 +166,8 @@ void put32(volatile void *addr, unsigned v);
 
 #ifndef  RPI_UNIX
 static inline uint32_t DEV_VAL32(uint32_t x) { return x; }
+
+
 #else 
 // call this to annotate that we computed an unsigned 32-bit 
 // integer from a device.
@@ -184,16 +186,6 @@ void put8(volatile void *addr, unsigned char v);
 // *(unsigned *)addr
 unsigned GET32(unsigned addr);
 unsigned (get32)(const volatile void *addr);
-
-// asm routine that does nothing: used so compiler cannot 
-// optimize away loops.
-void nop(void);
-
-// countdown 'ticks' cycles
-static inline void delay(unsigned ticks) {
-    while(ticks-- > 0)
-        nop();
-}
 #if 0
 #define get32(addr) ({      \
     _Static_assert( sizeof(typeof(* (addr))) == 4, "underlying type not 32bits");\

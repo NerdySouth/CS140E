@@ -166,6 +166,8 @@ void put32(volatile void *addr, unsigned v);
 
 #ifndef  RPI_UNIX
 static inline uint32_t DEV_VAL32(uint32_t x) { return x; }
+
+
 #else 
 // call this to annotate that we computed an unsigned 32-bit 
 // integer from a device.
