@@ -15,9 +15,9 @@
 TEST_SRC = 0-gpio-read.c
 
 # to run all the simple tests
-TEST_SRC := $(wildcard ./0-*.c)
+# TEST_SRC := $(wildcard ./0-*.c)
 # if you want to run all of the ones that don't need hardware
-# TEST_SRC := $(wildcard ./[0123]-*.c) $(wildcard ./prog-*.c) 
+TEST_SRC := $(wildcard ./[0123]-*.c) $(wildcard ./prog-*.c) 
 
 # all we do for tracing.
 TRACE_OBJS = ../trace-simple.o
@@ -72,7 +72,7 @@ emit: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test emitall "TESTS=$(TEST_PROGS)"
 run: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test runall "TESTS=$(TEST_PROGS)"
-check: $(DEPS) $(TEST_PROGS)
+checkall: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test checkall "TESTS=$(TEST_PROGS)"
 cksum: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test cksumall "TESTS=$(TEST_PROGS)"
