@@ -72,7 +72,7 @@ emit: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test emitall "TESTS=$(TEST_PROGS)"
 run: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test runall "TESTS=$(TEST_PROGS)"
-checkall: $(DEPS) $(TEST_PROGS)
+check: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test checkall "TESTS=$(TEST_PROGS)"
 cksum: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test cksumall "TESTS=$(TEST_PROGS)"
