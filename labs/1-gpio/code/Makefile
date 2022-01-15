@@ -1,4 +1,4 @@
-PROGS = 1-blink.bin 2-blink.bin 3-input.bin
+PROGS = 1-blink.bin 2-blink.bin 3-input.bin 4-pull.bin
 OBJS = start.o 1-blink.o gpio.o
 
 ARM = arm-none-eabi

@@ -70,9 +70,9 @@ int gpio_read(unsigned pin) {
 
 void gpio_set_pullup(unsigned pin) {
 	//mem barrier at start
-	nop();
+	dmb();
 	//step 1 in broadcom docs: write 10 to gppud to set pullup
-	PUT32(gppud, 1 << 1);
+	PUT32(gppud, 0b10);
 	/* step 2: delay for 150usec, pi runs at 700 MegaHertz, so 700M ticks per second. 
 	 * 150 usecs is about 1.5 milliseconds. 
 	 * 700M / 1000 (1000 milliseconds per second) = 700,000 clocks per milisecond
@@ -89,27 +89,51 @@ void gpio_set_pullup(unsigned pin) {
 	//step 5 gets skipped, straight to step 6
 	PUT32(clock_reg, 1 << pin);
 	//mem barrrier at  end
-	nop();
+	dmb();
 }
 
 void gpio_set_pulldown(unsigned pin) {
 	//mem barrier at start
-	nop();
+	dmb();
 	//step 1 in broadcom docs: write 01 to gppud to set pulldown
 	PUT32(gppud, 0b1);
 	//step 2: delay for 150usec, or multiple of 150 clock cycles until i figure out how to delay
 	//by microseconds
-	delay(300);
+	delay(1050000);
 	//step 3: write to gppud_clk0/1 depending which pin we want to set for
 	// _clk0 controls pins 0-31, _clk1 controls pins 32-53
 	const unsigned clock_reg = (pin < 32) ? gppud_clk0 : gppud_clk1;
 	PUT32(clock_reg, 1 << pin);
 	//step 4: wait again
-	delay(300);
+	delay(1050000);
 	//step 5 gets skipped, straight to step 6
 	PUT32(clock_reg, 1 << pin);
 	//mem barrrier at  end
-	nop();
+	dmb();
+}
+
+void gpio_clear_pulldown(unsigned pin) {
+	//mem barrier at start
+	dmb();
+	//step 1 in broadcom docs: write 00 to gppud to clear pulldown
+	PUT32(gppud, 0b00);
+	//step 2: delay for 150usec, or multiple of 150 clock cycles until i figure out how to delay
+	//by microseconds
+	delay(1050000);
+	//step 3: write to gppud_clk0/1 depending which pin we want to set for
+	// _clk0 controls pins 0-31, _clk1 controls pins 32-53
+	const unsigned clock_reg = (pin < 32) ? gppud_clk0 : gppud_clk1;
+	PUT32(clock_reg, 1 << pin);
+	//step 4: wait again
+	delay(1050000);
+	//step 5 gets skipped, straight to step 6
+	PUT32(clock_reg, 1 << pin);
+	//mem barrrier at  end
+	dmb();
+}
+
+void gpio_clear_pullup(unsigned pin) {
+	gpio_clear_pulldown(pin);
 }
 
 // set <pin> to be an output pin.  

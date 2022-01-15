@@ -14,6 +14,7 @@
 
 #include <stdint.h> // uint32_t
 
+
 // used to write device memory: do not use a raw store.
 // writes the 32-bit value <v> to address <addr>:   
 //     *(uint32_t *)addr = v;
@@ -29,8 +30,12 @@ uint32_t get32(const volatile void *addr);
 // same but takes <addr> as a uint32_t
 uint32_t GET32(uint32_t addr);
 
+//used to sync across different gpio devices
+void dev_barrier(void);
 //used to create a DataMemoryBarrier
-void memBarrier(void);
+void dmb(void);
+//dmb but includes all cache ops
+void dsb(void);
 
 // asm routine that does nothing: used so compiler cannot 
 // optimize away loops.
@@ -66,6 +71,18 @@ int gpio_read(unsigned pin);
 
 //reboot func to avoid unplugging pi every time
 void reboot(void);
+
+//clear pulldown
+void gpio_clear_pulldown(unsigned pin);
+
+//clear pullup
+void gpio_clear_pullup(unsigned pin);
+
+//set pulldown
+void gpio_set_pulldown(unsigned pin);
+
+//set  pullup
+void gpio_set_pullup(unsigned pin);
 
 typedef enum {
     GPIO_FUNC_INPUT   = 0,
