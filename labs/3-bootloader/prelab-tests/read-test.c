@@ -3,7 +3,7 @@
 
 int main(void) {
     const char *name = "./read-file.out";
-    const char *hello = "hello";
+    const char *hello = "alright this is a really long string i am trying to test";
     
     int fd = create_file(name);
     int i;
@@ -17,8 +17,10 @@ int main(void) {
     char *data = read_file(&nbytes, name);
 
     unsigned n = strlen(hello) + 1;
-    if(nbytes != n)
+    if(nbytes != n){
+		printf("%lu\n", strlen(data));
         panic("expected %d bytes, have %d\n", n, nbytes);
+	}
     else
         output("success: expected %d bytes, have %d\n", n, nbytes);
 
