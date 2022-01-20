@@ -42,10 +42,10 @@ all: run
 
 %.check: % 
 	@echo -n "checking <$*>: ";
-	@$(BOOTLOAD) ./$* 2>&1 > /dev/null | grep  $(GREP_STR) | grep -v 20200034 | uniq > ./$<.test
+	$(BOOTLOAD) ./$* 2>&1 > /dev/null | grep  $(GREP_STR) | grep -v 20200034 | uniq > ./$<.test
 	@diff ./$<.out ./$<.test
 	@echo " Success: <$*>!";
-	@rm ./$*.test
+# @rm ./$*.test
 
 # we could just cksum all the .outs, but this lets us be more targeted.
 %.cksum: %.out

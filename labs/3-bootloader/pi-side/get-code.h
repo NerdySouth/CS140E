@@ -75,12 +75,25 @@ static void boot_putk(const char *msg) {
 //     can overflow.
 static unsigned 
 has_data_timeout(unsigned timeout) {
-    // implement this!
-    return 0;
+	unsigned start = timer_get_usec();
+	unsigned curr = timer_get_usec();
+	while (curr - start < timeout) {
+		if (boot_has_data()) {
+			return 1;
+		}
+		curr = timer_get_usec();
+	}
+	return 0;
 }
 
 // implement this routine.
 static void wait_for_data(unsigned usec_timeout) {
+	//send initial get_prog_info
+	boot_put32(GET_PROG_INFO);
+	//send again every usec_timeout
+	while (!has_data_timeout(usec_timeout)) {
+		boot_put32(GET_PROG_INFO);
+	}
 }
 
 // IMPLEMENT this routine.
@@ -91,6 +104,7 @@ static inline long get_code(void) {
     // there is data: implement this.
     wait_for_data(300 * 1000);
 
+
     /****************************************************************
      * Add your code below: 2,3,4,5,6
      */
@@ -99,26 +113,44 @@ static inline long get_code(void) {
 
     // 2. expect: [PUT_PROG_INFO, addr, nbytes, cksum] 
     //    we echo cksum back in step 4 to help debugging.
+	uint32_t pi_code = boot_get32();
+	uint32_t pi_addr = boot_get32();
+	uint32_t pi_nbytes = boot_get32();
+	uint32_t pi_cksum = boot_get32();
+	if (pi_code != PUT_PROG_INFO) { boot_putk("pi_code is not PUT_PROG_INFO."); }
+	if (pi_addr != ARMBASE) { boot_putk("pi_addr is not ARMBASE."); }
 
 
     // 3. If the binary will collide with us, abort. 
     //    you can assume that code must be below where the booloader code
     //    gap starts.
+	if (pi_addr != ARMBASE) {
+		die(-1);
+	}
 
 
 
     // 4. send [GET_CODE, cksum] back.
+	boot_put32(GET_CODE);
+	boot_put32(pi_cksum);
 
 
     // 5. expect: [PUT_CODE, <code>]
     //  read each sent byte and write it starting at 
     //  <addr> using PUT8
-
+	uint32_t pi_put = boot_get32();
+	for (unsigned i = 0; i < pi_nbytes; i += 1) {
+		PUT8(pi_addr + i, boot_get8());
+	}
+	if (pi_put != PUT_CODE) { boot_putk("PUT_CODE does not match value of pi_put"); }
 
     // 6. verify the cksum of the copied code.
-
+	unsigned new_ck = crc32((void  *)pi_addr, pi_nbytes);
+	if (pi_cksum != new_ck) {
+		boot_putk("Checksums do not match.");
+	}
     // 7. send back a BOOT_SUCCESS!
-    boot_putk("<YOUR NAME HERE>: success: Received the program!\n");
+    boot_putk("Tristen: success: Received the program!\n");
     boot_put32(BOOT_SUCCESS);
 
     return addr;
