@@ -11,10 +11,10 @@
 #
 # tip: if you want to automatically add all .S and .c files 
 # in src/ do:
-#   SRC := $(wildcard ./src/*.[Sc])
+SRC := $(wildcard ./src/*.[Sc])
 #
 # currently not defined to hold anything
-SRC := src/gpio.c
+# SRC := src/gpio.c
 
 # if you want to use our gpio.o or other .o (e.g., if yours
 # is acting weird):
@@ -23,8 +23,7 @@ SRC := src/gpio.c
 #
 #
 # currently: use our uart.o (for printk) and gpio.o
-STAFF_OBJS  :=  ./staff-objs/uart.o     \
-                ./staff-objs/gpio-pud.o     \
+STAFF_OBJS  :=  ./staff-objs/gpio-pud.o     \
                 ./staff-objs/gpio-int.o 
 
 # automatically add all staff src from:  libc, 

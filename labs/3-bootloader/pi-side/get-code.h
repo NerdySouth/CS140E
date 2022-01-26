@@ -124,7 +124,7 @@ static inline long get_code(void) {
     // 3. If the binary will collide with us, abort. 
     //    you can assume that code must be below where the booloader code
     //    gap starts.
-	if (pi_addr != ARMBASE) {
+	if (!(pi_addr >= ARMBASE && pi_addr + pi_nbytes < 0x00200000)) {
 		die(-1);
 	}
 
@@ -150,7 +150,7 @@ static inline long get_code(void) {
 		boot_putk("Checksums do not match.");
 	}
     // 7. send back a BOOT_SUCCESS!
-    boot_putk("Tristen: success: Received the program!\n");
+    // boot_putk("Tristen: success: Received the program!\n");
     boot_put32(BOOT_SUCCESS);
 
     return addr;

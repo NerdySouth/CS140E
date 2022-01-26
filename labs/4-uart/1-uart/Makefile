@@ -1,8 +1,8 @@
 # simple test that you have your path defined.
-NAME = hello
+NAME = hello-disable
 
 # uncomment this to use the uart.c in the current directory.
-UART = # uart.o
+# UART = uart.o
 
 OBJS = $(NAME).o $(UART)
 

@@ -16,7 +16,7 @@
 // you can fail here. when you do a read and the pi doesn't send data quickly enough.
 void simple_boot(int fd, const uint8_t *buf, unsigned n) { 
     // if you want to trace PUT/GET set
-    trace_p = 1;
+    // trace_p = 1;
 	unsigned crc = crc32(buf, n);
     // all implementations should have the same message: same bytes,
     // same crc32: cross-check these values to detect if your <read_file> 
@@ -66,9 +66,10 @@ void simple_boot(int fd, const uint8_t *buf, unsigned n) {
 
 
     // 4. handle it: send a PUT_CODE + the code.
+	output("putting code\n");
 	trace_put32(fd, PUT_CODE);
 	for (unsigned i = 0; i < n; i++) {
-		trace_put8(fd, buf[i]);
+		put_uint8(fd, buf[i]);
 	}
 
     // // 5. Wait for BOOT_SUCCESS

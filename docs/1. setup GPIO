@@ -1,0 +1,11 @@
+- set GPIO pin 14 (FSEL register) to TXD0 (ALT5) and pin 15 to RXD0 (ALT5)
+- mem barrier here
+- enable UART: get32(AUX_ENB) then modify low bits, and PUT32()
+- mem  barrier here
+- disableboth FIFOs fornow (cntl reg)
+- disable interrupts (IER register) -> PUT32(0) clear all bits(bottom 2 really)
+- set to 8bit mode (write 11, not 1)
+- clear RX and TX FIFOs (IIR register) -> should disable RX, then wait for any packets to arrive, then clear. 
+	Check for packets with AUX_MU_STAT_REG
+- set baudrate
+

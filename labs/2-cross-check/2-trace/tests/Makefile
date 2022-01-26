@@ -9,7 +9,7 @@
 # checksum / byte count.  you can post to the newsgroup
 
 # when you want to swap in, specify the path to your gpio.c implementation
-# GPIO_OBJ = ./gpio.o
+# GPIO_OBJ = ./gpio.o	
 
 # if you want to run a single program:
 TEST_SRC = 0-gpio-read.c
@@ -72,7 +72,7 @@ emit: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test emitall "TESTS=$(TEST_PROGS)"
 run: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test runall "TESTS=$(TEST_PROGS)"
-checkall: $(DEPS) $(TEST_PROGS)
+check: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test checkall "TESTS=$(TEST_PROGS)"
 cksum: $(DEPS) $(TEST_PROGS)
 	@make -f ./Makefile.test cksumall "TESTS=$(TEST_PROGS)"

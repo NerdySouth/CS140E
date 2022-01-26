@@ -16,19 +16,16 @@
 // you can fail here. when you do a read and the pi doesn't send data quickly enough.
 void simple_boot(int fd, const uint8_t *buf, unsigned n) { 
     // if you want to trace PUT/GET set
-     trace_p = 1;
-
-    if(pi_roundup(n,4) % 4 != 0)
-        panic("boot code size (%d bytes) is not a multiple of 4!\n", n);
-
-	uint32_t crc = crc32(buf,n);
+    // trace_p = 1;
+	unsigned crc = crc32(buf, n);
     // all implementations should have the same message: same bytes,
     // same crc32: cross-check these values to detect if your <read_file> 
     // is busted.
     trace("simple_boot: sending %d bytes, crc32=%x\n", n, crc);
 
     output("waiting for a start\n");
-    uint32_t op;
+	output("unix-side implementation\n");
+    unsigned op;
 
     // step 0: drain the initial data.  can have garbage.  
     // 
@@ -56,27 +53,26 @@ void simple_boot(int fd, const uint8_t *buf, unsigned n) {
 
     // 2. drain any extra GET_PROG_INFOS
 	while((op = get_op(fd)) == GET_PROG_INFO) {
-        trace_get32(fd);
+        //empty
     }
 
     // 3. check that we received a GET_CODE
-	while((op = get_op(fd)) != GET_CODE) {
-		trace_get32(fd);
-	}
-	//get the  command off
-	trace_get32(fd);
+	//compare code we received to GET_CODE to make sure we got the rioght op
+	ck_eq32(fd, "Check GET_CODE", GET_CODE, op);
 	//get the crc from pi
-	uint32_t pi_crc = trace_get32(fd);
+	unsigned pi_crc = trace_get32(fd);
 	ck_eq32(fd, "CRC mismatch", crc, pi_crc);
-	
+	// assert(1!=1);
+
 
     // 4. handle it: send a PUT_CODE + the code.
+	output("putting code\n");
 	trace_put32(fd, PUT_CODE);
 	for (unsigned i = 0; i < n; i++) {
-		trace_put8(fd, buf[i]);
+		put_uint8(fd, buf[i]);
 	}
 
-    // 5. Wait for BOOT_SUCCESS
+    // // 5. Wait for BOOT_SUCCESS
     ck_eq32(fd, "BOOT_SUCCESS mismatch", BOOT_SUCCESS, get_op(fd));
     output("bootloader: Done.\n");
 }
