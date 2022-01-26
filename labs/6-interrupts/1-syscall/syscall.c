@@ -19,7 +19,8 @@ int syscall_vector(unsigned pc, uint32_t r0) {
     uint32_t inst, sys_num;
 
     // figure out the instruction and the system call number.
-    unimplemented();
+	inst = GET32(pc);
+	sys_num = inst & 0xFFFFFF; //-> checking bottom  24bits for the  instruction encoding
 
     switch(sys_num) {
     case 1: 
@@ -47,7 +48,7 @@ void notmain() {
     asm volatile ("mov %0, sp" : "=r"(sp)); 
     printk("current stackptr = %x\n", sp);
 
-    clean_reboot();
+    // clean_reboot();
 
 
     printk("about to install handlers\n");

@@ -1,5 +1,6 @@
 {
 	"files.associations": {
-		"rpi.h": "c"
+		"rpi.h": "c",
+		"timer-interrupt.h": "c"
 	}
 }

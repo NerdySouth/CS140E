@@ -14,7 +14,11 @@ union align {
         void (*fp)(void);
 };
 
+//default value for heap size
+#define DEFAULT_HEAP_SIZE  0x00200000
 
+//pointer to start of free portion of the heap
+static void* first_free;
 // some helpers
 static inline uint32_t max_u32(uint32_t x, uint32_t y) {
     return x > y ? x : y;
@@ -47,9 +51,25 @@ static inline unsigned roundup(unsigned x, unsigned n) {
  *    you put an assertion in.  
  */
 void *kmalloc(unsigned nbytes) {
+	//check initialization and that we arent allocating 0 bytes
     assert(nbytes);
     demand(init_p, calling before initialized);
-    unimplemented();
+
+	//check size alignment
+	nbytes = is_aligned(nbytes, 4) ? nbytes : roundup(nbytes, 4);
+	demand(is_aligned(nbytes, 4), nbytes not aligned.);
+	
+	//check we are not allocating beyond our heap
+	demand((unsigned)first_free + nbytes < (unsigned)__heap_start__ + DEFAULT_HEAP_SIZE, writing past heap);
+
+	//set pointer to start of block we are allocating
+	void *allocated_block = first_free;
+	//zero out memory
+	memset(allocated_block, 0, nbytes);
+	//update first_free to point to next free address
+	first_free += nbytes;
+
+	return  allocated_block;
 }
 
 /*
@@ -61,9 +81,24 @@ void *kmalloc_aligned(unsigned nbytes, unsigned alignment) {
     demand(init_p, calling before initialized);
     demand(is_pow2(alignment), assuming power of two);
 
-    if(alignment <= 4)
+    if(alignment <= 4) {
         return kmalloc(nbytes);
-    unimplemented();
+	}
+	//check size alignment
+	nbytes = is_aligned(nbytes, alignment) ? nbytes : roundup(nbytes, alignment);
+	demand(is_aligned(nbytes, alignment), nbytes not aligned.);
+	
+	//check we are not allocating beyond our heap
+	demand((unsigned)first_free + nbytes < (unsigned)__heap_start__ + DEFAULT_HEAP_SIZE, writing past heap);
+
+	//set pointer to start of block we are allocating
+	void *allocated_block = first_free;
+	//zero out memory
+	memset(allocated_block, 0, nbytes);
+	//update first_free to point to next free address
+	first_free += nbytes;
+
+	return  allocated_block;
 }
 
 /*
@@ -73,7 +108,16 @@ void *kmalloc_aligned(unsigned nbytes, unsigned alignment) {
 void kmalloc_init_set_start(unsigned _addr, unsigned max_nbytes) {
     demand(!init_p, already initialized);
     init_p = 1;
-    unimplemented();
+
+	//set up heap pointer
+	if (is_aligned(_addr, 4)) {
+		first_free = (void*)_addr;
+	} else {
+		_addr = roundup(_addr, 4);
+		first_free = (void*)_addr;
+	}
+	
+	// printk("%x\n", first_free);
 }
 
 /*
@@ -91,7 +135,7 @@ void kmalloc_init(void) {
     init_p = 1;
 
     // call kmalloc_init_set_start w/ right values.
-    unimplemented();
+	kmalloc_init_set_start(__heap_start__, DEFAULT_HEAP_SIZE);
 }
 
 
@@ -109,5 +153,5 @@ void kfree_all(void) {
 //    assert(<addr> < kmalloc_heap_ptr());
 // 
 void *kmalloc_heap_ptr(void) {
-    unimplemented();
+	return first_free;
 }

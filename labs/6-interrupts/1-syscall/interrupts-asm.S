@@ -89,13 +89,26 @@ software_interrupt_asm:
     @ runs at system level (p.a2-5): assumes we have a sp
     @ implement: 
     @   - save regs
-    @   - need to figure out what lr points to,
+    @   - need to figure out what lr points to, -> return address of subroutine called; on return this is loaded into pc
     @   - mov the original r0 into r1
     @   - mov the pointer to the syscall inst into r0
     @   - call
     @   - restore regs
     @   - return from the exception.
-    asm_not_implemented()
+	
+	push  {r1-r12,lr}         @ XXX: pushing too many registers: only need caller; saves them
+	@ vpush {s0-s15}	        @ uncomment if want to save caller-saved fp regs
+
+	sub   lr, lr, #4
+
+	mov   r1, r0              @ move r0 to r1
+	mov r0, lr				@ lr has address of syscall instruction instance
+	bl    syscall_vector    @ C function
+
+	@ vpop {s0-s15}           @ pop caller saved fp regs
+	pop   {r1-r12,lr} 	    @ pop integer registers to restore them
+
+	@ return from interrupt handler: will re-enable general ints.
     movs pc, lr
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
