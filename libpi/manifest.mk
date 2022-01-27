@@ -15,7 +15,7 @@ RUN = 1
 #CHECK = 0
 
 ifdef CS140E_STAFF
-STAFF_OBJS += staff-objs/kmalloc.o
+# STAFF_OBJS += staff-objs/kmalloc.o
 STAFF_OBJS += staff-objs/sw-uart.o
 endif
 

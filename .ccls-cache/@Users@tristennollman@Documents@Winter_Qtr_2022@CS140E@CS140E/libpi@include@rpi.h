@@ -54,8 +54,15 @@ void rpi_reset(unsigned seed);
  */
 
 // uart functions
+
+// initialize
 void uart_init(void);
+// disable
+void uart_disable(void);
+
+// get one byte from the uart
 int uart_getc(void);
+// put one byte on the uart
 void uart_putc(unsigned c);
 
 // returns -1 if no byte, the value otherwise.
@@ -118,10 +125,12 @@ void *kmalloc_aligned(unsigned nbytes, unsigned alignment);
 // returns raw memory, not zeroed out.
 void *kmalloc_notzero(unsigned sz);
 
-// initialize kmalloc
+// initialize and set where the heap starts and give a maximum
+// size in bytes
+void kmalloc_init_set_start(unsigned _addr, unsigned max_nbytes);
+
+// sets the heap to the address of __HEAP_START__ and 2mb
 void kmalloc_init(void);
-// initialize and set where the heap starts.
-void kmalloc_init_set_start(unsigned _addr);
 
 // return pointer to the first free byte.  used for
 // bounds checking.

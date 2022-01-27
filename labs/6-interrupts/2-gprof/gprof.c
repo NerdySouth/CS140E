@@ -9,6 +9,12 @@
 #include "rpi.h"
 #include "timer-interrupt.h"
 
+extern char __code_start__;
+extern char __code_end__;
+
+#define CODE_HEAP_SIZE ((unsigned)&__code_end__ - (unsigned)&__code_start__)
+
+static unsigned* heap;
 /***************************************************************************
  * gprof implementation:
  *	- allocate a table with one entry for each instruction.
@@ -20,20 +26,30 @@
 // allocate table.
 //    few lines of code
 static unsigned gprof_init(void) {
-    unimplemented();
+	unsigned size = (unsigned)&__code_end__ - (unsigned)&__code_start__;
+	heap = kmalloc(size);
+
+	return 0;
 }
 
 // increment histogram associated w/ pc.
 //    few lines of code
 static void gprof_inc(unsigned pc) {
-    unimplemented();
+	unsigned index = (pc - (unsigned)&__code_start__) / 4;
+	heap[index] += 1;
 }
 
 // print out all samples whose count > min_val
 //
 // make sure sampling does not pick this code up!
 static void gprof_dump(unsigned min_val) {
-    unimplemented();
+	system_disable_interrupts();
+	for(int i = 0; i < CODE_HEAP_SIZE; i++) {
+		if (heap[i] > min_val){
+			printk("Value of pc %x = %d\n", i*4 + (unsigned)&__code_start__, heap[i]);
+		}
+	}
+	system_enable_interrupts();
 }
 
 
