@@ -25,6 +25,22 @@
 
 #define _SVID_SOURCE
 #include <dirent.h>
+#define SUCCESS 0
+
+
+static int make_kid(int exit_code, char *argv[]) {
+	int pid;
+	if((pid = fork()) < 0)
+		sys_die(fork, fork failed?);
+	// child
+	if(!pid) {
+		debug("forked kid=%d\n", getpid());
+		//prob execv here
+
+		exit(exit_code);
+	}
+	return pid;
+}
 
 // scan the files in "./" (you can extend this) for those
 // that match the suffixes in <suffixes> and check  if any
@@ -45,7 +61,15 @@ int check_activity(void) {
 // synchronously wait for <pid> to exit.  returns 1 if it exited
 // cleanly (via exit(0)), 0 otherwise.
 static int pid_clean_exit(int pid) {
-    unimplemented();
+	int status;
+	debug("testing <waitpid(-1, &status, 0)>\n");
+	if(waitpid(pid, &status, 0) != pid)
+		sys_die(waitpid, returned different pid);
+	status = WEXITSTATUS(status);
+	debug("\tkid=%d exited with %d\n\n", pid, status);
+	if (status != SUCCESS) 
+		return 0;
+	return 1;
 }
 
 // simple helper to print null terminated vector of strings.
@@ -63,13 +87,23 @@ static void print_argv(char *argv[]) {
 // and exit if the kid crashed or exited with an error (a non-zero
 // exit code).
 static void run(char *argv[]) {
-    unimplemented();
+	int pid = make_kid(SUCCESS, argv);
+	int status = pid_clean_exit(pid);
+	if (status) {
+		//success exit
+		// result or something
+	} else {
+		//failed
+		die("Child failed/crashed.\n");
+	}
 }
 
 int main(int argc, char *argv[]) {
     if(argc < 2)
         die("cmd-watch: not enough arguments\n");
-        
-    unimplemented();
+
+	//infinite loop, sleep for 250 ms each cycle
+	//if check_activiy saystrue: 
+		run(&argv[1]);
     return 0;
 }
