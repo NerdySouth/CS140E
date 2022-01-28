@@ -96,7 +96,7 @@ software_interrupt_asm:
     @   - restore regs
     @   - return from the exception.
 	
-	push  {r1-r12,lr}         @ XXX: pushing too many registers: only need caller; saves them
+	push  {r1-r12,lr}         @ XXX: r0 is return  reg so do not save it
 	@ vpush {s0-s15}	        @ uncomment if want to save caller-saved fp regs
 
 	sub   lr, lr, #4
