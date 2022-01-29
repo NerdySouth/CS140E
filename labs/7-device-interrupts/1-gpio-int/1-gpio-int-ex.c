@@ -16,13 +16,21 @@ static volatile unsigned n_rising_edge, n_falling_edge;
 // client has to define this.
 void interrupt_vector(unsigned pc) {
     n_interrupt++;
-
+	// panic("in interrupt_vector\n");
     // you don't have to check anything else besides
     // if a gpio event was detected: 
     //  - increment n_falling_edge if it was a falling edge
     //  - increment n_rising_edge if it was rising, 
     // make sure you clear the GPIO event!
-    unimplemented();
+	dev_barrier();
+	if (gpio_event_detected(in_pin)) {
+		unsigned pin_val = gpio_read(in_pin);
+
+		pin_val ?  n_rising_edge++ : n_falling_edge++;
+		//clear event
+		gpio_event_clear(in_pin);
+	}
+		
 }
 
 static void test1_simple_rise(unsigned t) {

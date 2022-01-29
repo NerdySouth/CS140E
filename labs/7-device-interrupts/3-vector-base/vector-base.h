@@ -13,14 +13,23 @@
  */
 
 static inline void *vector_base_get(void) {
-    unimplemented();
+	void* ret;
+	asm volatile("MRC p15, 0, %0, c12, c0, 0" : "=r" (ret):);
+	return ret;
 }
 
 // set the vector register to point to <vector_base>.
 // must: 
 //    - check that it satisfies the alignment restriction.
 static inline void vector_base_set(void *vector_base) {
-    unimplemented();
+	//check alignement
+	unsigned mask = 0x1F;
+	unsigned alignment = (unsigned)vector_base & mask;
+	if (alignment) {
+		panic("invalid vector base address: not aligned.\n");
+	}
+	asm volatile("MCR p15, 0, %0, c12, c0, 0" : : "r" (vector_base));
+	printk("%p\n", vector_base_get());
     assert(vector_base_get() == vector_base);
 }
 #endif

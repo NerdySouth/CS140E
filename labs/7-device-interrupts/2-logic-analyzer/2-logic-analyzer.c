@@ -10,10 +10,14 @@
 #include "sw-uart.h"
 #include "cycle-count.h"
 
+static const unsigned FALLING = 0;
+static const unsigned RISING = 1;
 static cq_t uartQ;
 
 enum { out_pin = 21, in_pin = 20 };
 static volatile unsigned n_rising_edge, n_falling_edge;
+
+static unsigned last_read;
 
 
 // client has to define this.
@@ -27,9 +31,20 @@ void interrupt_vector(unsigned pc) {
     //  - using the circular buffer is pretty slow. should tune this.
     //    easy way is to use a uint32_t array where the counter is volatile.
     unsigned s = cycle_cnt_read();
+	cq_push32(&uartQ, s - last_read);
 
     dev_barrier();
-    unimplemented();
+	if (gpio_event_detected(in_pin)) {
+		unsigned pin_val  = gpio_read(in_pin);
+		//if pin val is 1, prev state was falling; if 0, prev  state was rising
+		pin_val ? cq_push32(&uartQ, FALLING) : cq_push32(&uartQ, RISING);
+
+	}
+
+	//clear the event
+	gpio_event_clear(in_pin);
+
+	last_read = s;
     dev_barrier();
 }
 
@@ -37,6 +52,7 @@ void notmain() {
     uart_init();
     cq_init(&uartQ,1);
     cycle_cnt_init();
+	last_read = cycle_cnt_read();
 	
     int_init();
     enable_cache();

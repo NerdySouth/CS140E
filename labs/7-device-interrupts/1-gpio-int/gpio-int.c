@@ -11,6 +11,12 @@
 //detect GPIO Event register
 #define RPI_GPEDS0_REG 0x20200040
 #define RPI_GPEDS1_REG 0x20200044
+//enable gpio general interrupts rregister
+#define RPI_ENABLE_IRQ2_REG 0x2000B214
+#define RPI_IRQ2_PENDING 0x2000B208
+#define GPIO_ENABLE_INTERRUPTS 49
+
+static unsigned GPIO_ENABLED = 0;
 
 // gpio_int_rising_edge and gpio_int_falling_edge (and any other) should
 // call this routine (you must implement) to setup the right GPIO event.
@@ -19,9 +25,24 @@
 // lose their configuration).  you also need to enable the right IRQ.   make
 // sure to use device barriers!!
 int is_gpio_int(unsigned gpio_int) {
-    unimplemented();
+	if (gpio_int != GPIO_INT0)
+		panic("passed an invalid gpio_int to is_gpio_int.\n");
+
+	dev_barrier();
+	unsigned reg_val = GET32(RPI_IRQ2_PENDING);
+	unsigned status = reg_val & (1  << (gpio_int - 32));
+	dev_barrier();
+	return status  ?  1 :  0;
 }
 
+
+void gpio_int_general() {
+	dev_barrier();
+	unsigned reg_val = GET32(RPI_ENABLE_IRQ2_REG);
+	reg_val |= (1 << (GPIO_INT0 - 32));
+	PUT32(RPI_ENABLE_IRQ2_REG, reg_val);
+	GPIO_ENABLED = 1;
+} 
 
 // p97 set to detect rising edge (0->1) on <pin>.
 // as the broadcom doc states, it  detects by sampling based on the clock.
@@ -29,12 +50,12 @@ int is_gpio_int(unsigned gpio_int) {
 // *after* a 1 reading has been sampled twice, so there will be delay.
 // if you want lower latency, you should us async rising edge (p99)
 void gpio_int_rising_edge(unsigned pin) {
-	if (pin > 31 && pin  != 47)
+	if (pin > 31 && pin != 47)
 		return;
 
 	dev_barrier(); //-> is this needed?
 	//determine which  reg to use
-	unsigned reg_addr = (pin < 32) ? RPI_GPREN0_REG : RPI_GRPEN1_REG;
+	unsigned reg_addr = (pin < 32) ? RPI_GPREN0_REG : RPI_GPREN1_REG;
 	//get value  of rising set reg
 	unsigned reg_val = GET32(reg_addr);
 
@@ -42,8 +63,12 @@ void gpio_int_rising_edge(unsigned pin) {
 	reg_val |= (1 << (pin % 32));
 
 	//put reg_val back to set enable it for pin n
-	PUT32(reg_addr);
-	dev_barrrier(); //-> is this needed?
+	PUT32(reg_addr, reg_val);
+
+	if (!GPIO_ENABLED) 
+		gpio_int_general();
+
+	dev_barrier(); //-> is this needed?
 }
 
 // p98: detect falling edge (1->0).  sampled using the system clock.  
@@ -52,7 +77,7 @@ void gpio_int_rising_edge(unsigned pin) {
 // interrupt is delayed two clock cycles.   if you want  lower latency,
 // you should use async falling edge. (p99)
 void gpio_int_falling_edge(unsigned pin) {
-	if (pin > 31 && pin  != 47) 
+	if (pin > 31 && pin != 47) 
 		return;
 
 	dev_barrier(); //-> is this needed?
@@ -67,15 +92,19 @@ void gpio_int_falling_edge(unsigned pin) {
 	reg_val |= (1 << (pin % 32));
 
 	//put reg_val back to set enable it for pin n
-	PUT32(reg_addr);
-	dev_barrrier(); //-> is this needed?
+	PUT32(reg_addr, reg_val);
+
+	if (!GPIO_ENABLED) 
+		gpio_int_general();
+
+	dev_barrier(); //-> is this needed?
 }
 
 // p96: a 1<<pin is set in EVENT_DETECT if <pin> triggered an interrupt.
 // if you configure multiple events to lead to interrupts, you will have to 
 // read the pin to determine which caused it.
 int gpio_event_detected(unsigned pin) {
-	if (pin > 31 && pin  != 47) 
+	if (pin > 31 && pin != 47) 
 		return 0;
 
 	dev_barrier(); //-> needed?
@@ -93,18 +122,16 @@ int gpio_event_detected(unsigned pin) {
 
 // p96: have to write a 1 to the pin to clear the event.
 void gpio_event_clear(unsigned pin) {
-	if (pin > 31 && pin  != 47) 
-		return 0;
+	if (pin > 31 && pin != 47) 
+		return;
 
 	dev_barrier(); //-> needed?
 	//determine addr to use
 	unsigned reg_addr = (pin < 32) ? RPI_GPEDS0_REG : RPI_GPEDS1_REG;
-	unsigned reg_val = GET32(reg_addr);
+	// unsigned reg_val = GET32(reg_addr);
 	//set a mask so we can write to the pin
-	unsigned clear_mask = (1 << (pin % 32));
-	//or in the mask
-	reg_val |= clear_mask;
+	unsigned clear_mask = (1 << pin);
 	//write the bit to clear
-	PUT32(reg_addr);
+	PUT32(reg_addr, clear_mask);
 	dev_barrier();
 }

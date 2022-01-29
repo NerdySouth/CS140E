@@ -1,0 +1,10 @@
+TRACE:dev_barrier
+TRACE:dev_barrier
+TRACE:GET32:20215054:327b23c6
+TRACE:dev_barrier
+TRACE:dev_barrier
+TRACE:GET32:20215054:643c9869
+TRACE:dev_barrier
+TRACE:GET32:20215040:66334873
+TRACE:dev_barrier
+TRACE:4 calls to random

@@ -38,6 +38,7 @@ system_disable_interrupts:
     msr cpsr_c,r0
     bx lr
 
+.align 5
 .globl _interrupt_table
 .globl _interrupt_table_end
 _interrupt_table:
