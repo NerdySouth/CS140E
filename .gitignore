@@ -7,9 +7,8 @@
 staff-*.txt
 staff-*.c
 .gdb_history
-.DS_store
-.vscode
-.ccls-cache
+.vscode/
+.ccls-cache/
 # Prerequisites
 *.d
 

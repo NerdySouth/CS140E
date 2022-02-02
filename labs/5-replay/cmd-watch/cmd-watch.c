@@ -91,6 +91,7 @@ static void run(char *argv[]) {
 	int status = pid_clean_exit(pid);
 	if (status) {
 		//success exit
+		
 		// result or something
 	} else {
 		//failed
