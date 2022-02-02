@@ -82,7 +82,7 @@ rpi_thread_t *rpi_cur_thread(void) {
 
 // create a new thread.
 rpi_thread_t *rpi_fork(void (*code)(void *arg), void *arg) {
-    rpi_thread_t *t = th_alloc();
+    rpi_thread_t *thread = th_alloc();
 
     // write this so that it calls code,arg.
     void rpi_init_trampoline(void);
@@ -97,13 +97,15 @@ rpi_thread_t *rpi_fork(void (*code)(void *arg), void *arg) {
      *  3. store the address of rpi_init_trampoline into the lr
      *     position so context switching will jump there.
      */
-    unimplemented();
+	thread->fn = code;
+	thread->arg = arg;
+	thread->saved_sp = &thread->stack[THREAD_MAXSTACK-11-1];
 
     trace("rpi_fork: tid=%d, code=%p, arg=%x, saved_sp=%p\n",
-            t->tid, code, arg, t->saved_sp);
+            thread->tid, code, arg, thread->saved_sp);
 
-    Q_append(&runq, t);
-    return t;
+    Q_append(&runq, thread);
+    return thread;
 }
 
 

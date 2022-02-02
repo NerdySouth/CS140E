@@ -5,6 +5,8 @@ extern char __heap_start__;
 
 // track if initialized.
 static int init_p;
+// track set heap size
+static unsigned heap_set_size;
 
 // this is the minimum alignment: must always
 // roundup to at least sizeof(union align)
@@ -60,7 +62,7 @@ void *kmalloc(unsigned nbytes) {
 	demand(is_aligned(nbytes, 4), nbytes not aligned.);
 	
 	//check we are not allocating beyond our heap
-	demand((unsigned)first_free + nbytes < (unsigned)__heap_start__ + DEFAULT_HEAP_SIZE, writing past heap);
+	// demand((unsigned)first_free + nbytes < (unsigned)__heap_start__ + heap_set_size, writing past heap);
 
 	//set pointer to start of block we are allocating
 	void *allocated_block = first_free;
@@ -89,15 +91,16 @@ void *kmalloc_aligned(unsigned nbytes, unsigned alignment) {
 	demand(is_aligned(nbytes, alignment), nbytes not aligned.);
 	
 	//check we are not allocating beyond our heap
-	demand((unsigned)first_free + nbytes < (unsigned)__heap_start__ + DEFAULT_HEAP_SIZE, writing past heap);
+	// demand((unsigned)first_free + nbytes < (unsigned)__heap_start__ + heap_set_size, writing past heap);
 
 	//set pointer to start of block we are allocating
+	first_free = is_aligned_ptr(first_free, alignment) ? first_free : (void *)roundup((unsigned)first_free, alignment);
 	void *allocated_block = first_free;
 	//zero out memory
 	memset(allocated_block, 0, nbytes);
 	//update first_free to point to next free address
 	first_free += nbytes;
-
+	first_free = is_aligned_ptr(first_free, 4) ? first_free  : (void*)roundup((unsigned)first_free, 4);
 	return  allocated_block;
 }
 
@@ -108,7 +111,7 @@ void *kmalloc_aligned(unsigned nbytes, unsigned alignment) {
 void kmalloc_init_set_start(unsigned _addr, unsigned max_nbytes) {
     demand(!init_p, already initialized);
     init_p = 1;
-
+	heap_set_size = max_nbytes;
 	//set up heap pointer
 	if (is_aligned(_addr, 4)) {
 		first_free = (void*)_addr;

@@ -1,7 +1,7 @@
 SUPPORT_OBJS := lab-c-helpers.o 
 
 # comment this out to use your code
-USE_STAFF=1
+# USE_STAFF=1
 
 ifeq ($(USE_STAFF),1)
 STAFF_OBJS := staff-rpi-thread.o  staff-thread-asm.o
