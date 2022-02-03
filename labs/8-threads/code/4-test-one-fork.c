@@ -19,7 +19,7 @@ static void thread_code(void *arg) {
 void notmain() {
     uart_init();
     kmalloc_init_set_start(1024 * 1024, 1024*1024);
-    printk("about to fork and run one threa\n");
+    printk("about to fork and run one thread\n");
 
     unsigned x = 0xdeadbeef;
 	rpi_fork(thread_code, &x);

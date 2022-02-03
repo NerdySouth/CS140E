@@ -2,6 +2,7 @@
 	"files.associations": {
 		"rpi.h": "c",
 		"timer-interrupt.h": "c",
-		"rpi-interrupts.h": "c"
+		"rpi-interrupts.h": "c",
+		"rpi-thread.h": "c"
 	}
 }

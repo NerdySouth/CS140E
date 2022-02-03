@@ -14,9 +14,9 @@
 //enable gpio general interrupts rregister
 #define RPI_ENABLE_IRQ2_REG 0x2000B214
 #define RPI_IRQ2_PENDING 0x2000B208
-#define GPIO_ENABLE_INTERRUPTS 49
 
-static unsigned GPIO_ENABLED = 0;
+//keep track of whether general gpio interrupts have been enabled yet.
+static unsigned GPIO_INT_GENERAL_ENABLED = 0;
 
 // gpio_int_rising_edge and gpio_int_falling_edge (and any other) should
 // call this routine (you must implement) to setup the right GPIO event.
@@ -41,7 +41,7 @@ void gpio_int_general() {
 	unsigned reg_val = GET32(RPI_ENABLE_IRQ2_REG);
 	reg_val |= (1 << (GPIO_INT0 - 32));
 	PUT32(RPI_ENABLE_IRQ2_REG, reg_val);
-	GPIO_ENABLED = 1;
+	GPIO_INT_GENERAL_ENABLED = 1;
 } 
 
 // p97 set to detect rising edge (0->1) on <pin>.
@@ -65,7 +65,7 @@ void gpio_int_rising_edge(unsigned pin) {
 	//put reg_val back to set enable it for pin n
 	PUT32(reg_addr, reg_val);
 
-	if (!GPIO_ENABLED) 
+	if (!GPIO_INT_GENERAL_ENABLED) 
 		gpio_int_general();
 
 	dev_barrier(); //-> is this needed?
