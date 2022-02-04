@@ -64,3 +64,4 @@ dkms.conf
 *.tags
 *.DS_Store
 tags
+.ccls/
