@@ -14,7 +14,12 @@ static int exec_server(char **argv) {
     output("\n");
 
     int pid;
-    unimplemented();
+	pid = fork();
+	if (!pid) {
+		//child process: my-install
+		execvp(&argv[0], argv);
+	} 
+	//parent process: interpose
     return pid;
 }
 
@@ -23,7 +28,15 @@ static int exec_server(char **argv) {
 //   - -1 if the child hasn't exited.
 //   - the exitcode.
 static int get_exitcode_noblk(pid_t pid) {
-    unimplemented();
+	int status = 0;
+	//wait without blocking
+	int ret = waitpid(pid, &status, WNOHANG);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
+		//child died from  a coreduump (seg fault/SIGSEGV)
+		trace_err("process: %d died from sigsev.\n", pid);
+	}
+	//if ret == 0 child has not exited, otherwise return exit status
+	(!ret) ? -1 : WIFEXITEDSTATUS(status);
 }
 
 // called to check if the unix side exited cleanly with exit(0)
