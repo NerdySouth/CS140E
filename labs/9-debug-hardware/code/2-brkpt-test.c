@@ -15,6 +15,7 @@ void foo(int x);
 // total number of faults.
 static volatile int n_faults = 0;
 
+void interrupt_vector(void) {}
 /*
    13-11:
         RULE: "must first check IFSR or DFSR to determine a debug
@@ -57,47 +58,24 @@ void prefetch_abort_vector(unsigned lr) {
 void notmain(void) {
     // 1. install exception handlers: must have a valid trampoline for
     // prefetch_abort_vector
-    unimplemented();
+	extern uint32_t _fast_interrupt_table;
+	vector_base_set(&_fast_interrupt_table);
 
     // 2. enable the debug coprocessor.
     cp14_enable();
 
+	//disable breakpoints
+	cp14_bcr0_disable();
     // just started, should not be enabled.
     assert(!cp14_bcr0_is_enabled());
 
 
-    /*
-      3. set a simple breakpoint.  from 13-45:
-         1. read the bcr
-         2. clear enable bit: write back
-         3. write the imva to BVR
-         4. write BCR: BCR[22:21] = 00 or 1
-            BCR[20] = 0 no linking
-            BCR[15:14]: secure access as required
-            BCR[8:5] base addres as required
-            BCR[2:1]: super visor access as required
-            BCR[0] = 1
-        prefetch flush.
-    */
-
-    /* 
-     * see 13-17 for how to set bits
-     * set:
-     *   - match
-     *   - disable linking
-     *   - match in secure and non-secure world
-     *   - match load of any location in word
-     *   - supervisor or not
-     *   - enabled.
-     */
-    uint32_t b = 0;
-
-
-    // set breakpoint using bcr0 and bvr0
-    unimplemented();
+	//set breakpoint with bvr
+	cp14_bvr0_set((unsigned)&foo);
+	//reenable breakpoints
+   	cp14_bcr0_enable();
 
     assert(cp14_bcr0_is_enabled());
-    output("set breakpoint for addr %p\n", foo);
 
     output("about to call %p: should see a fault!\n", foo);
     foo(0);

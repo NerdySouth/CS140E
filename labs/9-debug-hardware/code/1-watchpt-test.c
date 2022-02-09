@@ -4,6 +4,9 @@
 #include "armv6-debug-impl.h"
 
 static int load_fault_n, store_fault_n;
+void interrupt_vector(void) {
+
+}
 
 // change to passing in the saved registers.
 void data_abort_vector(unsigned lr) {
@@ -34,7 +37,9 @@ void notmain(void) {
     // 1. install exception handlers using vector base.
     //      must have an entry for data-aborts that has
     //      a valid trampoline to call <data_abort_vector>
-    unimplemented();
+	extern uint32_t _fast_interrupt_table;
+	vector_base_set(&_fast_interrupt_table);
+	assert(vector_base_get() == &_fast_interrupt_table);
 
     // 2. enable the debug coprocessor.
     cp14_enable();
@@ -49,15 +54,11 @@ void notmain(void) {
     // just started, should not be enabled.
     assert(!cp14_wcr0_is_enabled());
 
-    // setup watchpoint 0.  needs two registers.
-    //  - see 13-17 for how to set bits in the <wcr0>
-
-    uint32_t b = 0;  // set this to the needed bits in wcr0
-    unimplemented();
+	cp14_wcr0_enable();
 
     assert(cp14_wcr0_is_enabled());
     trace("set watchpoint for addr %p\n", null);
-
+	cp14_wvr0_set(null);
     trace("should see a store fault!\n");
     PUT32(null,0);
 
@@ -65,7 +66,7 @@ void notmain(void) {
         panic("did not see a store fault\n");
 
     assert(!cp14_wcr0_is_enabled());
-    cp14_wcr0_set(b);
+	cp14_wcr0_enable();
     assert(cp14_wcr0_is_enabled());
 
     trace("should see a load fault!\n");

@@ -1,0 +1,18 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./0-example-debug-id.bin> about to boot
+TRACE:simple_boot: sending 5188 bytes, crc32=b32a7b27
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+TRACE:checking debug_id macro and inline function give same output
+TRACE:r=0x15121007
+TRACE:have 2 watchpoints
+TRACE:have 6 breakpoints
+TRACE:SUCCESS: read debug register correctly.
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

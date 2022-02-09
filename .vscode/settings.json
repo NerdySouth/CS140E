@@ -7,6 +7,9 @@
 		"simple-boot-defs.h": "c",
 		"libunix.h": "c",
 		"interpose-internal.h": "c",
-		"simple-boot.h": "c"
+		"simple-boot.h": "c",
+		"asm-helpers.h": "c",
+		"helper-macros.h": "c",
+		"bit-support.h": "c"
 	}
 }

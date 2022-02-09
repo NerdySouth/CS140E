@@ -1,0 +1,5 @@
+TRACE:checking debug_id macro and inline function give same output
+TRACE:r=0x15121007
+TRACE:have 2 watchpoints
+TRACE:have 6 breakpoints
+TRACE:SUCCESS: read debug register correctly.

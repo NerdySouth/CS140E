@@ -14,12 +14,12 @@ TTYUSB =
 BOOTLOADER = my-install
 
 # uncomment if you want it to automatically run.
-RUN=1
+# RUN=1
 
 # part 1
 TEST_SRC := $(wildcard ./1-*.c)
 TEST_SRC := $(wildcard ./2-*.c)
-TEST_SRC := $(wildcard ./0-*.c)
+TEST_SRC := $(wildcard ./[012]-*.c)
 
 # to run all the tests.
 # TEST_SRC := $(wildcard ./[0-9]*.c)

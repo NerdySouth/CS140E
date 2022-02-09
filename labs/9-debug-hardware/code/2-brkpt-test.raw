@@ -1,13 +1,11 @@
-FOUND: </dev/ttyUSB0>
-opened tty port </dev/ttyUSB0>.
-my-install: tty-usb=</dev/ttyUSB0> program=<./2-brkpt-test.bin> about to boot
-TRACE:simple_boot: sending 7000 bytes, crc32=70dbe6b4
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./2-brkpt-test.bin> about to boot
+TRACE:simple_boot: sending 7080 bytes, crc32=37497c61
 waiting for a start
-pi: <addr=0x8000, n=7000, cksum=0x70dbe6b4>
+unix-side implementation
 putting code
 bootloader: Done.
-listening on ttyusb=</dev/ttyUSB0>
-set breakpoint for addr 0x8034
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
 about to call 0x8034: should see a fault!
 lr=0x8034, foo=0x8034
 ifar=0x0

@@ -29,7 +29,7 @@ static inline void vector_base_set(void *vector_base) {
 		panic("invalid vector base address: not aligned.\n");
 	}
 	asm volatile("MCR p15, 0, %0, c12, c0, 0" : : "r" (vector_base));
-	printk("%p\n", vector_base_get());
+	// printk("%p\n", vector_base_get());
     assert(vector_base_get() == vector_base);
 }
 #endif
