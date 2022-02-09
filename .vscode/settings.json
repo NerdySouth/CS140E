@@ -3,6 +3,10 @@
 		"rpi.h": "c",
 		"timer-interrupt.h": "c",
 		"rpi-interrupts.h": "c",
-		"rpi-thread.h": "c"
+		"rpi-thread.h": "c",
+		"simple-boot-defs.h": "c",
+		"libunix.h": "c",
+		"interpose-internal.h": "c",
+		"simple-boot.h": "c"
 	}
 }

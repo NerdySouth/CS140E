@@ -15,7 +15,7 @@ void int_init_reg(void* int_vector_reg) {
      * are symbols defined in the interrupt assembly file, at the beginning
      * and end of the table and its embedded constants.
      */
-	printk("In int_init: %x\n", &int_vector_reg);
+	printk("In int_init: %x\n", int_vector_reg);
 	vector_base_set((void*)int_vector_reg);
 }
 

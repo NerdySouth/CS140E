@@ -61,6 +61,10 @@ void simple_boot(int fd, const uint8_t *buf, unsigned n) {
 	ck_eq32(fd, "Check GET_CODE", GET_CODE, op);
 	//get the crc from pi
 	unsigned pi_crc = trace_get32(fd);
+	if (pi_crc == BOOT_ERROR) {
+		output("Received BOOT_ERROR from pi.\n");
+		exit(1);
+	}
 	ck_eq32(fd, "CRC mismatch", crc, pi_crc);
 	// assert(1!=1);
 
@@ -73,6 +77,10 @@ void simple_boot(int fd, const uint8_t *buf, unsigned n) {
 	}
 
     // // 5. Wait for BOOT_SUCCESS
-    ck_eq32(fd, "BOOT_SUCCESS mismatch", BOOT_SUCCESS, get_op(fd));
+	op = get_op(fd);
+	if (op == BOOT_ERROR) {
+		output("Received BOOT_ERROR from  pi.\n");
+		exit(1);
+	}
     output("bootloader: Done.\n");
 }

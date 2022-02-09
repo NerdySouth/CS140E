@@ -94,7 +94,7 @@ void gpio_int_falling_edge(unsigned pin) {
 	//put reg_val back to set enable it for pin n
 	PUT32(reg_addr, reg_val);
 
-	if (!GPIO_ENABLED) 
+	if (!GPIO_INT_GENERAL_ENABLED) 
 		gpio_int_general();
 
 	dev_barrier(); //-> is this needed?

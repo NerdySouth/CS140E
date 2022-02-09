@@ -158,24 +158,21 @@ void rpi_yield(void) {
  * should work even if the runq is empty.
  */
 void rpi_thread_start(void) {
+	scheduler_thread = th_alloc();
+	trace("scheduler thread=%p\n", scheduler_thread);
 
-	// while(1) {
-		// no other runnable thread: return.
-		if(Q_empty(&runq)) {
-			goto end;
-		}
-		//setup scheduler thread
-		scheduler_thread = th_alloc();
-		scheduler_thread->saved_sp = &(scheduler_thread->stack[THREAD_MAXSTACK-(11 - 1)]);
-		trace("scheduler thread=%p\n", scheduler_thread);
+	// no other runnable thread: return.
+	if(Q_empty(&runq)) {
+		goto end;
+	}
 
+	//setup scheduler thread
+	scheduler_thread->saved_sp = &(scheduler_thread->stack[THREAD_MAXSTACK - 10]);
+	
+	cur_thread = Q_pop(&runq);
+	rpi_cswitch(&scheduler_thread->saved_sp, cur_thread->saved_sp);
+	th_free(cur_thread);
 
-		cur_thread = Q_pop(&runq);
-		rpi_cswitch(&scheduler_thread->saved_sp, cur_thread->saved_sp);
-		// cur_thread->fn(cur_thread->arg);
-		// rpi_cswitch(&cur_thread->saved_sp, scheduler_thread->saved_sp);	
-		// th_free(cur_thread);
-	// }
 end:
     trace("done with all threads, returning\n");
 }

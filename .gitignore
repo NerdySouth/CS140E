@@ -1,22 +1,14 @@
 *~
 *.bak
-*.staff
-*-staff
 *.swp
 *.swo
-staff-*.txt
-staff-*.c
 .gdb_history
 .vscode/
 .ccls-cache/
 # Prerequisites
-*.d
 
 # Object files
-*.o
 *.ko
-*.obj
-*.elf
 
 # Linker output
 *.ilk
@@ -29,7 +21,6 @@ staff-*.c
 
 # Libraries
 *.lib
-*.a
 *.la
 *.lo
 
@@ -37,15 +28,12 @@ staff-*.c
 *.dll
 *.so
 *.so.*
-*.dylib
 
 # Executables
 *.exe
-*.out
 *.app
 *.i*86
 *.x86_64
-*.hex
 
 # Debug files
 *.dSYM/

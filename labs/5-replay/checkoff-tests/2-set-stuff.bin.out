@@ -1,0 +1,71 @@
+TRACE:simple_boot: sending 3901 bytes, crc32=69c1a691
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+hello
+about to trace gpio_read(20):
+done: gpio_read(20)=0
+about to trace: <gpio_read(20)>
+done: <gpio_read(20)>
+about to trace: <gpio_set_output(i)>
+TRACE:GET32(0x20200008)=0x0
+TRACE:PUT32(0x20200008)=0x1
+done: <gpio_set_output(i)>
+about to trace: <gpio_set_output(i)>
+TRACE:GET32(0x20200008)=0x1
+TRACE:PUT32(0x20200008)=0x9
+done: <gpio_set_output(i)>
+about to trace: <gpio_set_output(i)>
+TRACE:GET32(0x20200008)=0x9
+TRACE:PUT32(0x20200008)=0x49
+done: <gpio_set_output(i)>
+about to trace: <gpio_set_output(i)>
+TRACE:GET32(0x20200008)=0x49
+TRACE:PUT32(0x20200008)=0x249
+done: <gpio_set_output(i)>
+about to trace: <gpio_set_output(i)>
+TRACE:GET32(0x20200008)=0x249
+TRACE:PUT32(0x20200008)=0x1249
+done: <gpio_set_output(i)>
+about to trace: <gpio_set_output(i)>
+TRACE:GET32(0x20200008)=0x1249
+TRACE:PUT32(0x20200008)=0x9249
+done: <gpio_set_output(i)>
+about to trace: <gpio_set_output(i)>
+TRACE:GET32(0x20200008)=0x9249
+TRACE:PUT32(0x20200008)=0x49249
+done: <gpio_set_output(i)>
+about to trace: <gpio_set_input(i)>
+TRACE:GET32(0x20200008)=0x49249
+TRACE:PUT32(0x20200008)=0x49248
+done: <gpio_set_input(i)>
+about to trace: <gpio_set_input(i)>
+TRACE:GET32(0x20200008)=0x49248
+TRACE:PUT32(0x20200008)=0x49240
+done: <gpio_set_input(i)>
+about to trace: <gpio_set_input(i)>
+TRACE:GET32(0x20200008)=0x49240
+TRACE:PUT32(0x20200008)=0x49200
+done: <gpio_set_input(i)>
+about to trace: <gpio_set_input(i)>
+TRACE:GET32(0x20200008)=0x49200
+TRACE:PUT32(0x20200008)=0x49000
+done: <gpio_set_input(i)>
+about to trace: <gpio_set_input(i)>
+TRACE:GET32(0x20200008)=0x49000
+TRACE:PUT32(0x20200008)=0x48000
+done: <gpio_set_input(i)>
+about to trace: <gpio_set_input(i)>
+TRACE:GET32(0x20200008)=0x48000
+TRACE:PUT32(0x20200008)=0x40000
+done: <gpio_set_input(i)>
+about to trace: <gpio_set_input(i)>
+TRACE:GET32(0x20200008)=0x40000
+TRACE:PUT32(0x20200008)=0x0
+done: <gpio_set_input(i)>
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

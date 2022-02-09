@@ -101,8 +101,8 @@ static void test3_full_test(unsigned t) {
 void notmain() {
     uart_init();
 	
-	extern unsigned _interrupt_table;
-    int_init_reg(&_interrupt_table);
+	extern unsigned _fast_interrupt_table;
+    int_init_reg(&_fast_interrupt_table);
 
     output("going to test rising and falling edges:\n");
     output("\tmake sure to loop back (attach a jumper to) pins 20 & 21\n");

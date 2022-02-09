@@ -1,0 +1,12 @@
+TRACE:simple_boot: sending 3585 bytes, crc32=7859abc4
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+about to trace gpio_read(20):
+done: gpio_read(20)=0
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

@@ -58,6 +58,18 @@ fast_interrupt_asm:
   pop   {r0-r12}
   ldm   sp!, {pc}^
 
+
+.align 5
+.globl _fast_interrupt_table
+_fast_interrupt_table:
+  b _reset_asm
+  b _undefined_instruction_asm
+  b _software_interrupt_asm
+  b _prefetch_abort_asm
+  b _data_abort_asm
+  b _reset_asm
+  b _interrupt_asm
+
 _reset_asm:                   .word reset_asm
 _undefined_instruction_asm:   .word undefined_instruction_asm
 _software_interrupt_asm:      .word software_interrupt_asm

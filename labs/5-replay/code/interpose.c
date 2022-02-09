@@ -17,7 +17,9 @@ static int exec_server(char **argv) {
 	pid = fork();
 	if (!pid) {
 		//child process: my-install
-		execvp(&argv[0], argv);
+		//close all  file  descriptors beyond 2
+		
+		execvp(argv[0], argv);
 	} 
 	//parent process: interpose
     return pid;
@@ -31,12 +33,17 @@ static int get_exitcode_noblk(pid_t pid) {
 	int status = 0;
 	//wait without blocking
 	int ret = waitpid(pid, &status, WNOHANG);
+	if (WCOREDUMP(status)) { trace_err("process: %d core dumped.\n", pid); }
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
 		//child died from  a coreduump (seg fault/SIGSEGV)
+		//died from sigsevg, no core dump though
 		trace_err("process: %d died from sigsev.\n", pid);
 	}
 	//if ret == 0 child has not exited, otherwise return exit status
-	(!ret) ? -1 : WIFEXITEDSTATUS(status);
+	if (!ret) {
+		return -1;
+	}
+	return WEXITSTATUS(status);
 }
 
 // called to check if the unix side exited cleanly with exit(0)
@@ -90,7 +97,46 @@ static int forward_u8(endpt_t *from, endpt_t *to) {
 //   - give an error (using trace_err) if its non-zero.
 //     if it's from a crash rather than an exit, indicate that too.
 static int trace_ok_fn(endpt_t *u, endpt_t *p, unsigned timeout_sec) {
-    unimplemented();
+	int exit_code = get_exitcode_noblk(u->pid);
+	//read the bytes from unix
+	while (exit_code == -1) {
+		//unix side has not exited
+
+		//get time before forward to pi
+		clock_t start_clock = clock();
+
+		//forward from unix to pi
+		forward_u8(u, p);
+
+		//get clock after andd check time elapsed
+		clock_t diff = clock() - start_clock;
+		unsigned elapsed_sec = ((unsigned)diff) / CLOCKS_PER_SEC;
+
+		if (elapsed_sec > timeout_sec) {
+			return 0;
+		}
+
+		//mirror above from pi to unix
+		start_clock = clock();
+
+		//forward from pi to unix
+		forward_u8(p, u);
+
+		diff = clock() - start_clock;
+		elapsed_sec = ((unsigned)diff) / CLOCKS_PER_SEC;
+
+		if (elapsed_sec > timeout_sec) {
+			return 0;
+		}
+
+		exit_code = get_exitcode_noblk(u->pid);
+	}
+
+	if (exit_ok(u->pid)) {
+		return 1;
+	}
+	trace_err("Unix did not exit cleanly.\n");
+	return 0;
 }
 
 
@@ -118,7 +164,17 @@ int clean_run(char *install, char *dev_name, char *pi_prog) {
 // data: at that point, do not send any more data to the pi: make
 // sure the unix side exits with exit(1).
 static int timeout_run_fn(endpt_t *u, endpt_t *p, unsigned timeout_nbyte) {
-    unimplemented();
+	//send timeout_nbytes of data to pi
+	for (unsigned i = 0; i <= timeout_nbyte; i++) {
+		forward_u8(u, p);
+		forward_u8(p, u);
+	}
+
+	//make sure  unix side exits with  exit(1)
+	if (get_exitcode_noblk(u->pid) != 1) {
+		return 1;
+	}
+	return 0;
 }
 
 // timeout sending from unix to pi.

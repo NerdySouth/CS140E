@@ -117,6 +117,7 @@ static int uart_can_getc(void) {
 // blocks until there is one.
 int uart_getc(void) {
 	dev_barrier();
+	
 	while (!uart_can_getc()) {
 		;
 	}
