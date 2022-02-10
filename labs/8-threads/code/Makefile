@@ -25,6 +25,7 @@ TEST_SRC += $(wildcard ./4*.c)
 TEST_SRC += $(wildcard ./5*.c)
 TEST_SRC += $(wildcard ./6*.c)
 TEST_SRC += $(wildcard ./7*.c)
+TEST_SRC += $(wildcard ./8*.c)
 
 # to run all the tests.
 # TEST_SRC := $(wildcard ./[0-9]*.c)

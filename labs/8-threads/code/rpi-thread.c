@@ -91,6 +91,7 @@ rpi_thread_t *rpi_fork(void (*code)(void *arg), void *arg) {
 	thread->arg = arg;
 	thread->stack[THREAD_MAXSTACK - 10 + R4_OFFSET] = (unsigned)code;
 	thread->stack[THREAD_MAXSTACK - 10 + R5_OFFSET] = (unsigned)arg;
+	thread->waiters = NULL;
     /*
      * must do the "brain surgery" (k.thompson) to set up the stack
      * so that when we context switch into it, the code will be
@@ -117,8 +118,12 @@ rpi_thread_t *rpi_fork(void (*code)(void *arg), void *arg) {
 //   - otherwise context switch to the new thread.
 //     make sure to set cur_thread correctly!
 void rpi_exit(int exitcode) {
-
-	if (!Q_empty(&runq)) {
+	//first check if exiting thread had a waiter thread.
+	if (cur_thread->waiters) {
+		rpi_thread_t  *old_t = cur_thread;
+		cur_thread = old_t->waiters;
+		rpi_cswitch(&old_t->saved_sp, cur_thread->saved_sp);
+	} else if (!Q_empty(&runq)) {
 		rpi_thread_t *old_t = cur_thread;
 		cur_thread = Q_pop(&runq);
 		rpi_cswitch(&old_t->saved_sp, cur_thread->saved_sp);
@@ -171,7 +176,7 @@ void rpi_thread_start(void) {
 	
 	cur_thread = Q_pop(&runq);
 	rpi_cswitch(&scheduler_thread->saved_sp, cur_thread->saved_sp);
-	th_free(cur_thread);
+	// th_free(cur_thread);
 
 end:
     trace("done with all threads, returning\n");
@@ -204,12 +209,22 @@ void rpi_print_regs(uint32_t *sp) {
 //
 // add the current thread to a list in the thread.
 void rpi_wait(rpi_thread_t *th) {
-    unimplemented();
+	// add cur_thread to waiters list of <th>
+	th->waiters = cur_thread;
+	//set cur_thread to be thread we are about to context switch to
+	cur_thread = th;
+	//context switch to new cur_thread
+	rpi_cswitch(&(th->waiters->saved_sp), cur_thread->saved_sp);
+	// -> when rpi_exit() is called in new cur_thread, we will first check if it has any waiters
 }
 
 // put the current thread on a blocked queue: resume in 
 // exactly // <usec> micro-seconds.  not before, not after.
 // should give low-error resumption times.
 void rpi_exact_sleep(uint32_t usec) {
-    unimplemented();
+	//just block caller thread with rpi_wait for a thread on a delay func
+	//setup  delay thread
+	int *delay_arg = kmalloc(sizeof *delay_arg);
+	*delay_arg = usec;
+	rpi_thread_t *delay_thread = rpi_fork((void *)delay_us, delay_arg);
 }
