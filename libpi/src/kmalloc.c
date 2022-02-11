@@ -109,7 +109,10 @@ void *kmalloc_aligned(unsigned nbytes, unsigned alignment) {
  * of the heap to <addr>
  */
 void kmalloc_init_set_start(unsigned _addr, unsigned max_nbytes) {
-    demand(!init_p, already initialized);
+    if (init_p) {
+		//already initialized
+		return;
+	}
     init_p = 1;
 	heap_set_size = max_nbytes;
 	//set up heap pointer

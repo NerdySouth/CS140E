@@ -10,6 +10,11 @@
 		"simple-boot.h": "c",
 		"asm-helpers.h": "c",
 		"helper-macros.h": "c",
-		"bit-support.h": "c"
+		"bit-support.h": "c",
+		"atomic": "c",
+		"condition_variable": "c",
+		"io_context": "c",
+		"timer": "c",
+		"future": "c"
 	}
 }
