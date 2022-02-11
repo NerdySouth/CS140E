@@ -218,13 +218,33 @@ void rpi_wait(rpi_thread_t *th) {
 	// -> when rpi_exit() is called in new cur_thread, we will first check if it has any waiters
 }
 
+static void inline rpi_thread_delay_us(void *arg) {
+	trace("In thread delay...\n");
+	delay_us(*(unsigned *)arg);
+}
+
 // put the current thread on a blocked queue: resume in 
 // exactly // <usec> micro-seconds.  not before, not after.
 // should give low-error resumption times.
 void rpi_exact_sleep(uint32_t usec) {
-	//just block caller thread with rpi_wait for a thread on a delay func
-	//setup  delay thread
-	int *delay_arg = kmalloc(sizeof *delay_arg);
-	*delay_arg = usec;
-	rpi_thread_t *delay_thread = rpi_fork((void *)delay_us, delay_arg);
+	trace("In thread sleep...\n");
+	rpi_thread_t *delay_thread = th_alloc();
+	void *delay_arg = kmalloc(sizeof *delay_arg);
+	*(unsigned *)delay_arg = usec;
+	printk("%d\n", *(unsigned *)delay_arg);
+    // write this so that it calls code,arg.
+    void rpi_init_trampoline(void);
+	delay_thread->stack[THREAD_MAXSTACK - 10 + LR_OFFSET] = (unsigned)&rpi_init_trampoline;
+	delay_thread->fn = rpi_thread_delay_us;
+	delay_thread->arg = delay_arg;
+	delay_thread->stack[THREAD_MAXSTACK - 10 + R4_OFFSET] = (unsigned)delay_us;
+	delay_thread->stack[THREAD_MAXSTACK - 10 + R5_OFFSET] = (unsigned)usec;
+	delay_thread->waiters = NULL;
+	trace("Thread:\nfn: %x, arg: %d\n", &(delay_thread->fn), *(unsigned *)delay_thread->arg);
+	/* wait on delay_thread, once delay_thread calls rpi_exit
+	 * we know that it context switched back into the waiter thread (caller of this)
+	 * so we just return after waiting to get immediate resumption of our caller
+	 * thread.
+	 */
+	rpi_wait(delay_thread);
 }

@@ -71,7 +71,7 @@ void notmain(void) {
 
 
 	//set breakpoint with bvr
-	cp14_bvr0_set((unsigned)&foo);
+	cp14_bvr0_set((unsigned)foo);
 	//reenable breakpoints
    	cp14_bcr0_enable();
 

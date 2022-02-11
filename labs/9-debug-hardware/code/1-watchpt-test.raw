@@ -1,6 +1,6 @@
 opened tty port </dev/cu.SLAB_USBtoUART>.
 my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./1-watchpt-test.bin> about to boot
-TRACE:simple_boot: sending 7412 bytes, crc32=5cd6703a
+TRACE:simple_boot: sending 7412 bytes, crc32=ea13d33d
 waiting for a start
 unix-side implementation
 putting code

@@ -46,9 +46,9 @@ typedef struct rpi_thread {
     void (*fn)(void *arg);
     void *arg;          // this can serve as private data.
     
-    const char *annot;
-    // threads waiting on the current one to exit.
-    // struct rpi_thread *waiters;
+    // const char *annot;
+    // threads waiting on the current one to exit. NULL by default so we can check if waiter exists
+    struct rpi_thread *waiters;
 
 	uint32_t stack[THREAD_MAXSTACK];
 } rpi_thread_t;
@@ -78,6 +78,11 @@ void rpi_exit(int exitcode);
 
 // yield the current thread.
 void rpi_yield(void);
+
+//block calling thread until <th> exits
+void rpi_wait(rpi_thread_t *th);
+
+void rpi_exact_sleep(uint32_t usec);
 
 
 /***************************************************************

@@ -66,7 +66,13 @@ mbox_write(unsigned channel, volatile void *data) {
     dev_barrier();
 
     // 2. if mbox status is full, wait.
-    unimplemented();
+	unsigned wait = 0;
+	do {
+		unsigned mbox_status = GET32(MBOX_STATUS);
+		wait = (mbox_status & MAILBOX_FULL) ? 1 : 0;
+	} while (wait);
+	
+
 
     // 3. write out the data along with the channel
 	PUT32(MBOX_WRITE, uncached(data) | channel);
