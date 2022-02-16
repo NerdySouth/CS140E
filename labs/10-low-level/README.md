@@ -37,6 +37,10 @@ We have a simple explanation in [mailbox](code-mbox/README.md).
 You should fill in the missing code in `code-mbox/mbox.h`) so that you
 can see how they work and use them to get the memory size of the pi.
 
+
+Note: the serial number should be different across all pi's.  For the pi zero, I was
+getting 0 for the model number.
+
 Copy this header to `libpi/src`.
 
 #### 3. Increase your pi memory to 496MB
@@ -56,3 +60,25 @@ Implement this and show it works!  (We'll push some code in a bit).
 There is a trivial program in `code-backtrace` to test (weakly) test it.
 It manually prints the call stack --- when you print the backtrace it
 should match this (different formatting is ok).
+
+### Extension: use the exception debugging information to do backtraces
+
+We use the simple, standard way to do backtraces.  However, if you
+look at the code, it adds a reasonable amount of overhead in terms of
+additional instructions (especially loads and stores).  It's possible
+to instead use the exception tables that C++ will generate to handle 
+exceptions.  To do this you need to (1) get them emitted and (2) figure
+out their format.  There's a bunch of different blog posts on doing this
+but I didn't track down the details, so would be very interested!
+
+### Extension: exception backtraces + gprof
+
+If we get a weird exception, we'd like to print out where it the original
+code it came from (besides just the exception pc) --- the issue here is
+that you need to get the original frame pointer so we can walk backwards.
+This shouldn't require too much work, but is useful.
+
+Once you have this working, it's good to go back and add it to `gprof`
+so that the profiling it gives is a bit more useful.   You'd just go
+back the call stack two or three deep.  Note: that `libpi` currently
+does not use the flags we need so let me know when you get here.
