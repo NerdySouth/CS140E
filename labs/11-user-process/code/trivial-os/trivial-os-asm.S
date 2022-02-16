@@ -145,4 +145,33 @@ MK_FN(user_mode_run_fn)
     @ flush the state  (see rpi-asm.h)
     @
     @ for later, you should clear all the registers.
-    asm_not_implemented()
+	
+	@change to user mode
+	cps #16
+
+	@ clear cpsr bits
+	mrs r2, cpsr 				@ move the cpsr value to r2 (r0 has code address) gen purpose register
+	bic r2, r2, #0xffffffe0 	@ clear all cpsr bits except mode
+	msr cpsr_cxsf, r2			@ write back all fields to cpsr
+
+	@clear all registers besides sp (r13) and two argmuents to this func (in r0, r1) 
+	mov r2, #0
+	mov r3, #0 
+	mov r4, #0 
+	mov r5, #0 
+	mov r6, #0 
+	mov r7, #0 
+	mov r8, #0 
+	mov r9, #0 
+	mov r10, #0 
+	mov r11, #0 
+	mov r12, #0 
+	mov r14, #0 
+
+	@ setup sp to point to right place (addr found in r1)
+	mov r13, r1
+	mov r1, #0
+
+	@branch to user code (first arg; r0)
+	blx r0
+

@@ -35,6 +35,17 @@ uint64_t rpi_get_serialnum(void) {
     return (uint64_t)u[5] << 32 | u[6];
 }
 
+/* Get ARM memory
+
+ * 		Tag: 0x00010005
+ *		Request:
+ * 		Length: 0
+ * 		Response:
+ * 		Length: 8
+ * 		Value:
+ * 		u32: base address in bytes
+ * 		u32: size in bytes
+ */
 uint32_t rpi_get_memsize(void) {
     static volatile unsigned *u = 0;
 
@@ -42,7 +53,15 @@ uint32_t rpi_get_memsize(void) {
         u = kmalloc_aligned(8*4,16);
     memset((void*)u, 0, 8*4);
 
-    unimplemented();
+	u[0] = 8*4;   // total size in bytes.
+    u[1] = 0;   // always 0 when sending.
+    // serial tag
+    u[2] = 0x00010005;
+    u[3] = 8;   // response size size
+    u[4] = 0;   // request size
+    u[5] = 0;   // space for first 4bytes of response
+    u[6] = 0;   // space for second  4 bytes
+    u[7] = 0;   // end tag
 
 
     mbox_send(MBOX_CH, u);
@@ -51,8 +70,7 @@ uint32_t rpi_get_memsize(void) {
 }
 
 
-uint32_t rpi_clock_maxhz_get(uint32_t clock) {
-    /*
+ /*
         Get max clock rate
         Tag: 0x00030004
         Request:
@@ -65,6 +83,8 @@ uint32_t rpi_clock_maxhz_get(uint32_t clock) {
         u32: clock id
         u32: rate (in Hz)
      */
+uint32_t rpi_clock_maxhz_get(uint32_t clock) {
+   
     static volatile unsigned *u = 0;
 
     if(!u)
@@ -85,8 +105,7 @@ uint32_t rpi_clock_maxhz_get(uint32_t clock) {
     return u[6];
 }
 
-uint32_t rpi_clock_hz_set(uint32_t clock, uint32_t hz) {
-    /*
+/*
     Tag: 0x00038002
     Request:
     Length: 12
@@ -99,7 +118,9 @@ uint32_t rpi_clock_hz_set(uint32_t clock, uint32_t hz) {
     Value:
     u32: clock id
     u32: rate (in Hz)
-    */
+*/
+uint32_t rpi_clock_hz_set(uint32_t clock, uint32_t hz) {
+
     static volatile unsigned *u = 0;
 
     if(!u)
@@ -112,15 +133,35 @@ uint32_t rpi_clock_hz_set(uint32_t clock, uint32_t hz) {
     return u[6];
 }
 
-// measure clock rate
+/*
+	Get cpu clock rate
+	Tag: 0x00030002
+	Request:
+		Length: 4
+		Value:
+			u32: clock id
+	Response:
+		Length: 8
+		Value:
+			u32: clock id
+			u32: clock rate (in Hz)
+*/
 uint32_t rpi_clock_curhz_get(uint32_t clock) {
-    static volatile unsigned *u = 0;
+	static volatile unsigned *u = 0;
 
     if(!u)
         u = kmalloc_aligned(8*4,16);
     memset((void*)u, 0, 8*4);
 
-    unimplemented();
+	u[0] = 8*4;   // total size in bytes.
+    u[1] = 0;   // always 0 when sending.
+    // serial tag
+    u[2] = 0x00030004;
+    u[3] = 8;   // response size size
+    u[4] = 4;   // request size
+    u[5] = clock;   // clock  id from request
+    u[6] = 0;   // clock rate in response
+    u[7] = 0;   // end tag
 
     mbox_send(MBOX_CH, u);
     return u[6];
@@ -143,12 +184,30 @@ uint32_t rpi_get_model(void) {
         u = kmalloc_aligned(7*4,16);
     memset((void*)u, 0, 7*4);
 
-    unimplemented();
+	u[0] = 8*4;   // total size in bytes.
+    u[1] = 0;   // always 0 when sending.
+    // serial tag
+    u[2] = 0x00010001;
+    u[3] = 4;   // response size size
+    u[4] = 0;   // request size
+    u[5] = 0;   // first 4 bytes of  resp
+    u[6] = 0;   // bottom 4 bytes of resp 0 out
+    u[7] = 0;   // end tag
 
     mbox_send(MBOX_CH, u);
     return u[5];
 }
 
+/*
+Get board revision
+Tag: 0x00010002
+Request:
+Length: 0
+Response:
+Length: 4
+Value:
+u32: board model
+*/
 uint32_t rpi_get_revision(void) {
     static volatile unsigned *u = 0;
 
@@ -156,8 +215,47 @@ uint32_t rpi_get_revision(void) {
         u = kmalloc_aligned(7*4,16);
     memset((void*)u, 0, 7*4);
 
-    unimplemented();
+	u[0] = 8*4;   // total size in bytes.
+    u[1] = 0;   // always 0 when sending.
+    // serial tag
+    u[2] = 0x00010002;
+    u[3] = 4;   // response size size
+    u[4] = 0;   // request size
+    u[5] = 0;   // first 4 bytes of  resp
+    u[6] = 0;   // bottom 4 bytes of resp 0 out
+    u[7] = 0;   // end tag
 
     mbox_send(MBOX_CH, u);
     return u[5];
+}
+
+/*
+Get board mac addr
+Tag: 0x00010003
+Request:
+Length: 0
+Response:
+Length: 6
+Value:
+u32: board mac address in network byte order
+*/
+uint32_t rpi_get_mac_addr(void) {
+    static volatile unsigned *u = 0;
+
+    if(!u)
+        u = kmalloc_aligned(7*4,16);
+    memset((void*)u, 0, 7*4);
+
+	u[0] = 8*4;   // total size in bytes.
+    u[1] = 0;   // always 0 when sending.
+    // serial tag
+    u[2] = 0x00010003;
+    u[3] = 6;   // response size size
+    u[4] = 0;   // request size
+    u[5] = 0;   // first 4 bytes of  resp
+    u[6] = 0;   // bottom 4 bytes of resp 0 out
+    u[7] = 0;   // end tag
+
+    mbox_send(MBOX_CH, u);
+    return (uint32_t)u[5];
 }

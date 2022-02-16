@@ -1,4 +1,4 @@
-# SUPPORT_OBJS := debug-fault.o
+SUPPORT_OBJS := debug-fault.o
 
 # comment this out to use your code
 USE_STAFF=1
@@ -17,9 +17,15 @@ BOOTLOADER = my-install
 # RUN=1
 
 # part 1
+TEST_SRC := 1-brkpt-test.c    
+TEST_SRC := $(wildcard ./*-test*.c) $(wildcard ./*-example*.c)
+TEST_SRC := $(wildcard ./3-*.c)
+# SUPPORT_OBJS += debug-fault.o
+# TEST_SRC := $(wildcard ./7*.c)
+TEST_SRC := $(wildcard ./0-*.c)
 TEST_SRC := $(wildcard ./1-*.c)
-TEST_SRC := $(wildcard ./2-*.c)
-TEST_SRC := $(wildcard ./[012]-*.c)
+TEST_SRC := $(wildcard ./[0123]-*.c)
+# TEST_SRC := $(wildcard ./3-*.c)
 
 # to run all the tests.
 # TEST_SRC := $(wildcard ./[0-9]*.c)
@@ -33,7 +39,7 @@ GREP_STR := 'TRACE:\|THREAD:\|ERROR:\|PANIC:'
 include $(CS140E_2022_PATH)/libpi/mk/Makefile.template
 
 # override the default rules.  should have a cleaner solution
-1-brkpt-test.elf:  1-brkpt-test.o $(DEPS) $(START) $(LIBS)
+2-brkpt-test.elf:  2-brkpt-test.o $(DEPS) $(START) $(LIBS)
 	$(LD) $(START)  $< -T $(MEMMAP) -o $@  $(LIBS)
 1-watchpt-test.elf:  1-watchpt-test.o $(DEPS) $(START) $(LIBS)
 	$(LD) $(START)  $< -T $(MEMMAP) -o $@  $(LIBS)

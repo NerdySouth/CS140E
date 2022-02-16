@@ -15,6 +15,7 @@
 		"condition_variable": "c",
 		"io_context": "c",
 		"timer": "c",
-		"future": "c"
+		"future": "c",
+		"pitag.h": "c"
 	}
 }

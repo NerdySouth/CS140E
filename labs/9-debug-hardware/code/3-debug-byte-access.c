@@ -40,7 +40,7 @@ static void test_bad_addr(int i) {
     trace("should see a store fault!\n");
     PUT8(bad_addr,0);
 
-    if(!store_fault_n)
+    if(store_fault_n != i + 1)
         panic("did not see a store fault\n");
 
     assert(!watchpt_is_enabled0());

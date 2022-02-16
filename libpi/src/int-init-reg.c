@@ -21,23 +21,3 @@ void int_init_reg(void* int_vector_reg) {
 
 #define UNHANDLED(msg,r) \
 	panic("ERROR: unhandled exception <%s> at PC=%x\n", msg,r)
-void fast_interrupt_vector(unsigned pc) {
-	UNHANDLED("fast", pc);
-}
-
-// this is used for syscalls.
-void software_interrupt_vector(unsigned pc) {
-	UNHANDLED("soft interrupt", pc);
-}
-void reset_vector(unsigned pc) {
-	UNHANDLED("reset vector", pc);
-}
-void undefined_instruction_vector(unsigned pc) {
-	UNHANDLED("undefined instruction", pc);
-}
-void prefetch_abort_vector(unsigned pc) {
-	UNHANDLED("prefetch abort", pc);
-}
-void data_abort_vector(unsigned pc) {
-	UNHANDLED("data abort", pc);
-}

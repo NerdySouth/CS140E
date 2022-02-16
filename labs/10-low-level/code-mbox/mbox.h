@@ -21,6 +21,24 @@
 
 #include "rpi.h"
 
+enum {
+	RESERVED_CLOCK = 0x000000000,
+	EMMC_CLOCK = 0x000000001,
+	UART_CLOCK = 0x000000002,
+	ARM_CLOCK = 0x000000003,
+	CORE_CLOCK = 0x000000004,
+	V3D_CLOCK = 0x000000005,
+	H264_CLOCK = 0x000000006,
+	ISP_CLOCK = 0x000000007,
+	SDRAM_CLOCK = 0x000000008,
+	PIXEL_CLOCK = 0x000000009,
+	PWM_CLOCK = 0x00000000a,
+	HEVC_CLOCK = 0x00000000b,
+	EMMC2_CLOCK = 0x00000000c,
+	M2MC_CLOCK = 0x00000000d,
+	PIXEL_BVB_CLOCK = 0x00000000e
+};
+ 
 enum { OneMB = 1024 * 1024 };
 
 /***********************************************************************
@@ -72,7 +90,8 @@ mbox_write(unsigned channel, volatile void *data) {
 		wait = (mbox_status & MAILBOX_FULL) ? 1 : 0;
 	} while (wait);
 	
-
+	//left shift the data so it is 28 bits, so when we OR in channel it fits
+	*(unsigned*)data <<= 4;
 
     // 3. write out the data along with the channel
 	PUT32(MBOX_WRITE, uncached(data) | channel);
@@ -89,11 +108,19 @@ mbox_read(unsigned channel) {
     dev_barrier();
 
     // 2. while mailbox is empty, wait.
-    unimplemented();
+	unsigned wait = 0;
+	 do {
+		unsigned mbox_status = GET32(MBOX_STATUS);
+		wait = (mbox_status & MAILBOX_EMPTY) ? 1 : 0;
+	} while (wait);
 
     // 3. read from mailbox and check that the channel is set.
     uint32_t v = 0;
-    unimplemented();
+	v = GET32(MBOX_READ);
+	// unsigned read_channel  = v & channel;
+	// if (read_channel != channel)
+	// 	goto start;
+
 
     // 4. verify that the reply is for <channel>
     if((v & 0xf) != channel)
@@ -121,5 +148,7 @@ uint32_t rpi_clock_hz_set(uint32_t clock, uint32_t hz);
 uint32_t rpi_clock_maxhz_get(uint32_t clock);
 uint32_t rpi_get_memsize(void);
 uint64_t rpi_get_serialnum(void);
+
+uint32_t rpi_get_mac_addr(void);
 
 #endif

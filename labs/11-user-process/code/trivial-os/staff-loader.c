@@ -30,6 +30,7 @@ void custom_loader(void) {
     lout("link addr =%x\n", b_addr);
 
     // asking for trouble.
+	// printk("b_addr: %x", b_addr);
     assert(b_addr == 0x400000);
 
     char *p = (char *)&bin[4] + bin[2];

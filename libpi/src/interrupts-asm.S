@@ -45,7 +45,7 @@ _interrupt_table:
   ldr pc, _reset_asm
   ldr pc, _undefined_instruction_asm
   ldr pc, _software_interrupt_asm
-  ldr pc, _prefetch_abort_asm
+  ldr pc, prefetch_abort_asm
   ldr pc, data_abort_asm
   ldr pc, _reset_asm
   ldr pc, _interrupt_asm

@@ -17,10 +17,14 @@
 coproc_mk(dscr, p14, 0, c0, c1, 0);
 coproc_mk_get(dfsr, p15, 0, c5, c0, 0);
 coproc_mk_get(wfar, p14, 0, c0, c6, 0);
+//watchpoint set
 coproc_mk(wvr0, p14, 0, c0, c0, 0b110);
+//watchpoint get
 coproc_mk(wcr0, p14, 0, c0, c0, 0b111);
 coproc_mk(ifsr, p15, 0, c5, c0, 1);
+//brkpt get
 coproc_mk(bcr0, p14, 0, c0, c0, 0b101);
+//brkpt set
 coproc_mk(bvr0, p14, 0, c0, c0, 0b100);
 coproc_mk(ifar, p15, 0, c6, c0, 2);
 
@@ -219,7 +223,6 @@ static inline void cp14_wcr0_disable(void) {
 // Get watchpoint fault using WFAR
 static inline uint32_t watchpt_fault_pc(void) {
 	unsigned wfar_val = cp14_wfar_get();
-	printk("%x\n", wfar_val);
 	return wfar_val- 0x8;
 }
     

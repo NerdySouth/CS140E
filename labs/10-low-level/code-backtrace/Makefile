@@ -6,7 +6,7 @@ TTYUSB =
 BOOTLOADER = my-install
 
 # uncomment if you want it to automatically run.
-RUN=1
+# RUN=1
 
 
 GREP_STR := 'TRACE:\|THREAD:\|ERROR:\|PANIC:' 
