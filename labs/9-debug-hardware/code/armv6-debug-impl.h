@@ -27,6 +27,8 @@ coproc_mk(bcr0, p14, 0, c0, c0, 0b101);
 //brkpt set
 coproc_mk(bvr0, p14, 0, c0, c0, 0b100);
 coproc_mk(ifar, p15, 0, c6, c0, 2);
+coproc_mk(far, p15, 0, c6, c0, 0);
+
 
 
 
@@ -202,7 +204,7 @@ static inline void cp14_wcr0_enable(void) {
 	wcr0_val = bits_set(wcr0_val, 3, 4, 0b11);
 
 	//set byte address select, pg. 13-22
-	wcr0_val = bits_set(wcr0_val,  5, 8, 0b0001);
+	wcr0_val = bits_set(wcr0_val,  5, 8, 0b1111);
 
 	//set watchpoint to match in secure and non-secure world (0b00)
 	wcr0_val = bits_clr(wcr0_val, 14, 15);

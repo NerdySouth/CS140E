@@ -16,6 +16,16 @@
 		"io_context": "c",
 		"timer": "c",
 		"future": "c",
-		"pitag.h": "c"
+		"pitag.h": "c",
+		"trivial-os.h": "c",
+		"fast-hash32.h": "c",
+		"bit": "c",
+		"deque": "c",
+		"forward_list": "c",
+		"list": "c",
+		"*.tcc": "c",
+		"string": "c",
+		"unordered_map": "c",
+		"vector": "c"
 	}
 }

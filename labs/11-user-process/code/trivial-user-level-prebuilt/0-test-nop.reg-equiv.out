@@ -1,0 +1,30 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./0-test-nop.ptag> about to boot
+TRACE:simple_boot: sending 10938 bytes, crc32=47845189
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+kernel: stack is roughly at: 0x7ffffe8
+user_code=0x400004, prog name=<0-test-nop.bin>
+TRACE:inst 0 = pc=0x400004, pc_hash=0xa3d1fb72
+TRACE:inst 1 = pc=0x400010, pc_hash=0xb5f459d5
+TRACE:inst 2 = pc=0x400008, pc_hash=0x44a6b13a
+TRACE:inst 3 = pc=0x40000c, pc_hash=0x48be2e85
+TRACE:inst 4 = pc=0x400014, pc_hash=0x7fb1242d
+TRACE:inst 5 = pc=0x400018, pc_hash=0x4c6c9ecb
+TRACE:inst 6 = pc=0x40001c, pc_hash=0x2900fa70
+TRACE:inst 7 = pc=0x400020, pc_hash=0xca1ba4db
+TRACE:inst 8 = pc=0x4000e4, pc_hash=0x7c98abf1
+TRACE:inst 9 = pc=0x4000e8, pc_hash=0xafd42265
+0-test-nop.bin: sys_exit(-1): going to reboot
+part=3
+equiv values
+TRACE:EQUIV:	number instructions = 10
+TRACE:EQUIV:	pc hash = 0xafd42265
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

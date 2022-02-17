@@ -1,13 +1,13 @@
 #include "rpi.h"
 
 
-
-
+#define MYTEST 1
 void a(void);
 void notmain(void) {
     a();
 }
 
+#ifndef MYTEST 
 static unsigned depth;
 static void indent(unsigned n) {
     n *= 3;
@@ -24,11 +24,27 @@ static void pop(const char *msg) {
 }
 
 
-#define MK_STR(w) #w
+void backtrace() {
+
+}
 
 #define gen_fn(x,y)                                             \
     void y (void);                                              \
     void x (void) { push(MK_STR(y)); y(); pop(MK_STR(y)); }
+#endif
+
+#ifdef MYTEST
+#include  "backtrace.h"
+
+#define gen_fn(x,y)                                             \
+    void y (void);                                              \
+    void x (void) {  y(); }
+#endif
+
+
+#define MK_STR(w) #w
+
+
 
 void f(void);
 
@@ -37,9 +53,8 @@ gen_fn(b,c)
 gen_fn(c,d)
 gen_fn(d,f)
 
-void backtrace(void) {}
 void f(void) { 
     indent(depth); 
     debug("done\n"); 
-    backtrace();
+	backtrace();
 }

@@ -17,6 +17,7 @@ static equiv_ctx_t cur_ctx;
 
 // should we start tracing yet?
 static int in_user = 0;
+static uint32_t num_printed = 0;
 
 // figure out when we actually jumped to user code.
 static int user_pc(uint32_t pc) {
@@ -26,12 +27,24 @@ static int user_pc(uint32_t pc) {
 
 // if get a breakpoint call <brkpt_handler0>
 void prefetch_abort_equiv_pc(unsigned pc) {
-    unimplemented();
+    //debug("setting up a mismatch on %p\n", pc);
+    brkpt_mismatch_set(pc);
 
     // if you are in user code, hash the pc.
     // 
-    // if(in_user) {
-    //    c->pc_hash = fast_hash_inc(&pc, sizeof pc, hash);
+    if(user_pc(pc)) {
+		uint32_t  hash = cur_ctx.pc_hash;
+    	cur_ctx.pc_hash = fast_hash_inc32(&pc, sizeof pc, hash);
+
+		if (num_printed  < cur_ctx.print_first_n) {
+			trace("inst %d = pc=%x, pc_hash=%x\n", cur_ctx.n_inst, pc, cur_ctx.pc_hash);
+			num_printed++;
+		}
+		//debug("done setting up a mismatch on %p\n", pc);
+    	cur_ctx.n_inst++;
+	}
+
+    
 }
 
 // if get a breakpoint call <brkpt_handler0>

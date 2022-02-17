@@ -50,7 +50,7 @@ void watchpt_set0(uint32_t addr, wfault_handler_t h);
 // inline the rest for speed
 
 static inline uint32_t watchpt_fault_addr() 
-	{ return cp14_wvr0_get(); }
+	{ return cp15_far_get(); }
 // is watchpoint 0 enabled?
 static inline int watchpt_is_enabled0(void) 
     { return cp14_wcr0_is_enabled(); }

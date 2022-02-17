@@ -94,7 +94,8 @@ part2_single_step_vec:
 
 @ setup and call prefetch_abort_equiv_pc (look at the single step)
 prefetch_handler_equiv_pc:
-    asm_not_implemented()
+    sub lr, lr, #4
+	TRAMPOLINE(prefetch_abort_equiv_pc)
 
 @ have a single step handler for prefetch abort.
 @ have a equiv handler for prefetch abort.
@@ -117,7 +118,9 @@ part3_equiv_pc_vec:
 
 @ setup and call prefetch_abort_equiv
 prefetch_handler_equiv:
-    asm_not_implemented()
+	sub lr, lr, #4
+	@ push all the regs into an array on stack (r13)
+	stm r13!, 
 
 @ have a single step handler for prefetch abort.
 @ have a equiv handler for prefetch abort.
@@ -149,6 +152,10 @@ MK_FN(user_mode_run_fn)
 	@change to user mode
 	cps #16
 
+	@prefetch flush
+	mov r2, #0
+	mcr p15, 0, r2, c7, c5, 4
+
 	@ clear cpsr bits
 	mrs r2, cpsr 				@ move the cpsr value to r2 (r0 has code address) gen purpose register
 	bic r2, r2, #0xffffffe0 	@ clear all cpsr bits except mode
@@ -172,6 +179,6 @@ MK_FN(user_mode_run_fn)
 	mov r13, r1
 	mov r1, #0
 
-	@branch to user code (first arg; r0)
-	blx r0
+	@branch to user code (first arg; r0), use bx so that we dont load in anything for lr (r14)
+	bx r0
 

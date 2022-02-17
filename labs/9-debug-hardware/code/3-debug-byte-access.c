@@ -21,7 +21,7 @@ watchpt_handler(void *addr, uint32_t pc, uint32_t regs[16]) {
         assert(pc == (uint32_t)GET8);
         load_fault_n++;
     } else {
-        output("store fault at pc=%x\n", pc);
+        output("store fault at pc=%x, addr=%p\n", pc, addr);
         assert(pc == (uint32_t)PUT8);
         store_fault_n++;
     }
@@ -40,7 +40,7 @@ static void test_bad_addr(int i) {
     trace("should see a store fault!\n");
     PUT8(bad_addr,0);
 
-    if(store_fault_n != i + 1)
+    if(!store_fault_n)
         panic("did not see a store fault\n");
 
     assert(!watchpt_is_enabled0());

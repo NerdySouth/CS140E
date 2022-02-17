@@ -1,0 +1,30 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./0-test-exit.ptag> about to boot
+TRACE:simple_boot: sending 10947 bytes, crc32=63f991b
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+kernel: stack is roughly at: 0x7ffffe8
+user_code=0x400004, prog name=<0-test-exit.bin>
+TRACE:inst 0 = pc=0x400004, pc_hash=0xa3d1fb72
+TRACE:inst 1 = pc=0x400010, pc_hash=0xb5f459d5
+TRACE:inst 2 = pc=0x400014, pc_hash=0x625d1830
+TRACE:inst 3 = pc=0x400018, pc_hash=0x3db2a8ee
+TRACE:inst 4 = pc=0x400020, pc_hash=0x4e403840
+TRACE:inst 5 = pc=0x400024, pc_hash=0x31fa5b24
+TRACE:inst 6 = pc=0x400028, pc_hash=0xfd7f8720
+TRACE:inst 7 = pc=0x40002c, pc_hash=0xd449b7d7
+TRACE:inst 8 = pc=0x4000f0, pc_hash=0x3500ce93
+TRACE:inst 9 = pc=0x4000f4, pc_hash=0x4696ca4e
+0-test-exit.bin: sys_exit(0): going to reboot
+part=3
+equiv values
+TRACE:EQUIV:	number instructions = 10
+TRACE:EQUIV:	pc hash = 0x4696ca4e
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up
