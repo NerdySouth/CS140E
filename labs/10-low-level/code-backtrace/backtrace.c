@@ -15,24 +15,6 @@ const char *name_of(uintptr_t fn_start_addr) {
 }
 
 void backtrace() {
-	// void *fp = __builtin_frame_address (0);
-
-	// struct bt *trace = fp - (sizeof(int *) * 3);
-	// while (trace->next) {
-	// 	//saved fp = fp  +  4 32bit words -> address of previous  functions pc
-	// 	trace("saved fp=%p\n", trace->next);
-	// 	//resume addr -> saved lr
-	// 	trace("saved lr=%p\n", trace->lr);
-	// 	trace("sp=%p\n", trace->sp);
-	// 	trace("fp=%p\n\n", fp);
-
-	// 	//update fp
-	// 	trace = trace->next - (sizeof(int *) * 3);
-	// }
-
-
-	// return 0;
-
 	void *cur_fp = __builtin_frame_address (0);
 
   	int result = 0;

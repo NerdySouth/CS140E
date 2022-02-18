@@ -18,7 +18,7 @@
 // running in mmu
 fld_t * vm_ident_mmu_init(int start_p) {
     // 1. init
-    staff_mmu_init();
+    mmu_init();
     assert(!mmu_is_enabled());
 
     fld_t *pt = mmu_pt_alloc(4096);
@@ -27,22 +27,22 @@ fld_t * vm_ident_mmu_init(int start_p) {
     // 2. setup mappings
 
     // map the first MB: shouldn't need more memory than this.
-    staff_mmu_map_section(pt, 0x0, 0x0, dom_id);
+    mmu_map_section(pt, 0x0, 0x0, dom_id);
     // map the page table: for lab cksums must be at 0x100000.
-    staff_mmu_map_section(pt, 0x100000,  0x100000, dom_id);
+    mmu_map_section(pt, 0x100000,  0x100000, dom_id);
 
     // map the GPIO: make sure these are not cached and not writeback.
     // [how to check this in general?]
-    staff_mmu_map_section(pt, 0x20000000, 0x20000000, dom_id);
-    staff_mmu_map_section(pt, 0x20100000, 0x20100000, dom_id);
-    staff_mmu_map_section(pt, 0x20200000, 0x20200000, dom_id);
+    mmu_map_section(pt, 0x20000000, 0x20000000, dom_id);
+    mmu_map_section(pt, 0x20100000, 0x20100000, dom_id);
+    mmu_map_section(pt, 0x20200000, 0x20200000, dom_id);
 
     // setup user stack (note: grows down!)
-    unimplemented();
+	mmu_map_section(pt, STACK_ADDR - OneMB, STACK_ADDR - OneMB, dom_id);
 
     // setup interrupt stack (note: grows down!)
     // if we don't do this, then the first exception = bad infinite loop
-    unimplemented();
+	mmu_map_section(pt, INT_STACK_ADDR - OneMB, INT_STACK_ADDR - OneMB, dom_id);
 
     // 3. install fault handler to catch if we make mistake.
     mmu_install_handlers();
@@ -50,7 +50,7 @@ fld_t * vm_ident_mmu_init(int start_p) {
     // 4. start the context switch:
 
     // set up permissions for the different domains: is this right or wrong?
-    staff_domain_access_ctrl_set(0b01 << dom_id*2);
+    domain_access_ctrl_set(0b01 << dom_id*2);
 
     if(start_p)
         vm_ident_mmu_on(pt);

@@ -64,11 +64,11 @@ fast_interrupt_asm:
 _fast_interrupt_table:
   b _reset_asm
   b _undefined_instruction_asm
-  b _software_interrupt_asm
+  b software_interrupt_asm
   b prefetch_abort_asm
   b data_abort_asm
   b _reset_asm
-  b _interrupt_asm
+  b interrupt_asm
 
 _reset_asm:                   .word reset_asm
 _undefined_instruction_asm:   .word undefined_instruction_asm

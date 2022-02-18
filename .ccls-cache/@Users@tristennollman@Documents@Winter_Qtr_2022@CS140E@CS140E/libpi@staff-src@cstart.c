@@ -5,6 +5,8 @@ void _cstart() {
     extern int __bss_start__, __bss_end__;
 	void notmain();
 
+    custom_loader();
+
     int* bss = &__bss_start__;
     int* bss_end = &__bss_end__;
  
@@ -16,7 +18,6 @@ void _cstart() {
     // have to initialize the cycle counter or it returns 0.
     // i don't think any downside to doing here.
     cycle_cnt_init();
-
     notmain(); 
 	clean_reboot();
 }

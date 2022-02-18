@@ -108,8 +108,11 @@ void mmu_map_sections(fld_t *pt, unsigned va, unsigned pa, unsigned nsec, uint32
     assert(mod_pow2(va, 20));
     assert(mod_pow2(pa, 20));
 
-    // implement
-    staff_mmu_map_sections(pt, va, pa, nsec,dom);
+	unsigned offset = 0;
+	while (offset < nsec) {
+		mmu_map_section(pt, va + (OneMB * offset), pa + (OneMB * offset));
+		offset++;
+	}
 }
 
 // lookup va in pt and return the pte entry.
@@ -149,7 +152,9 @@ void mmu_init(void) {
 
     // trivial: RMW the xp bit in control reg 1.
     // leave mmu disabled.
-    unimplemented();
+	struct control_reg1 ctrl = cp15_ctrl_reg1_rd();
+	ctrl.XP_pt = 1;
+	cp15_ctrl_reg1_wr(ctrl);
 
     // make sure write succeeded.
     struct control_reg1 c1 = cp15_ctrl_reg1_rd();
@@ -160,7 +165,9 @@ void mmu_init(void) {
 #include "vector-base.h"
 
 void mmu_install_handlers(void) {
-    unimplemented();
+	extern uint32_t _interrupt_table;
+	vector_base_set(&_interrupt_table);
+	assert(vector_base_get() == &_interrupt_table);
 }
 
 // set f->sec_base_addr correctly: called by <mmu_map_section>
@@ -168,7 +175,7 @@ static void fld_set_base_addr(fld_t *f, unsigned addr) {
     // 20 b/c we have 1MB sections.
     demand(mod_pow2(addr,20), addr is not aligned!);
 
-    unimplemented();
+	f->sec_base_addr = addr >> 20;
 
     // if the previous code worked, this should always succeed.
     assert((f->sec_base_addr << 20) == addr);
@@ -189,20 +196,36 @@ fld_t * mmu_map_section(fld_t *pt, uint32_t va, uint32_t pa, uint32_t dom) {
     assert(mod_pow2(va, 20));
     assert(mod_pow2(pa, 20));
 
-    fld_t *pte = 0;
+    fld_t *pte = &pt[va >> 20];
 
     // assign pte
-    unimplemented();
+	pte->tag = 0b10;
+	pte->B = 0b0; //see arm1176.pdf 6-15/16,
+	pte->C = 0b0; //see arm1176.pdf 6-15/16,
+	pte->XN = 0b0; // mark as canexecute
+	pte->domain = dom;
+	pte->TEX = 0b000; //see arm1176.pdf 6-15/16,
+	pte->IMP = 0b0;
+	pte->AP = 0b11;
+	pte->APX = 0b0; //extension to AP
+	pte->S = 0b0; //deprecated
+	pte->nG = 0b0; // global mapping
+	pte->super = 0b0;  //1mb sections, not super sections. See .h for page nums
+	pte->_sbz1 = 0b0;
+	fld_set_base_addr(pte, pa);
+
 
     fld_print(pte);
-    printk("my.pte@ 0x%x = %b\n", pt, *(unsigned*)pte);
-    hash_print("PTE crc:", pte, sizeof *pte);
+    printk("my.pte@ %x = %b\n", pt, *(unsigned*)pte);
+    hash_print("PTE crc:", (void*)pte, sizeof *pte);
     return pte;
 }
 
 // read and return the domain access control register
 uint32_t domain_access_ctrl_get(void) {
-    unimplemented();
+	unsigned ret = 0;
+	asm volatile("mrc p15, 0, %0, c3, c0, 0": "=r"(ret) :);
+	return ret;
 }
 
 // b4-42

@@ -26,6 +26,9 @@
 		"*.tcc": "c",
 		"string": "c",
 		"unordered_map": "c",
-		"vector": "c"
+		"vector": "c",
+		"rpi-constants.h": "c",
+		"vector-base.h": "c",
+		"vm-ident.h": "c"
 	}
 }

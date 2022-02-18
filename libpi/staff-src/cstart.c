@@ -18,7 +18,6 @@ void _cstart() {
     // have to initialize the cycle counter or it returns 0.
     // i don't think any downside to doing here.
     cycle_cnt_init();
-
     notmain(); 
 	clean_reboot();
 }

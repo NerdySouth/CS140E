@@ -15,7 +15,7 @@ RUN = 1
 TEST_SRC := 2-test-fault.c 1-test-setup.c
 TEST_SRC := 1-test-setup.c
 TEST_SRC := $(wildcard ./[0-7]-test*.c)
-TEST_SRC := 0-test-structs.c 
+TEST_SRC := $(wildcard ./[0-1]-test*.c)
 
 TEST_OUTS   := $(patsubst %.c, %.out, $(TEST_SRC))
 
