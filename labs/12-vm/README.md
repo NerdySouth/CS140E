@@ -326,10 +326,19 @@ This test:
 Look at the `3-test\*c` tests: these read, write and execute unmapped memory.
 Each should die and print an informative error message.
 
------------------------------------------------------------------------
-## Part 4: run single stepping and show you pass.
+  1. The tests set the address they are reading, writing or jumping to 
+     as `proc.die_addr` --- you should check that the fault address you 
+     get is the same as this expected fault address.
+  
+  2. I print something along the lines of:
 
-Adding this.
+
+        3-test-die-unmapped-read.out:ERROR: attempting to load unmapped addr 0x8400000: dying [reason=101]
+        3-test-die-unmapped-run.out:ERROR: attempting to run unmapped addr 0x8400000 [reason=101]
+        3-test-die-unmapped-write.out:ERROR: attempting to store unmapped addr 0x8400000: dying [reason=101]
+
+        3-test-die-permission-error.out:ERROR: attempting to run addr 0x8400000 with no permissions [reason=1101]
+        3-test-die-permission-error-write.out:ERROR: attempting to store addr 0x8400000 permission error: dying [reason=1101]
 
 
 -----------------------------------------------------------------------
@@ -339,5 +348,3 @@ There's a ton of extensions to do:
   1. Do real permissions.
   2. Do domains.
   3. Do smaller pages.
-  4. Protect null so that null reads and writes crash: part of this is changing the 
-     code to use the "high" exception handlers.
