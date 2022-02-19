@@ -19,6 +19,15 @@
 // free MB we can use.
 #define FREE_MB            0x6000000
 
+// Page Table Address
+#define PAGE_TABLE_ADDR 0x100000
+
+//address gpio starts at and ends at (end is actually just where the last registers are mapped
+// so it actually ends beyond this address, but we map by 1Mb  sections, so we can simply
+// calculate if an addr is within the end range by adding a MB to this end addr)
+#define GPIO_START_ADDR 0x20000000
+#define GPIO_END_ADDR	0x20200000
+
 // this is the highest address we use --- above it is free.  should just rewrite 
 // the code so that we can malloc.
 #define HIGHEST_USED_ADDR INT_STACK_ADDR

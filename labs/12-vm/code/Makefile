@@ -14,7 +14,7 @@ GREP_STR := 'HASH:\|ERROR:\|PANIC:\|SUCCESS:'
 
 TEST_SRC := 2-test-fault.c 1-test-setup.c
 TEST_SRC := 1-test-setup.c
-TEST_SRC := $(wildcard ./[0-2]*.c)
+TEST_SRC := $(wildcard ./[0-3]*.c)
 # TEST_SRC := $(wildcard ./[0-1]-test*.c)
 
 TEST_OUTS   := $(patsubst %.c, %.out, $(TEST_SRC))

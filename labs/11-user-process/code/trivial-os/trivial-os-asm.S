@@ -120,7 +120,7 @@ part3_equiv_pc_vec:
 prefetch_handler_equiv:
 	sub lr, lr, #4
 	@ push all the regs into an array on stack (r13)
-	stm r13!, 
+	@ stm r13!, 
 
 @ have a single step handler for prefetch abort.
 @ have a equiv handler for prefetch abort.

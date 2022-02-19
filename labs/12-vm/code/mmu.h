@@ -151,7 +151,7 @@ static inline unsigned mmu_sec_num(unsigned u)       { return u >> 20; }
 
 
 
-static inline uint32_t mod_pow2(uint32_t x, uint32_t n) {
+static uint32_t mod_pow2(uint32_t x, uint32_t n) {
     assert(n<32);
     uint32_t rem = x % (1<<n);
 

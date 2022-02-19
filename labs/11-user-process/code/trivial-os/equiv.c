@@ -44,7 +44,6 @@ void prefetch_abort_equiv_pc(unsigned pc) {
     	cur_ctx.n_inst++;
 	}
 
-    
 }
 
 // if get a breakpoint call <brkpt_handler0>

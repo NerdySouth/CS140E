@@ -29,13 +29,14 @@ fld_t * vm_ident_mmu_init(int start_p) {
     // map the first MB: shouldn't need more memory than this.
     mmu_map_section(pt, 0x0, 0x0, dom_id);
     // map the page table: for lab cksums must be at 0x100000.
-    mmu_map_section(pt, 0x100000,  0x100000, dom_id);
+    mmu_map_section(pt, PAGE_TABLE_ADDR,  PAGE_TABLE_ADDR, dom_id);
 
     // map the GPIO: make sure these are not cached and not writeback.
     // [how to check this in general?]
-    mmu_map_section(pt, 0x20000000, 0x20000000, dom_id);
-    mmu_map_section(pt, 0x20100000, 0x20100000, dom_id);
-    mmu_map_section(pt, 0x20200000, 0x20200000, dom_id);
+	mmu_map_sections(pt, GPIO_START_ADDR, GPIO_START_ADDR, 3, dom_id);
+    // mmu_map_section(pt, GPIO_START_ADDR, GPIO_START_ADDR, dom_id);
+    // mmu_map_section(pt, 0x20100000, 0x20100000, dom_id);
+    // mmu_map_section(pt, 0x20200000, 0x20200000, dom_id);
 
     // setup user stack (note: grows down!)
 	mmu_map_section(pt, STACK_ADDR - OneMB, STACK_ADDR - OneMB, dom_id);
