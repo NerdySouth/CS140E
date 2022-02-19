@@ -94,12 +94,19 @@ _Static_assert(sizeof(fld_t) == 4, "invalid size for fld_t!");
 
 // B4-9: AP field:  no/access=0b00, r/o=0b10, rw=0b11
 enum {
-    // read-write access
-    AP_rw = 0b11,
+    // full read-write access for user and kernel
+    full_rw = 0b11,
     // no access either privileged or user
-    AP_no_access = 0b00,
-    // privileged: read only.
-    AP_rd_only = 0b10
+    _no_access = 0b00,
+    // privileged: read/write, User: read only
+    privledged_rw_user_r = 0b10,
+	//privledged only
+	privledged_rw = 0b01,
+	//priveldged: read only
+	privledged_r = 0b101,
+	//privledged and user: read only
+	full_r = 0b110,
+
 };
 
 // b4-10

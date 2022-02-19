@@ -33,6 +33,45 @@ uint32_t in_kernel(uint32_t addr) {
 	return 0;
 }
 
+//helper to set permissions for an addr we faulted on one we know it was a read
+//that caused it
+void set_read_perms(unsigned addr) {
+	if (in_kernel(addr)) {
+		// in kernel, but want  special perms for first segment 
+		// this is so we dont write over our kernel or null (can still read)
+		if (addr < OneMB) {
+			// should be read only for kernel, no access to user
+			mmu_mark_sec_priv_readonly(proc.pt, addr, 1);
+			return;
+		}
+		// in kernel, but want to have r/w access (device memory), give user none
+		mmu_mark_sec_priv_rw(proc.pt, addr, 1);
+		return;
+	}
+	//not kernel code, set user read only
+	mmu_mark_sec_full_readonly(proc.pt, addr, 1);
+}
+
+//helper to set proper permissions for a given addr 
+//given we know it was a write that  caused the fault
+void set_write_perms(unsigned addr) {
+	if (in_kernel(addr)) {
+		// in kernel, but want  special perms for first segment 
+		// this is so we dont write over our kernel or null (can still read)
+		if (addr < OneMB) {
+			// should be read only for kernel, no access to user
+			panic("ERROR: Tried to write to kernel space Section 1. Dying.\n");
+		}
+		// in kernel, but want r/w access (device memory), give user none
+		mmu_mark_sec_priv_rw(proc.pt, addr, 1);
+		return;
+	}
+	//not kernel code, set user rw 
+	mmu_mark_sec_full_rw(proc.pt, addr, 1);
+}
+
+// helper to set ke
+
 //helper to check if the provided DSFR value is a translation fault
 unsigned translation_section_fault(unsigned dfsr_val) {
 	return bits_eq(dfsr_val, 0, 3, TRANSLATION_SECTION_FAULT) && bit_is_off(dfsr_val, 10);
@@ -75,10 +114,12 @@ void data_abort_vector(unsigned lr) {
 			if (bit_is_off(dfsr_val, 11)) {
 				// attempted read
 				// give proper permissions for where the adddress is (kernel, user)
-				mmu_mprotect(proc.pt, addr, 1, in_kernel(addr) ? PRIVLEDGED_READ_WRITE : USER_READ);
+				set_read_perms(addr);
+				// mmu_mprotect(proc.pt, addr, 1, in_kernel(addr) ? PRIVLEDGED_READ_WRITE : USER_READ);
 			} else {
 				// attempted write
-				mmu_mprotect(proc.pt, addr, 1, in_kernel(addr) ? PRIVLEDGED_READ_WRITE : FULL_ACCESS);
+				set_write_perms(addr);
+				// mmu_mprotect(proc.pt, addr, 1, in_kernel(addr) ? PRIVLEDGED_READ_WRITE : FULL_ACCESS);
 			}
 			proc.fault_count++;
 			staff_mmu_sync_pte_mods();

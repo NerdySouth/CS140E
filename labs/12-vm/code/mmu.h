@@ -9,6 +9,7 @@
 // get the different cp15 data structures.
 #include "armv6-vm.h"
 
+
 /* one time initialation of caches, tlb, etc */
 void mmu_init(void);
 void staff_mmu_init(void);
@@ -93,13 +94,22 @@ void staff_mmu_mprotect(fld_t *pt, unsigned va, unsigned nsec, unsigned perm);
 // mark [va, va+ nsec * 1MB) with the indicated permissions.
 static inline void 
 mmu_mark_sec_no_access(fld_t *pt, unsigned va, unsigned nsec) 
-    { mmu_mprotect(pt,va,nsec, AP_no_access); }
+    { mmu_mprotect(pt,va,nsec, _no_access); }
 static inline void 
-mmu_mark_sec_readonly(fld_t *pt, unsigned va, unsigned nsec) 
-    { mmu_mprotect(pt,va,nsec, AP_rd_only); }
+mmu_mark_sec_user_readonly(fld_t *pt, unsigned va, unsigned nsec) 
+    { mmu_mprotect(pt,va,nsec, privledged_rw_user_r); }
 static inline void 
-mmu_mark_sec_rw(fld_t *pt, unsigned va, unsigned nsec) 
-    { mmu_mprotect(pt,va,nsec, AP_rw); }
+mmu_mark_sec_full_rw(fld_t *pt, unsigned va, unsigned nsec) 
+    { mmu_mprotect(pt,va,nsec, full_rw); }
+static inline void 
+mmu_mark_sec_priv_rw(fld_t *pt, unsigned va, unsigned nsec) 
+    { mmu_mprotect(pt,va,nsec, privledged_rw); }
+static inline void 
+mmu_mark_sec_priv_readonly(fld_t *pt, unsigned va, unsigned nsec) 
+    { mmu_mprotect(pt,va,nsec, privledged_r); }
+static inline void 
+mmu_mark_sec_full_readonly(fld_t *pt, unsigned va, unsigned nsec) 
+    { mmu_mprotect(pt,va,nsec, full_r); }
 
 /*****************************************************************
  * mmu assembly routines: these are mainly what you will implement in

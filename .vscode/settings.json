@@ -30,6 +30,7 @@
 		"rpi-constants.h": "c",
 		"vector-base.h": "c",
 		"vm-ident.h": "c",
-		"typeinfo": "c"
+		"typeinfo": "c",
+		"mmu.h": "c"
 	}
 }

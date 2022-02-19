@@ -117,7 +117,7 @@ void mmu_map_sections(fld_t *pt, unsigned va, unsigned pa, unsigned nsec, uint32
 
 // lookup va in pt and return the pte entry.
 fld_t * mmu_lookup_section(fld_t *pt, unsigned va) {
-    assert(mod_pow2(va, 20));
+    // assert(mod_pow2(va, 20));
     fld_t *pte = &pt[va >> 20];
 	pte->tag = 0b10;
 
@@ -131,23 +131,26 @@ void mmu_mprotect(fld_t *pt, unsigned va, unsigned nsec, unsigned perm) {
     demand(perm <= 0b11, invalid permission);
 
     // you need to implement this.
-    staff_mmu_mprotect(pt,va,nsec, perm);
-	// unsigned offset = 0;
-	// fld_t *curr_pte;
-	// while (offset < nsec) {
-	// 	/* Each section is 1MB */
-	// 	//get the pte for va
-	// 	curr_pte = mmu_lookup_section(pt, va + (offset * OneMB));
+	unsigned offset = 0;
+	fld_t *curr_pte;
+	while (offset < nsec) {
+		/* Each section is 1MB */
+		//get the pte for va
+		curr_pte = mmu_lookup_section(pt, va + (offset * OneMB));
 
-	// 	//set its ap bits to perm
-	// 	curr_pte->AP = perm;
+		//set its ap bits to perm
+		if (perm & 0b100) {
+			//APX set
+			curr_pte->APX = 1;
+		}
+		curr_pte->AP = perm & 0b11;
 
-	// 	offset++;
-	// }
+		offset++;
+	}
 
-    // // must call this routine on each PTE modification (you'll implement
-    // // next lab).
-    // staff_mmu_sync_pte_mods();
+    // must call this routine on each PTE modification (you'll implement
+    // next lab).
+    staff_mmu_sync_pte_mods();
 }
 
 // set so that we use armv6 memory.
