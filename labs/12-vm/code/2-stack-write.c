@@ -7,6 +7,7 @@ void vm_test(void) {
     proc.sp_lowest_addr = STACK_ADDR - OneMB;
     proc.dom_id = dom_id;
     proc.pt = vm_ident_mmu_init(1);
+	printk("Finsihed.\n");
 
     // datafault handler is in mmu-except.c
 

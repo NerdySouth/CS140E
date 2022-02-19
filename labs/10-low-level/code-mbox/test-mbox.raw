@@ -1,0 +1,18 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./test-mbox.bin> about to boot
+TRACE:simple_boot: sending 8948 bytes, crc32=ce264607
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+mailbox serial number = 0x2c791c070
+mailbox physical mem: size=520093696 (496MB)
+cur hz=700000000
+board model = 0x0
+board revision= 0x900093
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

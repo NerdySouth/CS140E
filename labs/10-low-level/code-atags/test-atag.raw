@@ -1,0 +1,20 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./test-atag.bin> about to boot
+TRACE:simple_boot: sending 4620 bytes, crc32=8fe80c5a
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+pi atags
+tag=0x54410001, nbytes=20
+tag=0x54410002, nbytes=16
+tag=0x54410009, nbytes=416
+mem_nbytes = 520093696 [mb=496]
+PANIC:test-atag.c:notmain:12:error: default should have 128MB
+
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

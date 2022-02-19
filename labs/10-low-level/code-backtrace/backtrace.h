@@ -1,27 +1,12 @@
 #include "rpi.h"
-struct bt {
-            struct bt *next;
-            uint32_t sp;
-            uint32_t lr;
-            uint32_t pc;
-};
+typedef struct {
+	const char *namel
+	uintptr_t resume_addr;
+	int resume_offset;
+} frame_t;
 
 //helpers for printing from test-backtrace
 static unsigned depth;
-static void indent(unsigned n) {
-    n *= 3;
-    while(n-->0)
-        output(" ");
-}
-static void push(const char *msg) { 
-    indent(depth++);
-    output("---> call %s\n", msg);
-}
-static void pop(const char *msg) { 
-    indent(--depth);
-    output("<--- ret %s\n", msg);
-}
-
 static const char *name_of(uintptr_t fn_start_addr){
 	uint32_t word = *(uint32_t *)(fn_start_addr - 4);
 	if((word >> 24) == 0xff) {
@@ -31,43 +16,27 @@ static const char *name_of(uintptr_t fn_start_addr){
 		return "???";
 	}
 }
-static void backtrace() {
-	void *cur_fp = __builtin_frame_address (0);
+void backtrace() {
+    uintptr_t *cur_fp;
+    __asm__("mov %0, fp" : "=r" (cur_fp));
+    while(1) {
+        frame_t frame;
 
-  	int result = 0;
-	struct bt *btrace = cur_fp - (sizeof(int *) * 3);
-	const char* btrace_names[100];
-	uint32_t pc_loc = (btrace->lr - btrace->pc + 12);
-	while (btrace->next) {
-		// if (result == 1)
-		// 	pc_loc = (btrace->lr - btrace->pc + 12);
-		uintptr_t *up_fp = (uintptr_t *)(btrace->next);
-		if(btrace->next == NULL)
-			break;
+        uintptr_t *caller_fp = (uintptr_t *)((char *)cur_fp - 12);
+        uintptr_t *resume_addr = (uintptr_t *)((char *)cur_fp - 4);
 
+        if (*caller_fp  == 0) break;
 
-		uintptr_t up_pc = (uintptr_t)(btrace->pc);
+        frame.resume_addr = *resume_addr;
+        frame.resume_offset = *resume_addr - ((*cur_fp) - 12);
 
-		const char *name = name_of(up_pc - 12);
-		btrace_names[result] = name;
+        const char *name = name_of(GET32(*(cur_fp - 3)) - 12);
+        frame.name = name;
 
-		// output("name: %s\n", name);
-		cur_fp = (void *)*(uint32_t *)(cur_fp - (sizeof(int *) * 3));
-		result++;
-		btrace  = cur_fp - (sizeof(int *) * 3);
-	}
+        printk("Name: %s\n", frame.name);
+        printk("Resume_addr: %p\n", frame.resume_addr);
+        printk("Resume_offset: %d\n\n", frame.resume_offset);
 
-	//print out  call order
-	for (int i = result - 1; i > 0; i--) {
-		push(btrace_names[i]);
-	}
-
-	//print out where we were next
-	indent(++depth);
-	output("%s+%d\n", btrace_names[0], pc_loc);
-
-	//print return order
-	for (int i = 1; i < result; i++) {
-		pop(btrace_names[i]);
-	}
+        cur_fp = (uintptr_t *)*caller_fp;
+    }
 }

@@ -8,19 +8,19 @@ BOOTLOADER = my-install
 GREP_STR := 'HASH:\|ERROR:\|PANIC:\|SUCCESS:'
 
 # set if you want the code to automatically run after building.
-RUN = 1
+# RUN = 1
 # set if you want the code to automatically check after building.
 #CHECK = 1
 
 TEST_SRC := 2-test-fault.c 1-test-setup.c
 TEST_SRC := 1-test-setup.c
-TEST_SRC := $(wildcard ./[0-7]-test*.c)
-TEST_SRC := $(wildcard ./[0-1]-test*.c)
+TEST_SRC := $(wildcard ./[0-2]*.c)
+# TEST_SRC := $(wildcard ./[0-1]-test*.c)
 
 TEST_OUTS   := $(patsubst %.c, %.out, $(TEST_SRC))
 
 # put all your miscellaneous assembly in this file. 
-SUPPORT_OBJS = mmu-helpers.o mmu.o vm-ident.o 
+SUPPORT_OBJS = mmu-helpers.o mmu.o vm-ident.o mmu-except.o
 
 # these are the binaries we give you: remove these when finished.
 STAFF_OBJS =  staff-mmu.o staff-mmu-asm.o
