@@ -1,6 +1,6 @@
 opened tty port </dev/cu.SLAB_USBtoUART>.
 my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./3-test-vec.ptag> about to boot
-TRACE:simple_boot: sending 11010 bytes, crc32=23d6cc21
+TRACE:simple_boot: sending 9502 bytes, crc32=e6fdc0c8
 waiting for a start
 unix-side implementation
 putting code
@@ -8,21 +8,412 @@ bootloader: Done.
 listening on ttyusb=</dev/cu.SLAB_USBtoUART>
 kernel: stack is roughly at: 0x7ffffe8
 user_code=0x400004, prog name=<3-test-vec.bin>
-TRACE:inst 0 = pc=0x400004, pc_hash=0xa3d1fb72
-TRACE:inst 1 = pc=0x400010, pc_hash=0xb5f459d5
-TRACE:inst 2 = pc=0x400014, pc_hash=0x625d1830
-TRACE:inst 3 = pc=0x400018, pc_hash=0x3db2a8ee
-TRACE:inst 4 = pc=0x400028, pc_hash=0xd88ec3d5
-TRACE:inst 5 = pc=0x40002c, pc_hash=0xfdf9a1ed
-TRACE:inst 6 = pc=0x40001c, pc_hash=0x7fab503d
-TRACE:inst 7 = pc=0x400020, pc_hash=0x413ff992
-TRACE:inst 8 = pc=0x400024, pc_hash=0xead93cec
-TRACE:inst 9 = pc=0x400028, pc_hash=0x4115398d
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+TRACE:reg hash = 0xfac07451
+TRACE:spsr= 0x190, lr = 0x400004
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x7000000
+TRACE:reg 14 = 0x0
+TRACE:reg 15 = 0x400004
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0x831b8654
+TRACE:spsr= 0x190, lr = 0x400010
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x7000000
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400010
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0xfbf639bc
+TRACE:spsr= 0x190, lr = 0x400014
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400014
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0xa6f5c285
+TRACE:spsr= 0x190, lr = 0x400018
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400018
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0xe707c871
+TRACE:spsr= 0x190, lr = 0x400028
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400028
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0xc4c39051
+TRACE:spsr= 0x80000190, lr = 0x40002c
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x40002c
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0xfbde8849
+TRACE:spsr= 0x80000190, lr = 0x40001c
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x40001c
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0xe3f4d167
+TRACE:spsr= 0x80000190, lr = 0x400020
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x400150
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400020
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0x1bc90f90
+TRACE:spsr= 0x80000190, lr = 0x400024
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x400150
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400024
+TRACE:------------------------------------------------------
+pc=10111
+TRACE:reg hash = 0x70f66e45
+TRACE:spsr= 0x80000190, lr = 0x400028
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x400150
+TRACE:reg 3 = 0x1
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400028
+TRACE:------------------------------------------------------
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
+pc=10111
 3-test-vec.bin: sys_exit(0): going to reboot
-part=3
+part=4
 equiv values
 TRACE:EQUIV:	number instructions = 194
-TRACE:EQUIV:	pc hash = 0x22ab7818
+TRACE:EQUIV:	reg hash = 0x22edf8ea
 DONE!!!
 
 Saw done

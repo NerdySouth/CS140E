@@ -31,6 +31,10 @@
 		"vector-base.h": "c",
 		"vm-ident.h": "c",
 		"typeinfo": "c",
-		"mmu.h": "c"
+		"mmu.h": "c",
+		"libos.h": "c",
+		"stdint.h": "c",
+		"armv6-debug-impl.h": "c",
+		"cpsr-util.h": "c"
 	}
 }

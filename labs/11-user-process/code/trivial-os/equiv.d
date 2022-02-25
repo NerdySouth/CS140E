@@ -12,4 +12,4 @@ equiv.o: equiv.c \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi-constants.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/libc/bit-support.h \
- breakpoint.h
+ reg-util.h breakpoint.h

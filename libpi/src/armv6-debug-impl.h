@@ -118,12 +118,12 @@ static inline void cp14_bcr0_enable(void) {
 	//set byte address select
 	bcr0_val = bits_set(bcr0_val, 5, 8, 0b0001);
 	//breakpoint matches in secure & non-secure worlds
-	// bcr0_val = bits_set(bcr0_val,  14, 15, 0b00); -> dont need since starting val is 0, these are clear already
-	//disable linking
-	// bcr0_val = bit_clr(bcr0_val, 20); -> also not needed since already clear
+	bcr0_val = bits_set(bcr0_val,  14, 15, 0b00); //-> dont need since starting val is 0, these are clear already
+	// disable linking
+	bcr0_val = bit_clr(bcr0_val, 20); //-> also not needed since already clear
 	//set bites 21:22 to 00 so we match on IMVA, not context IDs
-	//also dont have to since already clear
-	// bcr0_val = bits_set(bcr0_val, 21, 22, 0b01);
+	// also dont have to since already clear
+	bcr0_val = bits_set(bcr0_val, 21, 22, 0b01);
 	cp14_bcr0_set(bcr0_val);
 }
 //disable bcr0, see pg. 13-18/13-19

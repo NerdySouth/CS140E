@@ -1,0 +1,169 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./2-stack-write.bin> about to boot
+TRACE:simple_boot: sending 19076 bytes, crc32=ee36cc58
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+checking that stack gets extended
+------------------------------
+0x0x100000:
+	0b0	= sec_base_addr
+	  --> va=0x     0x0
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 110000100010
+HASH:PTE crc:: hash=0x2f782a81,nbytes=4
+------------------------------
+0x0x100004:
+	0b1	= sec_base_addr
+	  --> va=0x0x100000
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 100000000110000100010
+HASH:PTE crc:: hash=0x5f6614fe,nbytes=4
+------------------------------
+0x0x100800:
+	0b1000000000	= sec_base_addr
+	0x0x200
+	  --> va=0x0x20000000
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 100000000000000000110000100010
+HASH:PTE crc:: hash=0x314dc8fc,nbytes=4
+------------------------------
+0x0x100804:
+	0b1000000001	= sec_base_addr
+	0x0x201
+	  --> va=0x0x20100000
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 100000000100000000110000100010
+HASH:PTE crc:: hash=0x93a2dadc,nbytes=4
+------------------------------
+0x0x100808:
+	0b1000000010	= sec_base_addr
+	0x0x202
+	  --> va=0x0x20200000
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 100000001000000000110000100010
+HASH:PTE crc:: hash=0xb76d0d60,nbytes=4
+------------------------------
+0x0x1001fc:
+	0b1111111	= sec_base_addr
+	0x0x7f
+	  --> va=0x0x7f00000
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 111111100000000110000100010
+HASH:PTE crc:: hash=0xe22b84dd,nbytes=4
+------------------------------
+0x0x10023c:
+	0b10001111	= sec_base_addr
+	0x0x8f
+	  --> va=0x0x8f00000
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 1000111100000000110000100010
+HASH:PTE crc:: hash=0x87a285bd,nbytes=4
+Finsihed.
+HASH: about to do an invalid write to 0x7effff0
+------------------------------
+0x0x1001f8:
+	0b1111110	= sec_base_addr
+	0x0x7e
+	  --> va=0x0x7e00000
+	           76543210
+	0b0	= nG
+	0b0	= S
+	0b0	= APX
+	0b0	= TEX
+	0b11	= AP
+	0b0	= IMP
+	0b1	= domain
+	0b0	= XN
+	0b0	= C
+	0b0	= B
+	0b10	= tag
+my.pte@ 0x0x100000 = 111111000000000110000100010
+HASH:PTE crc:: hash=0x579891f,nbytes=4
+HASH:done with invalid write to 0x7effff0 have=11
+HASH:test1: success
+******** success ************
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

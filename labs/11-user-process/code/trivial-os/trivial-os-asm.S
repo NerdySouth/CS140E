@@ -118,9 +118,25 @@ part3_equiv_pc_vec:
 
 @ setup and call prefetch_abort_equiv
 prefetch_handler_equiv:
-	sub lr, lr, #4
-	@ push all the regs into an array on stack (r13)
-	@ stm r13!, 
+	sub  lr, lr, #4
+	mov sp, #INT_STACK
+
+	@ push registers
+	sub sp, sp, #68 	@ make room for array of regs
+	stm sp, {r0-r14}^	@ push registers to stack
+	str lr, [sp, #60]	@ push val of lr 
+	mrs r1, spsr		@ push spsr to arg 2
+	str r1, [sp, #64]	@ store spsr in reg arra]
+	mov r0, sp			@ store start of array in arg 1
+	mov r2, lr			@ store lr in arg 3
+	push {lr}
+
+	bl prefetch_abort_equiv	@ enter handler
+
+	pop {lr} 
+	ldm sp, {r0-r14}^	@ load all regs back from stack
+	movs pc, lr 		@ return control
+
 
 @ have a single step handler for prefetch abort.
 @ have a equiv handler for prefetch abort.
@@ -153,13 +169,10 @@ MK_FN(user_mode_run_fn)
 	cps #16
 
 	@prefetch flush
-	mov r2, #0
-	mcr p15, 0, r2, c7, c5, 4
+	prefetch_flush(r2)
 
 	@ clear cpsr bits
-	mrs r2, cpsr 				@ move the cpsr value to r2 (r0 has code address) gen purpose register
-	bic r2, r2, #0xffffffe0 	@ clear all cpsr bits except mode
-	msr cpsr_cxsf, r2			@ write back all fields to cpsr
+	msr cpsr_cxsf, r2
 
 	@clear all registers besides sp (r13) and two argmuents to this func (in r0, r1) 
 	mov r2, #0
@@ -177,7 +190,6 @@ MK_FN(user_mode_run_fn)
 
 	@ setup sp to point to right place (addr found in r1)
 	mov r13, r1
-	mov r1, #0
 
 	@branch to user code (first arg; r0), use bx so that we dont load in anything for lr (r14)
 	bx r0

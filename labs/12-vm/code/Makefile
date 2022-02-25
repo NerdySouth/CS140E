@@ -20,7 +20,7 @@ TEST_SRC := $(wildcard ./[0-3]*.c)
 TEST_OUTS   := $(patsubst %.c, %.out, $(TEST_SRC))
 
 # put all your miscellaneous assembly in this file. 
-SUPPORT_OBJS = mmu-helpers.o mmu.o vm-ident.o mmu-except.o
+SUPPORT_OBJS = mmu-helpers.o mmu.o vm-ident.o mmu-except.o your-vm-asm.o
 
 # these are the binaries we give you: remove these when finished.
 STAFF_OBJS =  staff-mmu.o staff-mmu-asm.o

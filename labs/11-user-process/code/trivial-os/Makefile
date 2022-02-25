@@ -3,10 +3,10 @@ NAME = trivial-os
 # define this if you need to give the device for your pi
 TTYUSB = 
 
-STAFF_OBJS = staff-breakpoint.o
+# STAFF_OBJS = staff-breakpoint.o
 OBJS := trivial-os.o trivial-os-asm.o                                 \
         staff-loader.o\
-        single-step.o equiv.o 
+        single-step.o equiv.o breakpoint.o
  
 dep := $(OBJS:.o=.d)
 

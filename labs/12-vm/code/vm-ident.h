@@ -15,7 +15,13 @@ void vm_ident_mmu_off(void);
 enum { OneMB = 1024 * 1024 };
 
 // we use a non-zero domain id to test things out.
-enum { dom_id = 1};
+static unsigned dom_id = 1;
+enum { 
+	dom_kernel_r_id = 1,
+	dom_kernel_rw_id = 2,
+	dom_user_r_id
+
+};
 
 extern volatile struct proc_state {
     fld_t *pt;

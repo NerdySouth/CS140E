@@ -92,6 +92,7 @@ void staff_mmu_mprotect(fld_t *pt, unsigned va, unsigned nsec, unsigned perm);
 
 // helpers
 // mark [va, va+ nsec * 1MB) with the indicated permissions.
+//addition of full permssions by Tristen Nollman for CS140E WInter 2022
 static inline void 
 mmu_mark_sec_no_access(fld_t *pt, unsigned va, unsigned nsec) 
     { mmu_mprotect(pt,va,nsec, _no_access); }
@@ -111,6 +112,8 @@ static inline void
 mmu_mark_sec_full_readonly(fld_t *pt, unsigned va, unsigned nsec) 
     { mmu_mprotect(pt,va,nsec, full_r); }
 
+
+
 /*****************************************************************
  * mmu assembly routines: these are mainly what you will implement in
  * lab 15 (today).
@@ -121,24 +124,24 @@ mmu_mark_sec_full_readonly(fld_t *pt, unsigned va, unsigned nsec)
 
 // write the values for the domain control reg and do any needed coherence.
 //void cp15_domain_ctrl_wr(uint32_t dom_reg);
-void staff_cp15_domain_ctrl_wr(uint32_t dom_reg);
+void cp15_domain_ctrl_wr(uint32_t dom_reg);
 
 // one time initialization of the machine state.  cache/tlb should not be active yet
 // so just invalidate.  
 //void mmu_reset(void);
-void staff_mmu_reset(void);
+void mmu_reset(void);
 
 // sets both the procid and the ttbr0 register: does any needed coherence.
 // i *think* we absolutely must do both of these at once.
 //void cp15_set_procid_ttbr0(uint32_t proc_and_asid, fld_t *pt);
-void staff_cp15_set_procid_ttbr0(uint32_t proc_and_asid, fld_t *pt);
+void cp15_set_procid_ttbr0(uint32_t proc_and_asid, fld_t *pt);
 
 // sets the control register to <c> and does any needed coherence operations.
 //void mmu_disable_set_asm(cp15_ctrl_reg1_t c);
 //void mmu_enable_set_asm(cp15_ctrl_reg1_t c);
 
-void staff_mmu_disable_set_asm(cp15_ctrl_reg1_t c);
-void staff_mmu_enable_set_asm(cp15_ctrl_reg1_t c);
+void mmu_disable_set_asm(cp15_ctrl_reg1_t c);
+void mmu_enable_set_asm(cp15_ctrl_reg1_t c);
 
 
 

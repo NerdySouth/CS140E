@@ -1,0 +1,24 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./3-test-die-unmapped-write.bin> about to boot
+TRACE:simple_boot: sending 18812 bytes, crc32=7d9be8e9
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+testing we die when writing to unnapped memory
+my.pte@ 0x0x100000 = 110000100010
+my.pte@ 0x0x100000 = 100000000110000100010
+my.pte@ 0x0x100000 = 100000000000000000110000100010
+my.pte@ 0x0x100000 = 100000000100000000110000100010
+my.pte@ 0x0x100000 = 100000001000000000110000100010
+my.pte@ 0x0x100000 = 111111100000000110000100010
+my.pte@ 0x0x100000 = 1000111100000000110000100010
+should die with a message about an unmmaped write
+PANIC:mmu-except.c:data_abort_vector:141:ERROR: attempting to write addr 0x8400000: dying [reason=100]
+
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

@@ -1,3 +1,4 @@
+#include "rpi.h"
 // this will mismatch on the first instruction at user level.
 void brkpt_mismatch_start(void);
 

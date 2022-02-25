@@ -1,0 +1,27 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./2-test-no-access-write.bin> about to boot
+TRACE:simple_boot: sending 19396 bytes, crc32=71abc99c
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+testing we can write and resume
+my.pte@ 0x0x100000 = 110000100010
+my.pte@ 0x0x100000 = 100000000110000100010
+my.pte@ 0x0x100000 = 100000000000000000110000100010
+my.pte@ 0x0x100000 = 100000000100000000110000100010
+my.pte@ 0x0x100000 = 100000001000000000110000100010
+my.pte@ 0x0x100000 = 111111100000000110000100010
+my.pte@ 0x0x100000 = 1000111100000000110000100010
+my.pte@ 0x0x100000 = 111111000000000110000100010
+about to mark no access0x7effff0 (vpn=0x7e00000)
+HASH: marked no access0x7effff0 (vpn=0x7e00000)
+HASH: done with invalid perm write to 0x7effff0 have=12
+HASH: test2: success!
+******** success ************
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

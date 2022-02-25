@@ -8,6 +8,7 @@ volatile struct proc_state proc;
 #define PRIVLEDGED_READ_WRITE 0b01 
 #define USER_READ 0b10
 #define FULL_ACCESS 0b11
+#define SECTION_MASK 0xfff00000
 
 // this is called by reboot: we turn off mmu so that things work.
 void reboot_callout(void) {
@@ -99,17 +100,18 @@ void data_abort_vector(unsigned lr) {
 		//was a tranlation section fault
 		//map the section
 		proc.fault_count++;
-		//check addr is within 1MB of lowest SP
-		if (addr <= proc.sp_lowest_addr + OneMB) {
+		//check addr is within 1MB of stack
+		if (addr >= proc.sp_lowest_addr - OneMB && addr < proc.sp_lowest_addr) {
 			//grow stack
-			mmu_map_section(proc.pt, (STACK_ADDR - (OneMB * (proc.fault_count + 1))), 
-							(STACK_ADDR - (OneMB * (proc.fault_count + 1))), proc.dom_id);
-			staff_mmu_sync_pte_mods();
+			unsigned new_addr = mmu_sec_bits_only(addr);
+			mmu_map_section(proc.pt, new_addr, new_addr, proc.dom_id);
+			staff_mmu_sync_pte_mods();	
 			return;
 		}
 	} else if (permission_section_fault(dfsr_val)) {
 		// was a permission section fault
 		if (proc.fault_addr == addr) {
+			trace("%x\n", addr);
 			// determine needed perms
 			if (bit_is_off(dfsr_val, 11)) {
 				// attempted read

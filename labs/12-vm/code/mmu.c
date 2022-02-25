@@ -40,6 +40,13 @@ fld_t *mmu_pt_alloc(unsigned n) {
     return mmu_pt_init(pt, nbytes);
 }
 
+// unsigned next_free_udomain() {
+// 	unsigned domID = next_free_u
+// }
+// unsigned mmu_user_domain_alloc(unsigned ) {
+// 	return next_free_udomain();
+// }
+
 
 // disable the mmu by setting control register 1
 // to <c:32>.
@@ -50,7 +57,7 @@ fld_t *mmu_pt_alloc(unsigned n) {
 void mmu_disable_set(cp15_ctrl_reg1_t c) {
     assert(!c.MMU_enabled);
     assert(!c.C_unified_enable);
-    staff_mmu_disable_set_asm(c);
+	mmu_disable_set_asm(c);
 }
 
 // disable the MMU by flipping the enable bit.   we 
@@ -70,7 +77,7 @@ void mmu_disable(void) {
 // real work (you'll write this code next time).
 void mmu_enable_set(cp15_ctrl_reg1_t c) {
     assert(c.MMU_enabled);
-    staff_mmu_enable_set_asm(c);
+    mmu_enable_set_asm(c);
 }
 
 // enable mmu by flipping enable bit.
@@ -86,7 +93,7 @@ void set_procid_ttbr0(unsigned pid, unsigned asid, fld_t *pt) {
     assert((pid >> 24) == 0);
     assert(pid > 64);
     assert(asid < 64 && asid);
-    staff_cp15_set_procid_ttbr0(pid << 8 | asid, pt);
+	cp15_set_procid_ttbr0(pid << 8 | asid, pt);
 }
 
 // hopefully catch if you call unimplemented stuff.
@@ -161,7 +168,7 @@ void mmu_mprotect(fld_t *pt, unsigned va, unsigned nsec, unsigned perm) {
 //  3. check that the coprocessor write succeeded.
 void mmu_init(void) { 
     // reset the MMU state: you will implement next lab
-    staff_mmu_reset();
+    mmu_reset();
 
     // trivial: RMW the xp bit in control reg 1.
     // leave mmu disabled.
@@ -245,6 +252,7 @@ uint32_t domain_access_ctrl_get(void) {
 // b4-42
 // set domain access control register to <r>
 void domain_access_ctrl_set(uint32_t r) {
-    staff_domain_access_ctrl_set(r);
+    // staff_domain_access_ctrl_set(r);
+	cp15_domain_ctrl_wr(r);
     // assert(domain_access_ctrl_get() == r);
 }

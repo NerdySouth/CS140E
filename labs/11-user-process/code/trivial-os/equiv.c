@@ -2,6 +2,7 @@
 #include "trivial-os.h"
 #include "libc/fast-hash32.h"
 #include "cpsr-util.h"
+#include "reg-util.h"
 
 #include "breakpoint.h"
 
@@ -31,7 +32,6 @@ void prefetch_abort_equiv_pc(unsigned pc) {
     brkpt_mismatch_set(pc);
 
     // if you are in user code, hash the pc.
-    // 
     if(user_pc(pc)) {
 		uint32_t  hash = cur_ctx.pc_hash;
     	cur_ctx.pc_hash = fast_hash_inc32(&pc, sizeof pc, hash);
@@ -48,8 +48,24 @@ void prefetch_abort_equiv_pc(unsigned pc) {
 
 // if get a breakpoint call <brkpt_handler0>
 void prefetch_abort_equiv(uint32_t *regs, uint32_t spsr, uint32_t pc) {
-    unimplemented();
+	printk("pc=%b\n", reg_get_mode());
+	brkpt_mismatch_set(pc);
     // if in user mode, hash all the registers and spsr.
+	if(user_pc(pc)) {
+		const unsigned arr_size =  sizeof(uint32_t) * 17;
+		cur_ctx.reg_hash = fast_hash_inc32(regs, arr_size, cur_ctx.reg_hash);
+		if (cur_ctx.n_inst < cur_ctx.print_first_n) {
+			trace("reg hash = %x\n", cur_ctx.reg_hash);
+			trace("spsr= %p, lr = %x\n", spsr, pc);
+
+			for (unsigned i = 0; i < 16; i++) {
+				trace("reg %d = %x\n", i, regs[i]);
+			}
+			trace("------------------------------------------------------\n");
+		}
+		cur_ctx.n_inst++;
+	}
+	
 }
 
 
