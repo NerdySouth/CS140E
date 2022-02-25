@@ -25,7 +25,11 @@ enum {
     PART3_RUN_PC_EQUIV,
     PART4_RUN_REG_EQUIV
 };
+<<<<<<< HEAD
 static int part = 4;
+=======
+static int part = 5;
+>>>>>>> 3823b80102a6e61a6bb8adad7ad9c020b2567fc6
 //static int part = PART2_RUN_SINGLE; // PART4_RUN_REG_EQUIV;
 // static int part = PART4_RUN_REG_EQUIV;
 //static int part = PART3_RUN_PC_EQUIV;
