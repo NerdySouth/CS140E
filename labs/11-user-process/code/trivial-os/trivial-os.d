@@ -12,4 +12,4 @@ trivial-os.o: trivial-os.c \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/asm-helpers.h \
  reg-util.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi-constants.h \
- trivial-os.h syscalls.h
+ trivial-os.h syscalls.h pix-internal.h

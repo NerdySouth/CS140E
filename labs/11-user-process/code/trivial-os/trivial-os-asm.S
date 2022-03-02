@@ -151,6 +151,50 @@ part4_equiv_vec:
     b reset
     b interrupt
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ part5: save to process structure
+@   push all the regs and spsr onto the stack and pass it to the handler.
+
+
+@ setup and call prefetch_abort_equiv
+
+prefetch_handler_equiv_struct:
+	sub  lr, lr, #4
+	mov sp, #INT_STACK
+
+	ldr r0, =pix_cur_process
+	ldr r0, [r0]
+
+	@ push registers
+	sub sp, sp, #68 	@ make room for array of regs
+	stm sp, {r0-r14}^	@ push registers to stack
+	str lr, [sp, #60]	@ push val of lr 
+	mrs r1, spsr		@ push spsr to arg 2
+	str r1, [sp, #64]	@ store spsr in reg arra]
+	mov r1, sp			@ store start of array in arg 1
+	mov r2, lr			@ store lr in arg 3
+	push {lr}
+
+	bl prefetch_abort_equiv_struct	@ enter handler
+
+	pop {lr} 
+	ldm sp, {r0-r14}^	@ load all regs back from stack
+	movs pc, lr 		@ return control
+
+
+@ have a single step handler for prefetch abort.
+@ have a equiv handler for prefetch abort.
+.align 5; 
+.globl part5_equiv_vec
+part5_equiv_vec: 
+    b reset
+    b undef
+    b swi_handler
+    b prefetch_handler_equiv_struct
+    b data_abort
+    b reset
+    b interrupt
+
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ before jumping to user:

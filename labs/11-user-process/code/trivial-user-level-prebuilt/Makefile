@@ -71,7 +71,7 @@ libs:
 
 %.check: %.ptag
 	@$(PITAG_LINK) $(OS_BIN) $*.bin $*.ptag
-	my-install ./$*.ptag 2>&1 > /dev/null | grep $(GREP_STR)  > ./$*.test
+	my-install ./$*.ptag 2>&1 > ./$*.test | grep $(GREP_STR)  > ./$*.test
 	grep $(GREP_STR) ./$*.$(TYPE)out | diff ./$*.test -
 	rm ./$*.test
 

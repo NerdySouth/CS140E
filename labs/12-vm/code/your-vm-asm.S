@@ -45,10 +45,9 @@ MK_FN(mmu_reset)
 	DSB(r0)							@ observe completion of above
 	INV_TLB(r0)						@ clear TLB
 	DSB(r0)							@ observe completion of above
-	PREFETCH_FLUSH(r0)				@ let otherrs observe completion of TLB clear
 	FLUSH_BTB(r0)					@ clear out branch predition (BTB)
-	DSB(r0)							@ DSB so above completes
-	PREFETCH_FLUSH(r0)				@ let others observe completion of BTB Flush
+	DSB(r0)							@ DSB so  branchprerdict ops finish
+	PREFETCH_FLUSH(r0)				@ let others observe completion of BTB Flush, rrefetch instructions
 
     bx lr
 
@@ -58,11 +57,6 @@ MK_FN(cp15_domain_ctrl_wr)
 	mov r1 , #0, 0				@ clear r1, we will use it later as a prefect flush
 	DOMAIN_CTRL_WR(r0)			@ write to the Domain Access & Control Register with val in r0: see armv6 b2-24
 	PREFETCH_FLUSH(r1)			@ prefetch flush so we observe changes to DACR above: see armv6 b6-21 for what it does
-	@ DOMAIN_CTRL_WR(r0)
-	@ DSB(r1);
-	@ FLUSH_BTB(r1)
-	@ DSB(r1)
-	@ PREFETCH_FLUSH(r1)
     bx lr
 
 // void cp15_set_procid_ttbr0(uint32_t proc_and_asid, fld_t *pt);
@@ -72,18 +66,18 @@ MK_FN(cp15_set_procid_ttbr0)
 
 	@ Do the dance ARM lays out: see armv6 b2-25
 	ASID_SET(r2)			@ set ASID to 0
-	PREFETCH_FLUSH(r2)		@ prefetch flush
+	PREFETCH_FLUSH(r2)		@ prefetch flush so change to asid is visible
 	TTBR0_SET(r1)			@ set the base addr in ttbr0 to addr of page table
-	DSB(r2)					@ dsb since writing with new reg
-	TTBR1_SET(r2)			@ set ttbr1 to 0 (not using)
-	DSB(r2)					@ dsb
-	PREFETCH_FLUSH(r2)		@ prefetch flush
+	@ DSB(r2)					@ dsb since writing with new reg -> not needed via cheatsheet/b2.7.6
+	TTBR_BASE_CTRL_WR(r2)	@ set base ctrl to use ttbr0
+	PREFETCH_FLUSH(r2)		@ prefetch flush so new base is visible
+	and r0, r0, #0x3f		@ zero out bottom bits
 	ASID_SET(r0)			@ set new ASID
-	PREFETCH_FLUSH(r2)
+	PREFETCH_FLUSH(r2)		@ prefetch flush so new asid is visible
 
 	@ need to flush BTB see armv6 b2-24 2.7.5
 	FLUSH_BTB(r2)
-	DSB(r2)			@ need DSB so we know FLUSH completed, but need the prefetch_flush to complete it
+	DSB(r2)					@ need DSB so we know flush compeleted see b2-19
 	PREFETCH_FLUSH(r2)
 
     bx lr
@@ -101,19 +95,15 @@ MK_FN(mmu_disable_set_asm)
 
 	mov r1, #0, 0	
 	@ disable the MMU. See armv6 6.4.1-6.4.2 on enable/disable mmu
-	CLEAN_INV_DCACHE(r1)		@ want to clean data cache & invalidate the data cache
-	DSB(r1)						@ want completion of previous clean/invalidate
-	CONTROL_REG1_RD(r2)			@ get control reg value
-	bic r2, r2, #4, 0			@ clear bits in control reg. See armv6 6.4.2
-	CONTROL_REG1_WR(r2)			@ write new val to control reg
-	DSB(r2)						@ dsd for completion of write to control reg
+	and r0, r0, #0xFFFFFFFB		@ clear bit 2 to disable dcache when we disable mmu
 	CONTROL_REG1_WR(r0)			@ write cleared value to control reg c
 	PREFETCH_FLUSH(r1)			@ prefetch flush to complete coprocessor operation
-	INV_ICACHE(r1)				@ invalidate ICACHE
-	DSB(r1)						@ want complpetion of previous invalidation
+	CLEAN_INV_DCACHE(r1)		@ want to clean data cache & invalidate the data cache
+	DSB(r1)						@ want completion of previous clean/invalidate
+	INV_TLB(r1)					@ invalidate TLB b/c entries probably invalid once we re-enable mmu later. see armv6 6.4.2
+	DSB(r1)						@ DSB for completion of TLB maintenance op 
 	FLUSH_BTB(r1)				@ flush branch predition
-	DSB(r1)						@ observe completion of flush operation
-	PREFETCH_FLUSH(r1)			@ prefetch flush to complete BTB flush
+	PREFETCH_FLUSH(r1)			@ prefetch flush to complete BTB flush and TLB invalidation
     bx lr
 
 // void mmu_enable_set_asm(cp15_ctrl_reg1_t c);
@@ -121,9 +111,15 @@ MK_FN(mmu_enable_set_asm)
 	mov r1, #0, 0
 
 	@ enable the MMU. See armv6 6.4.1-6.4.2 on enable/disable mmu
-	CONTROL_REG1_WR(r0)		@ setup control reg c (passed into r0)
-	DSB(r1)					@ need a dsb to observe the completion of last task
+	CONTROL_REG1_RD(r1)		@ Read control reg value so we can disable and invalidate icache. See armv6-vm 6.4.1
+	and r1, r1, #0xFFFFF7FF @ set bit 12 to 0 to disable icache. See armv61176 3-47
+	CONTROL_REG1_WR(r1)		@ write back to control reg to actually disable icache. See armv61176 3-47
+	mov r1, #0, 0
+	PREFETCH_FLUSH(r1)		@ prefetch flush so write to control reg is visible see 2.7.6
+	INV_ICACHE(r1)			@ flush out the icache.
 	FLUSH_BTB(r1)			@ flush the BTB to invalidate. Could have garbage in it
-	DSB(r1)					@ need dsb to observe completion of last task
-	PREFETCH_FLUSH(r1)		@ need PREFETCH_FLUSH to finish flush of BTB
+	DSB(r1)					@ need a dsb to observe the completion of kickoff  last task
+	PREFETCH_FLUSH(r1)		@ need PREFETCH_FLUSH to finish flush of BTB/ maybe also for completion of icache invalidation
+	CONTROL_REG1_WR(r0)		@ turn MMU on with control register
+	PREFETCH_FLUSH(r1)		@ prefetch  flush so write to control reg completes and is observable
     bx lr

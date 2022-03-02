@@ -1,0 +1,1 @@
+PANIC:mmu-except.c:data_abort_vector:143:ERROR: attempting to write addr 0x8400000 with permission error: dying [reason=1101]

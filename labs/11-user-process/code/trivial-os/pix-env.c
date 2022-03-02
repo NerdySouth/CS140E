@@ -12,7 +12,7 @@ pix_env_t pix_env_mk(uint32_t pc, uint32_t sp) {
     pix_env_t p = {0};
 
     // put unimplemented here.
-    unimplemented();
+	trace("in hander\n");
 
     printk("pc=%x, sp=%x\n", pc,sp);
     return p;

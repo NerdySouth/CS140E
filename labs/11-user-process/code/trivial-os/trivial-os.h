@@ -2,6 +2,7 @@
 #define __TRIVIAL_OS_H__
 
 #include "syscalls.h"
+#include "pix-internal.h"
 
 // from loader.c
 struct prog {

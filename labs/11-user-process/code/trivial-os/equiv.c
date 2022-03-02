@@ -18,7 +18,6 @@ static equiv_ctx_t cur_ctx;
 
 // should we start tracing yet?
 static int in_user = 0;
-static uint32_t num_printed = 0;
 
 // figure out when we actually jumped to user code.
 static int user_pc(uint32_t pc) {
@@ -36,9 +35,8 @@ void prefetch_abort_equiv_pc(unsigned pc) {
 		uint32_t  hash = cur_ctx.pc_hash;
     	cur_ctx.pc_hash = fast_hash_inc32(&pc, sizeof pc, hash);
 
-		if (num_printed  < cur_ctx.print_first_n) {
+		if (cur_ctx.n_inst < cur_ctx.print_first_n) {
 			trace("inst %d = pc=%x, pc_hash=%x\n", cur_ctx.n_inst, pc, cur_ctx.pc_hash);
-			num_printed++;
 		}
 		//debug("done setting up a mismatch on %p\n", pc);
     	cur_ctx.n_inst++;
@@ -48,7 +46,6 @@ void prefetch_abort_equiv_pc(unsigned pc) {
 
 // if get a breakpoint call <brkpt_handler0>
 void prefetch_abort_equiv(uint32_t *regs, uint32_t spsr, uint32_t pc) {
-	printk("pc=%b\n", reg_get_mode());
 	brkpt_mismatch_set(pc);
     // if in user mode, hash all the registers and spsr.
 	if(user_pc(pc)) {
@@ -68,6 +65,45 @@ void prefetch_abort_equiv(uint32_t *regs, uint32_t spsr, uint32_t pc) {
 	
 }
 
+// if get a breakpoint call <brkpt_handler0>
+void prefetch_abort_equiv_struct(pix_env_t *curr_proc, uint32_t *regs, uint32_t pc) {
+	assert(curr_proc == pix_cur_process);
+
+	
+	brkpt_mismatch_set(pc);
+    // if in user mode, hash all the registers and spsr.
+	if(user_pc(pc)) {
+		const unsigned arr_size =  sizeof(uint32_t) * 17;
+		cur_ctx.reg_hash = fast_hash_inc32(regs, arr_size, cur_ctx.reg_hash);
+		if (cur_ctx.n_inst < cur_ctx.print_first_n) {
+			trace("reg hash = %x\n", cur_ctx.reg_hash);
+			trace("spsr= %p, lr = %x\n", curr_proc->reg_save[16], pc);
+
+			for (unsigned i = 0; i < 16; i++) {
+				curr_proc->reg_save[i] = regs[i];
+				trace("reg %d = %x\n", i, regs[i]);
+			}
+			trace("------------------------------------------------------\n");
+		}
+		cur_ctx.n_inst++;
+	}
+    // // if in user mode, hash all the registers and spsr.
+	// if(user_pc(pc)) {
+	// 	const unsigned arr_size =  sizeof(uint32_t) * 17;
+	// 	cur_ctx.reg_hash = fast_hash_inc32(regs, arr_size, cur_ctx.reg_hash);
+	// 	if (cur_ctx.n_inst < cur_ctx.print_first_n) {
+	// 		trace("reg hash = %x\n", cur_ctx.reg_hash);
+	// 		trace("spsr= %p, lr = %x\n", spsr, pc);
+
+	// 		for (unsigned i = 0; i < 16; i++) {
+	// 			trace("reg %d = %x\n", i, regs[i]);
+	// 		}
+	// 		trace("------------------------------------------------------\n");
+	// 	}
+	// 	cur_ctx.n_inst++;
+	// }
+	
+}
 
 int equiv_run_fn(int (*user_fn)(void), uint32_t sp, unsigned n_print) {
     in_user = 0;

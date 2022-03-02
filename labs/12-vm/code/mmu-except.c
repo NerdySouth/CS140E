@@ -83,9 +83,16 @@ unsigned permission_section_fault(unsigned dfsr_val) {
 	return bits_eq(dfsr_val, 0, 3, PERMISSION_SECTION_FAULT) && bit_is_off(dfsr_val, 10);
 }
 void prefetch_abort_vector(unsigned lr) {
+	//cause of the exception
+	unsigned ifsr_val = cp15_ifsr_get();
 	unsigned addr = cp15_ifar_get();
-	unsigned reason = 0b1101;
-	panic("ERROR: attempting to %s addr %x: dying [reason=%b]\n", "execute", addr, reason);
+	if (translation_section_fault(ifsr_val)) {
+		unsigned reason = 0b101;
+		panic("ERROR: attempting to %s addr %x with translation error: dying [reason=%b]\n", "execute", addr, reason);
+	} else if (permission_section_fault(ifsr_val))  {
+		unsigned reason = 0b1101;
+		panic("ERROR: attempting to %s addr %x with permission error: dying [reason=%b]\n", "execute", addr, reason);
+	}	
 }
 
 void data_abort_vector(unsigned lr) {
@@ -108,10 +115,13 @@ void data_abort_vector(unsigned lr) {
 			staff_mmu_sync_pte_mods();	
 			return;
 		}
+		char *attempt;
+		unsigned reason  = 0b101;
+		attempt = bit_is_off(dfsr_val, 11) ? "load" : "write";
+		panic("ERROR: attempting to %s addr %x with translation eror: dying [reason=%b]\n", attempt, addr, reason);
 	} else if (permission_section_fault(dfsr_val)) {
 		// was a permission section fault
 		if (proc.fault_addr == addr) {
-			trace("%x\n", addr);
 			// determine needed perms
 			if (bit_is_off(dfsr_val, 11)) {
 				// attempted read
@@ -127,17 +137,10 @@ void data_abort_vector(unsigned lr) {
 			staff_mmu_sync_pte_mods();
 			return;
 		}	
+		char *attempt;
+		unsigned reason  = 0b1101;
+		attempt = bit_is_off(dfsr_val, 11) ? "load" : "write";
+		panic("ERROR: attempting to %s addr %x with permission error: dying [reason=%b]\n", attempt, addr, reason);
 	} 
 
-	//likely an unmapped address read/write
-	char *attempt;
-	unsigned reason;
-	if (bit_is_off(dfsr_val, 11)) {
-		attempt = "load";
-		reason = 0b101;
-	} else {
-		attempt = "write";
-		reason = 0b100;
-	}
-	panic("ERROR: attempting to %s addr %x: dying [reason=%b]\n", attempt, addr, reason);
 }

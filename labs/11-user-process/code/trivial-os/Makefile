@@ -6,7 +6,7 @@ TTYUSB =
 # STAFF_OBJS = staff-breakpoint.o
 OBJS := trivial-os.o trivial-os-asm.o                                 \
         staff-loader.o\
-        single-step.o equiv.o breakpoint.o
+        single-step.o equiv.o breakpoint.o pix-env.o
  
 dep := $(OBJS:.o=.d)
 

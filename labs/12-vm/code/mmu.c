@@ -124,7 +124,7 @@ void mmu_map_sections(fld_t *pt, unsigned va, unsigned pa, unsigned nsec, uint32
 
 // lookup va in pt and return the pte entry.
 fld_t * mmu_lookup_section(fld_t *pt, unsigned va) {
-    // assert(mod_pow2(va, 20));
+    assert(mod_pow2(va, 20));
     fld_t *pte = &pt[va >> 20];
 	pte->tag = 0b10;
 
@@ -143,7 +143,8 @@ void mmu_mprotect(fld_t *pt, unsigned va, unsigned nsec, unsigned perm) {
 	while (offset < nsec) {
 		/* Each section is 1MB */
 		//get the pte for va
-		curr_pte = mmu_lookup_section(pt, va + (offset * OneMB));
+		unsigned sec_addr = mmu_sec_bits_only(va + (offset * OneMB));
+		curr_pte = mmu_lookup_section(pt, sec_addr);
 
 		//set its ap bits to perm
 		if (perm & 0b100) {
@@ -243,16 +244,15 @@ fld_t * mmu_map_section(fld_t *pt, uint32_t va, uint32_t pa, uint32_t dom) {
 
 // read and return the domain access control register
 uint32_t domain_access_ctrl_get(void) {
-	// unsigned ret = 0;
-	// asm volatile("mrc p15, 0, %0, c3, c0, 0": "=r"(ret) :);
-	// return ret;
-	unimplemented();
+	unsigned ret = 0;
+	asm volatile("mrc p15, 0, %0, c3, c0, 0": "=r"(ret) :);
+	return ret;
 }
 
 // b4-42
 // set domain access control register to <r>
 void domain_access_ctrl_set(uint32_t r) {
-    // staff_domain_access_ctrl_set(r);
-	cp15_domain_ctrl_wr(r);
+    staff_domain_access_ctrl_set(r);
+	// cp15_domain_ctrl_wr(r);
     // assert(domain_access_ctrl_get() == r);
 }

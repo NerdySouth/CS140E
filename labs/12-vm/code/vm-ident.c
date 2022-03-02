@@ -62,14 +62,14 @@ fld_t * vm_ident_mmu_init(int start_p) {
 
 void vm_ident_mmu_on(fld_t *pt) {
     // this code uses the sequence on B2-25
-    staff_set_procid_ttbr0(0x140e, dom_id, pt);
+    set_procid_ttbr0(0x140e, dom_id, pt);
 
     // note: this routine has to flush I/D cache and TLB, BTB, prefetch buffer.
-    staff_mmu_enable();
+    mmu_enable();
     assert(mmu_is_enabled());
 }
 
 void vm_ident_mmu_off(void) {
-    staff_mmu_disable();
+	mmu_disable();
     assert(!mmu_is_enabled());
 }

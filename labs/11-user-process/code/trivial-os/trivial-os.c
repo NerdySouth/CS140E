@@ -23,13 +23,10 @@ enum {
     PART1_RUN_USER,
     PART2_RUN_SINGLE,
     PART3_RUN_PC_EQUIV,
-    PART4_RUN_REG_EQUIV
+    PART4_RUN_REG_EQUIV,
+	PART5_RUN_STRUCT_EQUIV
 };
-<<<<<<< HEAD
 static int part = 4;
-=======
-static int part = 5;
->>>>>>> 3823b80102a6e61a6bb8adad7ad9c020b2567fc6
 //static int part = PART2_RUN_SINGLE; // PART4_RUN_REG_EQUIV;
 // static int part = PART4_RUN_REG_EQUIV;
 //static int part = PART3_RUN_PC_EQUIV;
@@ -68,7 +65,7 @@ uint32_t do_syscall(uint32_t sysnum, uint32_t a0, uint32_t a1, uint32_t a2) {
 
 void notmain(void) {
     extern uint8_t part1_swi_vec, part2_single_step_vec, part3_equiv_pc_vec,
-        part4_equiv_vec;
+        part4_equiv_vec, part5_equiv_vec;
 
     printk("kernel: stack is roughly at: %x\n", reg_get_sp());
 
@@ -109,6 +106,11 @@ void notmain(void) {
     case PART4_RUN_REG_EQUIV: 
         // ... + compute hashes for all regs.
         vector_base_set(&part4_equiv_vec);
+        equiv_run_fn(code, STACK_ADDR2, 10);
+        not_reached();
+	case PART5_RUN_STRUCT_EQUIV: 
+        // ... + compute hashes for all regs.
+        vector_base_set(&part5_equiv_vec);
         equiv_run_fn(code, STACK_ADDR2, 10);
         not_reached();
     default: panic("bad part=%d\n", part);
