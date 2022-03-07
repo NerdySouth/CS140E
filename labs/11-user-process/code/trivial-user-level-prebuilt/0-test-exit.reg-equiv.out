@@ -1,6 +1,6 @@
 opened tty port </dev/cu.SLAB_USBtoUART>.
 my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./0-test-exit.ptag> about to boot
-TRACE:simple_boot: sending 11591 bytes, crc32=4903b48f
+TRACE:simple_boot: sending 12315 bytes, crc32=34286086
 waiting for a start
 unix-side implementation
 putting code
@@ -26,6 +26,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x7000000
 TRACE:reg 14 = 0x0
 TRACE:reg 15 = 0x400004
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0x831b8654
 TRACE:spsr= 0x190, lr = 0x400010
@@ -45,6 +46,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x7000000
 TRACE:reg 14 = 0x400008
 TRACE:reg 15 = 0x400010
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0xfbf639bc
 TRACE:spsr= 0x190, lr = 0x400014
@@ -64,6 +66,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6fffff8
 TRACE:reg 14 = 0x400008
 TRACE:reg 15 = 0x400014
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0x470e627f
 TRACE:spsr= 0x190, lr = 0x400018
@@ -83,6 +86,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6fffff8
 TRACE:reg 14 = 0x400008
 TRACE:reg 15 = 0x400018
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0x9d13e8a
 TRACE:spsr= 0x190, lr = 0x400020
@@ -102,6 +106,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6fffff8
 TRACE:reg 14 = 0x40001c
 TRACE:reg 15 = 0x400020
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0x182ae7ca
 TRACE:spsr= 0x190, lr = 0x400024
@@ -121,6 +126,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6fffff0
 TRACE:reg 14 = 0x40001c
 TRACE:reg 15 = 0x400024
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0x594619c8
 TRACE:spsr= 0x190, lr = 0x400028
@@ -140,6 +146,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6fffff0
 TRACE:reg 14 = 0x40001c
 TRACE:reg 15 = 0x400028
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0xb6d3dd24
 TRACE:spsr= 0x190, lr = 0x40002c
@@ -159,6 +166,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6fffff0
 TRACE:reg 14 = 0x40001c
 TRACE:reg 15 = 0x40002c
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0xd6a8875b
 TRACE:spsr= 0x190, lr = 0x4000f0
@@ -178,6 +186,7 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6fffff0
 TRACE:reg 14 = 0x400030
 TRACE:reg 15 = 0x4000f0
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 TRACE:reg hash = 0x1ee2a76e
 TRACE:spsr= 0x190, lr = 0x4000f4
@@ -197,9 +206,10 @@ TRACE:reg 12 = 0x0
 TRACE:reg 13 = 0x6ffffec
 TRACE:reg 14 = 0x400030
 TRACE:reg 15 = 0x4000f4
+TRACE:reg 16 = 0x190
 TRACE:------------------------------------------------------
 0-test-exit.bin: sys_exit(0): going to reboot
-part=4
+part=5
 equiv values
 TRACE:EQUIV:	number instructions = 10
 TRACE:EQUIV:	reg hash = 0x1ee2a76e

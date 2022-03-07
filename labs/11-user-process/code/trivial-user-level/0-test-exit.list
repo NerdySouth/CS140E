@@ -190,7 +190,7 @@ Disassembly of section .debug_info:
   8c:	00300150 	eorseq	r0, r0, r0, asr r1
   90:	004e0700 	subeq	r0, lr, r0, lsl #14
   94:	004e0000 	subeq	r0, lr, r0
-  98:	14020000 	strne	r0, [r2], #-0
+  98:	16020000 	strne	r0, [r2], -r0
   9c:	020e0006 	andeq	r0, lr, #6, 0
   a0:	00040000 	andeq	r0, r4, r0
   a4:	00000070 	andeq	r0, r0, r0, ror r0

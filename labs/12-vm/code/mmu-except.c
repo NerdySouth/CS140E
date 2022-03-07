@@ -13,7 +13,7 @@ volatile struct proc_state proc;
 // this is called by reboot: we turn off mmu so that things work.
 void reboot_callout(void) {
     if(mmu_is_enabled())
-        staff_mmu_disable();
+        mmu_disable();
 }
 
 //helper to determine if addr is in the kernel space

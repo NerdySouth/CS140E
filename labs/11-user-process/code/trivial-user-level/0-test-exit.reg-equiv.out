@@ -1,0 +1,210 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./0-test-exit.ptag> about to boot
+TRACE:simple_boot: sending 12315 bytes, crc32=4193f1df
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+kernel: stack is roughly at: 0x7ffffe8
+user_code=0x400004, prog name=<0-test-exit.bin>
+TRACE:reg hash = 0xfac07451
+TRACE:spsr= 0x190, lr = 0x400004
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x7000000
+TRACE:reg 14 = 0x0
+TRACE:reg 15 = 0x400004
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x831b8654
+TRACE:spsr= 0x190, lr = 0x400010
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x7000000
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400010
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xfbf639bc
+TRACE:spsr= 0x190, lr = 0x400014
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400014
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x470e627f
+TRACE:spsr= 0x190, lr = 0x400018
+TRACE:reg 0 = 0x0
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400018
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x9d13e8a
+TRACE:spsr= 0x190, lr = 0x400020
+TRACE:reg 0 = 0x0
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x400020
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x182ae7ca
+TRACE:spsr= 0x190, lr = 0x400024
+TRACE:reg 0 = 0x0
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x400024
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x594619c8
+TRACE:spsr= 0x190, lr = 0x400028
+TRACE:reg 0 = 0x0
+TRACE:reg 1 = 0x0
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x400028
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xb6d3dd24
+TRACE:spsr= 0x190, lr = 0x40002c
+TRACE:reg 0 = 0x1
+TRACE:reg 1 = 0x0
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x40002c
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xa198985d
+TRACE:spsr= 0x190, lr = 0x4000ec
+TRACE:reg 0 = 0x1
+TRACE:reg 1 = 0x0
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x400030
+TRACE:reg 15 = 0x4000ec
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x2d1558a7
+TRACE:spsr= 0x190, lr = 0x4000f0
+TRACE:reg 0 = 0x1
+TRACE:reg 1 = 0x0
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6ffffec
+TRACE:reg 14 = 0x400030
+TRACE:reg 15 = 0x4000f0
+TRACE:------------------------------------------------------
+0-test-exit.bin: sys_exit(0): going to reboot
+part=4
+equiv values
+TRACE:EQUIV:	number instructions = 10
+TRACE:EQUIV:	reg hash = 0x2d1558a7
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

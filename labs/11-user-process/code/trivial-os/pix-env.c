@@ -9,11 +9,11 @@ pix_env_t *pix_cur_process = &init_process;
 // that when you use <switch_to> on it for the first time
 // it will behave identically to calling <user_mode_run_fn>
 pix_env_t pix_env_mk(uint32_t pc, uint32_t sp) {
-    pix_env_t p = {0};
-
-    // put unimplemented here.
-	trace("in hander\n");
-
-    printk("pc=%x, sp=%x\n", pc,sp);
-    return p;
+    pix_env_t proc = {0};
+	proc.reg_save[0] =  pc;
+	proc.reg_save[1] = sp;
+	proc.reg_save[15] = pc;
+	proc.reg_save[13] = sp;
+	proc.reg_save[16] = 0x190;
+    return proc;
 }

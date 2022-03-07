@@ -1,0 +1,209 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./1-test-hello.ptag> about to boot
+TRACE:simple_boot: sending 12552 bytes, crc32=dca0390c
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+kernel: stack is roughly at: 0x7ffffe8
+user_code=0x400004, prog name=<1-test-hello.bin>
+TRACE:reg hash = 0xfac07451
+TRACE:spsr= 0x190, lr = 0x400004
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x7000000
+TRACE:reg 14 = 0x0
+TRACE:reg 15 = 0x400004
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x831b8654
+TRACE:spsr= 0x190, lr = 0x400010
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x7000000
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400010
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xfbf639bc
+TRACE:spsr= 0x190, lr = 0x400014
+TRACE:reg 0 = 0x400004
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400014
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xb3be1036
+TRACE:spsr= 0x190, lr = 0x400018
+TRACE:reg 0 = 0x400180
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x400008
+TRACE:reg 15 = 0x400018
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x8a628841
+TRACE:spsr= 0x190, lr = 0x4000b8
+TRACE:reg 0 = 0x400180
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff8
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x4000b8
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xa6d8751b
+TRACE:spsr= 0x190, lr = 0x4000bc
+TRACE:reg 0 = 0x400180
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x0
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x4000bc
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0x809bcaf
+TRACE:spsr= 0x190, lr = 0x4000c0
+TRACE:reg 0 = 0x400180
+TRACE:reg 1 = 0x7000000
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x400180
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x4000c0
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xb73cd70e
+TRACE:spsr= 0x190, lr = 0x4000c4
+TRACE:reg 0 = 0x400180
+TRACE:reg 1 = 0x68
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x400180
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x4000c4
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xdfd97cd9
+TRACE:spsr= 0x20000190, lr = 0x4000c8
+TRACE:reg 0 = 0x400180
+TRACE:reg 1 = 0x68
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x400180
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x4000c8
+TRACE:------------------------------------------------------
+TRACE:reg hash = 0xec490978
+TRACE:spsr= 0x20000190, lr = 0x4000cc
+TRACE:reg 0 = 0x400180
+TRACE:reg 1 = 0x68
+TRACE:reg 2 = 0x0
+TRACE:reg 3 = 0x0
+TRACE:reg 4 = 0x400180
+TRACE:reg 5 = 0x0
+TRACE:reg 6 = 0x0
+TRACE:reg 7 = 0x0
+TRACE:reg 8 = 0x0
+TRACE:reg 9 = 0x0
+TRACE:reg 10 = 0x0
+TRACE:reg 11 = 0x0
+TRACE:reg 12 = 0x0
+TRACE:reg 13 = 0x6fffff0
+TRACE:reg 14 = 0x40001c
+TRACE:reg 15 = 0x4000cc
+TRACE:------------------------------------------------------
+hello world
+user: stack is roughly at 0x6fffff8
+PANIC:trivial-os.c:do_syscall:62:undefined system call: 4
+
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

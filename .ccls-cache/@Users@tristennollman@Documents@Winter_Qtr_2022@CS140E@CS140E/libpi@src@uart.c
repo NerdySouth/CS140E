@@ -189,3 +189,9 @@ void uart_flush_tx(void) {
         ;
 	dev_barrier();
 }
+
+// trivial function needed by some drivers.
+int uart_hex(unsigned h) {
+    printk("%x",h);
+    return 0;
+}

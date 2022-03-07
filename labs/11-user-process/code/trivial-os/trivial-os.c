@@ -24,9 +24,10 @@ enum {
     PART2_RUN_SINGLE,
     PART3_RUN_PC_EQUIV,
     PART4_RUN_REG_EQUIV,
-	PART5_RUN_STRUCT_EQUIV
+	PART5_RUN_STRUCT_EQUIV,
+	PART6_SWITCHTO_ASM
 };
-static int part = 4;
+static int part = 6;
 //static int part = PART2_RUN_SINGLE; // PART4_RUN_REG_EQUIV;
 // static int part = PART4_RUN_REG_EQUIV;
 //static int part = PART3_RUN_PC_EQUIV;
@@ -112,6 +113,11 @@ void notmain(void) {
         // ... + compute hashes for all regs.
         vector_base_set(&part5_equiv_vec);
         equiv_run_fn(code, STACK_ADDR2, 10);
+        not_reached();
+	case PART6_SWITCHTO_ASM: 
+        // ... + compute hashes for all regs.
+        vector_base_set(&part5_equiv_vec);
+        equiv_run_fn_proc(code, STACK_ADDR2, 10);
         not_reached();
     default: panic("bad part=%d\n", part);
     }

@@ -8,11 +8,7 @@ TESTS := $(wildcard ./[0-3]*-test*.bin)
 # if you want to run with register checking.
 TYPE= reg-equiv.
 
-<<<<<<< HEAD
-USE=0
-=======
-USE_STAFF=1
->>>>>>> d5f3d5ee1d73cf14a14eeeb7328d5c9145d1ef90
+USE_STAFF=0
 ifeq ($(USE_STAFF),1)
 OS_PATH = ../trivial-os.staff
 else

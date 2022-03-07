@@ -252,7 +252,7 @@ uint32_t domain_access_ctrl_get(void) {
 // b4-42
 // set domain access control register to <r>
 void domain_access_ctrl_set(uint32_t r) {
-    staff_domain_access_ctrl_set(r);
-	// cp15_domain_ctrl_wr(r);
+    // staff_domain_access_ctrl_set(r);
+	cp15_domain_ctrl_wr(r);
     // assert(domain_access_ctrl_get() == r);
 }

@@ -231,7 +231,7 @@ Disassembly of section .debug_info:
  100:	00000105 	andeq	r0, r0, r5, lsl #2
  104:	004d0e00 	subeq	r0, sp, r0, lsl #28
  108:	004d0000 	subeq	r0, sp, r0
- 10c:	14020000 	strne	r0, [r2], #-0
+ 10c:	16020000 	strne	r0, [r2], -r0
  110:	020e0006 	andeq	r0, lr, #6, 0
  114:	00040000 	andeq	r0, r4, r0
  118:	000000ca 	andeq	r0, r0, sl, asr #1

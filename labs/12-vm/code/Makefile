@@ -23,7 +23,7 @@ TEST_OUTS   := $(patsubst %.c, %.out, $(TEST_SRC))
 SUPPORT_OBJS = mmu-helpers.o mmu.o vm-ident.o mmu-except.o your-vm-asm.o
 
 # these are the binaries we give you: remove these when finished.
-STAFF_OBJS =  staff-mmu.o staff-mmu-asm.o
+STAFF_OBJS =   staff-mmu-asm.o
 
 include $(CS140E_2022_PATH)/libpi/mk/Makefile.template
 

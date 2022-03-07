@@ -66,43 +66,28 @@ void prefetch_abort_equiv(uint32_t *regs, uint32_t spsr, uint32_t pc) {
 }
 
 // if get a breakpoint call <brkpt_handler0>
-void prefetch_abort_equiv_struct(pix_env_t *curr_proc, uint32_t *regs, uint32_t pc) {
+void prefetch_abort_equiv_struct(pix_env_t *curr_proc, uint32_t spsr, uint32_t pc) {
 	assert(curr_proc == pix_cur_process);
-
-	
+	// pix_equiv_t cur_ctx = curr_proc->ctx;
+	// trace("passed check\n");
 	brkpt_mismatch_set(pc);
     // if in user mode, hash all the registers and spsr.
 	if(user_pc(pc)) {
 		const unsigned arr_size =  sizeof(uint32_t) * 17;
-		cur_ctx.reg_hash = fast_hash_inc32(regs, arr_size, cur_ctx.reg_hash);
+		curr_proc->ctx.reg_hash = fast_hash_inc32(curr_proc->reg_save, arr_size, cur_ctx.reg_hash);
+		cur_ctx.reg_hash = curr_proc->ctx.reg_hash;
 		if (cur_ctx.n_inst < cur_ctx.print_first_n) {
 			trace("reg hash = %x\n", cur_ctx.reg_hash);
-			trace("spsr= %p, lr = %x\n", curr_proc->reg_save[16], pc);
+			trace("spsr= %p, lr = %x\n", spsr, pc);
 
-			for (unsigned i = 0; i < 16; i++) {
-				curr_proc->reg_save[i] = regs[i];
-				trace("reg %d = %x\n", i, regs[i]);
+			for (unsigned i = 0; i < 17; i++) {
+				trace("reg %d = %x\n", i, curr_proc->reg_save[i]);
 			}
 			trace("------------------------------------------------------\n");
 		}
 		cur_ctx.n_inst++;
 	}
-    // // if in user mode, hash all the registers and spsr.
-	// if(user_pc(pc)) {
-	// 	const unsigned arr_size =  sizeof(uint32_t) * 17;
-	// 	cur_ctx.reg_hash = fast_hash_inc32(regs, arr_size, cur_ctx.reg_hash);
-	// 	if (cur_ctx.n_inst < cur_ctx.print_first_n) {
-	// 		trace("reg hash = %x\n", cur_ctx.reg_hash);
-	// 		trace("spsr= %p, lr = %x\n", spsr, pc);
-
-	// 		for (unsigned i = 0; i < 16; i++) {
-	// 			trace("reg %d = %x\n", i, regs[i]);
-	// 		}
-	// 		trace("------------------------------------------------------\n");
-	// 	}
-	// 	cur_ctx.n_inst++;
-	// }
-	
+	switchto_asm(&curr_proc->reg_save[0]);
 }
 
 int equiv_run_fn(int (*user_fn)(void), uint32_t sp, unsigned n_print) {
@@ -111,9 +96,21 @@ int equiv_run_fn(int (*user_fn)(void), uint32_t sp, unsigned n_print) {
     cur_ctx.print_first_n = n_print;
     assert(mode_is_super());
 
-
     brkpt_mismatch_start();
     int x = user_mode_run_fn(user_fn, sp);
+    not_reached();
+}
+
+//used for switchto_asm
+int equiv_run_fn_proc(int (*user_fn)(void), uint32_t sp, unsigned n_print) {
+    in_user = 0;
+    memset(&cur_ctx, 0, sizeof cur_ctx);
+    cur_ctx.print_first_n = n_print;
+    assert(mode_is_super());
+
+    brkpt_mismatch_start();
+    pix_env_t proc = pix_env_mk((uint32_t)user_fn, sp);
+	switchto_asm(&proc.reg_save[0]);
     not_reached();
 }
 

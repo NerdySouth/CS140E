@@ -45,5 +45,6 @@ void equiv_print(const char *msg);
 // run user_fn in single stepping mode at user level using stack <sp>
 // n_print = the first n instructions (for debugging)
 int equiv_run_fn(int (*user_fn)(void), uint32_t sp, unsigned n_print);
+int equiv_run_fn_proc(int (*user_fn)(void), uint32_t sp, unsigned n_print);
 
 #endif

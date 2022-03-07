@@ -129,7 +129,6 @@ prefetch_handler_equiv:
 	str r1, [sp, #64]	@ store spsr in reg arra]
 	mov r0, sp			@ store start of array in arg 1
 	mov r2, lr			@ store lr in arg 3
-	push {lr}
 
 	bl prefetch_abort_equiv	@ enter handler
 
@@ -160,25 +159,29 @@ part4_equiv_vec:
 
 prefetch_handler_equiv_struct:
 	sub  lr, lr, #4
-	mov sp, #INT_STACK
 
-	ldr r0, =pix_cur_process
-	ldr r0, [r0]
+	@ load in the curr process global
+	ldr sp, =pix_cur_process
+	ldr sp, [sp]
 
-	@ push registers
-	sub sp, sp, #68 	@ make room for array of regs
+	@ push registers to curr process struct
 	stm sp, {r0-r14}^	@ push registers to stack
 	str lr, [sp, #60]	@ push val of lr 
 	mrs r1, spsr		@ push spsr to arg 2
 	str r1, [sp, #64]	@ store spsr in reg arra]
-	mov r1, sp			@ store start of array in arg 1
+	mov r0, sp			@ store start of array in arg 1
 	mov r2, lr			@ store lr in arg 3
-	push {lr}
+
+	@ setup sp for function
+	mov sp, #INT_STACK	
 
 	bl prefetch_abort_equiv_struct	@ enter handler
 
-	pop {lr} 
+	ldr sp, =pix_cur_process	
+	ldr sp, [sp]
+	
 	ldm sp, {r0-r14}^	@ load all regs back from stack
+	ldr lr,  [sp, #60]
 	movs pc, lr 		@ return control
 
 
@@ -238,3 +241,10 @@ MK_FN(user_mode_run_fn)
 	@branch to user code (first arg; r0), use bx so that we dont load in anything for lr (r14)
 	bx r0
 
+@ c func: switchto_asm(&proc->reg_save[0])
+MK_FN(switchto_asm)
+	mov sp, r0
+	ldm sp, {r0-r14}^	@ load all regs back from stack
+	ldr lr, [sp, #60]
+	add sp, sp, #60
+	rfe sp!

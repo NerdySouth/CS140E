@@ -1,0 +1,8 @@
+tests/2-fat32-read.o: tests/2-fat32-read.c \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi.h \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/gpio.h \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/../libc/libc-extra.h \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/../libc/assert.h \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi-constants.h \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi-extra.h \
+ pi-sd.h fat32.h mbr.h pi-sd.h mbr-helpers.h pi-files.h
