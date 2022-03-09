@@ -3,7 +3,11 @@
 # SRC :=  $(REAL_SRC) $(wildcard ./*.c)
 # LIBNAME
 
+ifdef CS140E_STAFF_2022_PATH
+LIBUNIX_PATH := $(CS140E_STAFF_2022_PATH)/libunix
+else
 LIBUNIX_PATH := $(CS140E_2022_PATH)/libunix
+endif
 
 PROG_OBJS := $(PROG_SRC:.c=.o)
 PROG_OBJS := $(foreach obj, $(PROG_OBJS), ./$(notdir $(obj)))
@@ -28,11 +32,11 @@ CFLAGS += -Wall -g -std=gnu99  -Werror -Wno-unused-function -Wno-unused-variable
 LU = $(LIBUNIX_PATH)
 CFLAGS += -I. -I$(LU)
 
-DEPS := ./Makefile
+DEPS += ./Makefile
 
-all : libs $(OBJS) $(PROG_OBJS) $(PROGS) # $(LIBNAME) # $(OBJS) 
+all : libs $(OBJS) $(PROG_OBJS) $(PROGS) $(LIBNAME) # $(OBJS) 
 
-libs:
+libs::
 	make -C $(LU)
 
 # fix this rule: can't delete the targets in <all>
@@ -42,8 +46,8 @@ libs:
 $(LIBNAME): $(OBJS) $(DEPS)
 	ar cr $(LIBNAME) $(OBJS) 
 
-./%: ./%.o $(OBJS) $(DEPS) 
-	$(CC) $(CFLAGS) $(OBJS) $< -o $@  $(LU)/libunix.a $(LIBS)
+./%: ./%.o $(OBJS) $(DEPS)  $(LU)/libunix.a 
+	$(CC) $(CFLAGS) $(OBJS) $< -o $@  $(LU)/libunix.a $(LIBS) $(LU)/libunix.a
 
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),cleanall)

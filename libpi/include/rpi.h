@@ -313,4 +313,7 @@ void reboot_callout(void);
 
 #include "rpi-extra.h"
 
+// can override this so busy wait loops yield.
+void rpi_wait(void);
+
 #endif
