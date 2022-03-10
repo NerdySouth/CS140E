@@ -8,13 +8,13 @@ BOOTLOADER = my-install
 GREP_STR := 'HASH:\|ERROR:\|PANIC:\|PASS:\|TEST:'
 
 # set if you want the code to automatically run after building.
-RUN = 1
+# RUN = 1
 # set if you want the code to automatically check after building.
 #CHECK = 1
 
-TEST_SRC := $(wildcard ./tests/[2]-*.c)
+# TEST_SRC := $(wildcard ./tests/[2]-*.c)
 # TEST_SRC := $(wildcard ./tests/[1]-*.c)
-# TEST_SRC := $(wildcard ./tests/[012]-*.c)
+TEST_SRC := $(wildcard ./tests/[012]-*.c)
 
 # a list of all of your object files.
 SRC := pi-sd.c mbr.c fat32.c mbr-helpers.c fat32-helpers.c fat32-lfn-helpers.c external-code/unicode-utf8.c external-code/bzt-sd.c

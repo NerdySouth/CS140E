@@ -1,0 +1,76 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./tests/2-fat32-hash-read.bin> about to boot
+TRACE:simple_boot: sending 32040 bytes, crc32=31b6cd2e
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+EMMC: GPIO set up
+EMMC: reset OK
+sd_clk divisor 0x68, shift 0x6
+EMMC: Sending command 0x0 arg 0x0
+EMMC: Sending command 0x8020000 arg 0x1aa
+EMMC: Sending command 0x37000000 arg 0x0
+EMMC: Sending command 0x29020000 arg 0x51ff8000
+EMMC: CMD_SEND_OP_COND returned VOLTAGE CCS 0x40f98000
+EMMC: Sending command 0x37000000 arg 0x0
+EMMC: Sending command 0x29020000 arg 0x51ff8000
+EMMC: CMD_SEND_OP_COND returned COMPLETE VOLTAGE CCS 0xc1f98000
+EMMC: Sending command 0x2010000 arg 0x0
+EMMC: Sending command 0x3020000 arg 0x0
+EMMC: CMD_SEND_REL_ADDR returned 0xe6240000
+sd_clk divisor 0x2, shift 0x0
+EMMC: Sending command 0x7030000 arg 0xe6240000
+EMMC: Sending command 0x37020000 arg 0xe6240000
+EMMC: Sending command 0x33220010 arg 0x0
+EMMC: Sending command 0x37020000 arg 0xe6240000
+EMMC: Sending command 0x6020000 arg 0xe6240002
+EMMC: supports SET_BLKCNT CCS 
+Reading the MBR.
+sd_readblock lba 0x0 num 0x1
+EMMC: Sending command 0x11220010 arg 0x0
+TRACE:sd_read: lba=<0x0>, cksum=0x8e75ceef
+Loading the first partition.
+Loading the FAT.
+sd_readblock lba 0x2000 num 0x1
+EMMC: Sending command 0x11220010 arg 0x2000
+TRACE:sd_read: lba=<0x2000>, cksum=0x495c3ee5
+sd_readblock lba 0x2001 num 0x1
+EMMC: Sending command 0x11220010 arg 0x2001
+TRACE:sd_read: lba=<0x2001>, cksum=0x3dfb3cb6
+TRACE:About to read in the FAT from LBA: 0x2256 for nsecs = 3797
+sd_readblock lba 0x2256 num 0xed5
+EMMC: Sending command 0x17020000 arg 0xed5
+EMMC: Sending command 0x12220032 arg 0x2256
+TRACE:sd_read: lba=<0x2256>, cksum=0xcbb901a5
+TRACE:begin lba = 8790
+TRACE:cluster begin lba = 16384
+TRACE:sectors per cluster = 64
+TRACE:root dir first cluster = 2
+Loading the root directory.
+Looking for BOOTCODE.BIN.
+TRACE:cluster 2 to lba: 16384
+sd_readblock lba 0x4000 num 0x40
+EMMC: Sending command 0x17020000 arg 0x40
+EMMC: Sending command 0x12220032 arg 0x4000
+TRACE:sd_read: lba=<0x4000>, cksum=0xc163dcb6
+Reading BOOTCODE.BIN
+TRACE:cluster 2 to lba: 16384
+sd_readblock lba 0x4000 num 0x40
+EMMC: Sending command 0x17020000 arg 0x40
+EMMC: Sending command 0x12220032 arg 0x4000
+TRACE:sd_read: lba=<0x4000>, cksum=0xc163dcb6
+TRACE:cluster 2 to lba: 16384
+sd_readblock lba 0x4000 num 0x40
+EMMC: Sending command 0x17020000 arg 0x40
+EMMC: Sending command 0x12220032 arg 0x4000
+TRACE:sd_read: lba=<0x4000>, cksum=0xc163dcb6
+crc of BOOTCODE.BIN (nbytes=50248) = 0x4bf01193
+PANIC:tests/2-fat32-hash-read.c:read_and_hash:21:expected hash = 0xfd8d57d1, computed hash = 0x4bf01193
+
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

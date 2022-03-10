@@ -1,0 +1,43 @@
+opened tty port </dev/cu.SLAB_USBtoUART>.
+my-install: tty-usb=</dev/cu.SLAB_USBtoUART> program=<./tests/0-sd.bin> about to boot
+TRACE:simple_boot: sending 31252 bytes, crc32=a2cfe5c5
+waiting for a start
+unix-side implementation
+putting code
+bootloader: Done.
+listening on ttyusb=</dev/cu.SLAB_USBtoUART>
+Starting SD Driver test.
+Initializing...
+EMMC: GPIO set up
+EMMC: reset OK
+sd_clk divisor 0x68, shift 0x6
+EMMC: Sending command 0x0 arg 0x0
+EMMC: Sending command 0x8020000 arg 0x1aa
+EMMC: Sending command 0x37000000 arg 0x0
+EMMC: Sending command 0x29020000 arg 0x51ff8000
+EMMC: CMD_SEND_OP_COND returned VOLTAGE CCS 0x40f98000
+EMMC: Sending command 0x37000000 arg 0x0
+EMMC: Sending command 0x29020000 arg 0x51ff8000
+EMMC: CMD_SEND_OP_COND returned COMPLETE VOLTAGE CCS 0xc1f98000
+EMMC: Sending command 0x2010000 arg 0x0
+EMMC: Sending command 0x3020000 arg 0x0
+EMMC: CMD_SEND_REL_ADDR returned 0xe6240000
+sd_clk divisor 0x2, shift 0x0
+EMMC: Sending command 0x7030000 arg 0xe6240000
+EMMC: Sending command 0x37020000 arg 0xe6240000
+EMMC: Sending command 0x33220010 arg 0x0
+EMMC: Sending command 0x37020000 arg 0xe6240000
+EMMC: Sending command 0x6020000 arg 0xe6240002
+EMMC: supports SET_BLKCNT CCS 
+Reading first block...
+sd_readblock lba 0x0 num 0x1
+EMMC: Sending command 0x11220010 arg 0x0
+TRACE:sd_read: lba=<0x0>, cksum=0x8e75ceef
+Verifying signature at the end of the block...
+Got 0x0xaa55!
+PASS: tests/0-sd.c
+DONE!!!
+
+Saw done
+
+bootloader: pi exited.  cleaning up

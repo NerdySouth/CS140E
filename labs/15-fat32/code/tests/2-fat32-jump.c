@@ -73,7 +73,8 @@ void notmain() {
     // jump to it using BRANCHTO.  make sure
     // you skip the header!  (see in hello-f.list
     // and memmap.fixed in 13-fat32/hello-fixed
-    unimplemented();
+
+	BRANCHTO(0x100000f0 + p[1]);
 
   printk("PASS: %s\n", __FILE__);
   clean_reboot();
