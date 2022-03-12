@@ -15,7 +15,7 @@ CFLAGS += -Wno-unused-function -Wno-unused-variable -falign-functions=4
 DEPS := $(MEMMAP) $(LPI) $(wildcard ./*.h) ./Makefile 
 
 # uncomment the different tests.
-all: libpi $(OBJS) accel.bin run
+all: libpi $(OBJS) bme280.bin run
 
 libpi: 
 	@ # @make -s -C $(LPP)

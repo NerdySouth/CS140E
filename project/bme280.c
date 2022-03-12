@@ -49,14 +49,14 @@ uint16_t bme280_read16(uint8_t reg) {
  * so we correct that in our read24() 
 * THIS FUNCTION READS/RETURNS AN UNSIGNED VALUE
  */
-uint16_t bme280_read24(uint8_t reg) {
+int32_t bme280_read24(uint8_t reg) {
 	i2c_write(BME_I2C, &reg, 1);
 	
 	uint8_t reg_val[3];
     i2c_read(BME_I2C, &reg_val[0], 3);
 
-	return ((uint32_t)(reg_val[0]) << 16) | ((uint32_t)(reg_val[1]) << 8) |
-         ((uint32_t)(reg_val[2]));
+	return ( (int32_t)(reg_val[0]) << 16 | (int32_t)(reg_val[1]) << 8 |
+         (int32_t)(reg_val[2]) );
 }
 
 /* bme280_write8(uint8_t reg_addr, uint8_t data)
@@ -179,15 +179,20 @@ uint8_t take_measurement(void) {
  * returns  number like "6054"
  */
 int32_t bme280_read_temp(void) {
-	uint32_t temp_data = bme280_read24(TEMPDATA_REG);
-	printk("temp  val = %d\n", temp_data);
-	// temp_data >>= 4;
+	uint8_t temp_data_msb = bme280_read8(TEMPDATA_REG1);
+	uint8_t temp_data_lsb = bme280_read8(TEMPDATA_REG2);
+	uint8_t temp_data_xlsb = bme280_read8(TEMPDATA_REG3);
+	int32_t temp_data = temp_data_msb << 24 | temp_data_lsb  << 16 | temp_data_xlsb << 8;
+	uint8_t conf = bme280_read8(CONFIG_REG);
+	// printk("conf  val = %b\n", conf); 
+	temp_data >>= 4;
 	int32_t var1, var2, real_temp;
-	var1 = ((((temp_data >> 3)  - ((int32_t)calib_data.dig_T1 << 1))) * ((int32_t)calib_data.dig_T2)) >> 11;
+	var1 = (int32_t)((temp_data >> 3)  - ((int32_t)calib_data.dig_T1 << 1)) * ((int32_t)calib_data.dig_T2) >> 11;
 	var2 = (((((temp_data >> 4) - ((int32_t)calib_data.dig_T1)) * ((temp_data >> 4) - ((int32_t)calib_data.dig_T1))) >> 12) * ((int32_t)calib_data.dig_T3)) >> 14;
 	int32_t t_fine = var1 + var2;
-	real_temp = ((t_fine * 5) + 128) >> 8;
+	real_temp = (t_fine * 5 + 128) >> 8;
 	return real_temp;
+	
 }
 
 
@@ -224,7 +229,7 @@ void bme280_init(void) {
 	read_calibration_data();
 
 	// bme280_config(MODE_SLEEP, SAMPLING_X16, SAMPLING_X16, SAMPLING_X16, FILTER_OFF, STANDBY_MS_0_5);			// default config
-	bme280_config(MODE_SLEEP, SAMPLING_X1, SAMPLING_X1, SAMPLING_X1, FILTER_OFF, STANDBY_MS_0_5);			// weather monitoring config
+	bme280_config(MODE_SLEEP, SAMPLING_X1, SAMPLING_X1, SAMPLING_X1, FILTER_OFF, STANDBY_MS_10);			// weather monitoring config
 
 	//let sensor settle
 	delay_ms(100);
@@ -252,13 +257,14 @@ void notmain(void) {
 
 	// dance so that we discard the first (unreliable) measurement
 	take_measurement();
-	int32_t temp = bme280_read_temp();
+	signed int temp = bme280_read_temp();
 	//now take real new measurements
 	take_measurement();
 
 	while (1) {
 		temp = bme280_read_temp();
-		printk("Temp = %d\n", temp);
+		printk("Temp = %d\n",temp);
+		take_measurement();
 		delay_ms(5000);
 	}
     clean_reboot();

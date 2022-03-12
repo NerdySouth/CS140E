@@ -43,7 +43,9 @@ enum {
 	
 	// data registers
 	PRESSUREDATA_REG = 0xF7,
-  	TEMPDATA_REG = 0xFA,
+  	TEMPDATA_REG1 = 0xFA,
+	TEMPDATA_REG2 = 0xFB,
+	TEMPDATA_REG3 = 0xFC,
   	HUMIDDATA_REG = 0xFD
 
 };
@@ -194,7 +196,7 @@ uint16_t bme280_read16(uint8_t reg);
  * so we correct that in our read24() 
 * THIS FUNCTION READS/RETURNS AN UNSIGNED VALUE
  */
-uint16_t bme280_read24(uint8_t reg);
+int32_t bme280_read24(uint8_t reg);
 
 /* Function  to check if bme28 sensor is still starting
  * up. See page 28 of bme280 doc.
