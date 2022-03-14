@@ -5,6 +5,7 @@
 
 // staff-provided prototypes and routines.
 #include "staff-libunix.h"
+#include "interpose.h"
 
 //
 // You need to implement:

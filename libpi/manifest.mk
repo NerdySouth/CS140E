@@ -15,22 +15,10 @@ RUN = 1
 #CHECK = 0
 
 ifdef CS140E_STAFF
-<<<<<<< HEAD
 # STAFF_OBJS += staff-objs/kmalloc.o
 STAFF_OBJS += staff-objs/sw-uart.o
 # STAFF_OBJS += staff-objs/interrupts-asm.o      
 # STAFF_OBJS += staff-objs/interrupts-vec-asm.o 
-=======
-ifndef CS140_ACT_AS_STUDENT
-STAFF_OBJS += staff-objs/kmalloc.o
-STAFF_OBJS += staff-objs/sw-uart.o
-STAFF_OBJS += staff-objs/interrupts-asm.o      
-STAFF_OBJS += staff-objs/interrupts-vec-asm.o 
-STAFF_OBJS += staff-objs/rpi-thread.o 
-STAFF_OBJS += staff-objs/rpi-thread-asm.o 
-STAFF_OBJS += staff-objs/sw-spi.o
-endif
->>>>>>> b9dc6e7b0abea018c2fde51a97c9c8393cc83e43
 endif
 
 DEPS += ./src

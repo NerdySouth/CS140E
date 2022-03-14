@@ -10,7 +10,7 @@ RUN = 0
 TEST_SRC := $(wildcard ./tests/*-*.c)
 # one way send
 TEST_SRC := $(wildcard ./tests/[1]-*.c)
-TEST_SRC := $(wildcard ./tests/[0]-*.c)
+TEST_SRC := $(wildcard ./tests/[01]-*.c)
 
 SRC := nrf-util.c nrf-public.c nrf-driver.c
 STAFF_OBJS := staff-nrf-driver.o

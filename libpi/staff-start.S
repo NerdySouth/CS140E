@@ -19,6 +19,7 @@ _start:
     mov sp, #STACK_ADDR @ initialize stack pointer
     mov fp, #0          @ clear frame pointer reg.  don't think needed.
     @ bl notmain        @ we could jump right to notmain
+
     bl _cstart          @ call our code to do initialization.
     bl rpi_reboot       @ if they return just reboot.
 
@@ -92,6 +93,13 @@ m4add2:
 m4vmov:
     vmov s4,r0
     vmov s5,r0
+    bx lr
+
+.globl m4itof
+m4itof:
+    vmov s0,r0
+    vcvt.f32.u32 s2,s0
+    vmov r0,s2
     bx lr
 
 #endif

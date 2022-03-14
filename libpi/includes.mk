@@ -24,7 +24,7 @@ INC = -I$(LIBPI_PATH)/include -I.  -I$(LIBPI_PATH)/ -I$(LIBPI_PATH)/libc -I$(LIB
 
 # -I$(LIBPI_PATH)/staff-src
 
-CFLAGS = -Og -Wall -nostdlib -nostartfiles -ffreestanding -mcpu=arm1176jzf-s -mtune=arm1176jzf-s  -std=gnu99 $(INC) -ggdb -Wno-pointer-sign
+CFLAGS = -Og -Wall -nostdlib -nostartfiles -ffreestanding -mcpu=arm1176jzf-s -mtune=arm1176jzf-s  -std=gnu99 $(INC) -ggdb -Wno-pointer-sign 
 
 ASFLAGS = --warn --fatal-warnings  -mcpu=arm1176jzf-s -march=armv6zk $(INC)
 

@@ -60,7 +60,13 @@ static void nrf_rx_mode(nrf_t *n) {
     // 2. then switch the NRF_CONFIG registetr.
     // 3. write CE to go to RX
     // 4. delay til device settles.
-    unimplemented();
+	
+	ce_lo(n->c.ce_pin);
+	//write  prim rx value to config reg
+	nrf_put8(n, NRF_CONFIG, n->rx_config);
+	ce_hi(n->c.ce_pin);
+	delay_us(130);
+
 
     assert(nrf_is_rx(n));
 }
@@ -88,7 +94,16 @@ static void nrf_tx_mode(nrf_t *n) {
     //          -> TX (by writing data into the FIFO)
     // see the state machine on p22.
 
-    unimplemented();
+	//  set ce pin to 0 to go to rx mode
+	ce_lo(n->c.ce_pin);
+
+	//make sure PRIM_RX is 0
+	nrf_put8(n, NRF_CONFIG, n->tx_config);
+
+	// go to TX state
+	// ce_hi(n->c.ce_pin);
+
+	assert(nrf_is_tx(n));
 }
 
 // send the packet: called by nrf_tx_send_noack and nrf_tx_send_ack
@@ -99,10 +114,10 @@ static void do_tx(nrf_t *n, const void *msg, unsigned nbytes) {
 
     // clock in a payload that has the same length as the receiver.
     // hint: use putn!
-    unimplemented();
-
+	nrf_putn(n, NRF_W_TX_PAYLOAD, msg, nbytes);
     // 9. pulse CE to transmit the packet (p23: min 10 sec)
-
+	ce_hi(n->c.ce_pin);
+	delay_us(15);
 
     // set CE low
     ce_lo(n->c.ce_pin);
@@ -356,6 +371,7 @@ int nrf_tx_send_noack(nrf_t *n, uint32_t txaddr, const void *msg, unsigned nbyte
     while(nrf_get_pkts(n))
         ;
     nrf_tx_mode(n);
+	slow_assert(n, nrf_is_tx(n) == 1);
 
     slow_assert(n, !nrf_pipe_is_enabled(n, 0));
     slow_assert(n, nrf_pipe_is_enabled(n, 1));
@@ -365,7 +381,7 @@ int nrf_tx_send_noack(nrf_t *n, uint32_t txaddr, const void *msg, unsigned nbyte
     unsigned addr_nbytes = n->c.addr_nbytes;
     nrf_debug("setting tx addresses: %x, nbytes=%d\n", txaddr, addr_nbytes);
 
-    unimplemented();
+	nrf_set_addr(n, NRF_TX_ADDR, txaddr, addr_nbytes);
 
     nrf_debug("about to do a tx\n");
     do_tx(n,msg,nbytes);
@@ -375,7 +391,8 @@ int nrf_tx_send_noack(nrf_t *n, uint32_t txaddr, const void *msg, unsigned nbyte
     //  1. wait until tx is empty.
     //  2. clear the tx interrupt.
     //  3. switch back to rx mode.
-    unimplemented();
+    while(!nrf_tx_fifo_empty(n)) { delay_ms(1); }
+	nrf_tx_intr_clr(n);
 
 
     nrf_debug("tx success\n");
@@ -433,7 +450,8 @@ int nrf_tx_send_ack(nrf_t *n, uint32_t txaddr, const void *msg, unsigned nbytes)
 
     // setup for ack:
     //  1. write address for retran and for tx.
-    unimplemented();
+	nrf_set_addr(n, NRF_TX_ADDR, txaddr, addr_nbytes);
+	nrf_set_addr(n, NRF_RX_ADDR_P0, txaddr, addr_nbytes);
 
     do_tx(n,msg,nbytes);
 
@@ -460,7 +478,7 @@ int nrf_tx_send_ack(nrf_t *n, uint32_t txaddr, const void *msg, unsigned nbytes)
         if(nrf_has_tx_intr(n)) {
             slow_assert(n, nrf_tx_fifo_empty(n));
             /// clear the TX interrupt
-            unimplemented();
+			nrf_tx_intr_clr(n);
             goto done;
         }
 
@@ -468,6 +486,7 @@ int nrf_tx_send_ack(nrf_t *n, uint32_t txaddr, const void *msg, unsigned nbytes)
         if(nrf_has_max_rt_intr(n)) {
             // have to flush and clear the rt interrupt.
             nrf_dump("max inter config", n);
+			nrf_rt_intr_clr(n);
             panic("max intr\n");
         }
 

@@ -1,12 +1,12 @@
 #ifndef __RPI_BME280_H__
 #define __RPI_BME280_H__
 
-// register addresses. See page chapter 5.4, page 25 of bme280 doc
+// register addresses. See page chapter 5.4, page 24/25 of bme280 doc
 enum {
 	// tempature compensation values
 	DIG_REG_T1 = 0x88,
-	DIG_REG_T2 = 0x90,
-	DIG_REG_T3 =  0x92,
+	DIG_REG_T2 = 0x8A,
+	DIG_REG_T3 =  0x8C,
 
 	// pressure compenation values
 	DIG_REG_P1 = 0x8E,
@@ -163,6 +163,10 @@ typedef struct  {
 //instance to hold config data
 static conf_reg config_reg;
 
+// used for temp, press, hum compensation
+int32_t t_fine; 
+
+
 //helper to get the value of our config reg type as a uint8_t
 uint8_t conf_reg_u8(conf_reg config_reg);
 
@@ -228,6 +232,10 @@ void bme280_config(uint32_t mode,
                    uint32_t duration);
 
 int32_t bme280_read_temp(void);
+
+uint32_t bme280_read_pressure(void);
+
+int32_t bme280_read_humidity(void);
 
 
 #endif

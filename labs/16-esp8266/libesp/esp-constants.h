@@ -14,11 +14,11 @@
 // can mess around with this.
 #define ESP_MAX_PKT  1024
 
-#ifndef STAFF
-#   error "define your own NETWORK to some same length string"
-#endif
+	// #ifndef STAFF
+	// #   error "define your own NETWORK to some same length string"
+	// #endif
 
-#define NETWORK  "engler123"
+#define NETWORK  "ismael"
 #define PASSWORD  "12345678"
 
 #endif

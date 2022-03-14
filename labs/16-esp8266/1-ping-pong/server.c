@@ -48,27 +48,60 @@ void esp_main(lex_t *l) {
     esp_set_verbose(0);
     unsigned x,n;
     // print out any data we receive.
-    for(int i = 0; i < NTRIALS; i++)  {
-        char hello[1024];
-        sprintf(hello, "hello %d", i);
-        output("sending <%s>\n", hello);
-        if(!esp_send(&e, 0, hello, strlen(hello)))
-            panic("cannot send!!\n");
+	char input[1024];
+	printf("Enter path to remote CS140E:");
+	scanf("%s", input);
+	
+	//send path over, wait for ack
+	output("sending <%s>\n", input);
+	if(!esp_send(&e, 0, input, strlen(input)))
+		panic("cannot send!!\n");
 
-        output("going to wait on ch=%d\n", ch);
-        // oh: we don't actually know
-        char reply[1024];
-        n = esp_is_recv(&e, &x, reply, sizeof reply);
-        assert(x == ch);
-        reply[n] = 0;
-        output("received ack from client=%d: <%s>\n", ch, reply);
-        if(strcmp(reply,hello) == 0)
-            output("passed check!\n");
-        else
-            panic("mismatch: have <%s>, expected <%s>\n", reply,hello);
+	output("going to wait on ch=%d\n", ch);
+	// oh: we don't actually know
+	char reply[1024];
+	n = esp_is_recv(&e, &x, reply, sizeof reply);
+	assert(x == ch);
+	reply[n] = 0;
+	output("received ack from client=%d: <%s>\n", ch, reply);
+	if(strcmp(reply,input) == 0)
+		output("passed check!\n");
+	else
+		panic("mismatch: have <%s>, expected <%s>\n", reply,input);
+
+	
+	// send file to run
+	printf("Enter file to run on  remote pi:");
+	scanf("%s", input);
+	
+	//send path over, wait for ack
+	output("sending <%s>\n", input);
+	if(!esp_send(&e, 0, input, strlen(input)))
+		panic("cannot send!!\n");
+
+	output("going to wait on ch=%d\n", ch);
+	// oh: we don't actually know
+	n = esp_is_recv(&e, &x, reply, sizeof reply);
+	assert(x == ch);
+	reply[n] = 0;
+	output("received ack from client=%d: <%s>\n", ch, reply);
+	if(strcmp(reply,input) == 0)
+		output("passed check!\n");
+	else
+		panic("mismatch: have <%s>, expected <%s>\n", reply,input);
+
+	// // wait for reply
+	// while (1) {
+	// 	if (esp_is_recv(&e, &x, reply, sizeof reply)) {
+	// 		break;
+	// 	}
+	// }
+
+	// have reply, print it
+	printf("%s\n", reply);
+
 
 //        sleep(1);
-    }
     output("SUCCESS: did %d roundtrips without losing any packet\n", NTRIALS);
 
 }

@@ -24,7 +24,8 @@ SRC := $(wildcard ./src/*.[Sc])
 #
 # currently: use our uart.o (for printk) and gpio.o
 STAFF_OBJS  :=  ./staff-objs/gpio-pud.o     \
-				./staff-objs/kmalloc.o
+				./staff-objs/kmalloc.o		\
+				./staff-objs/sw-spi.o
                 # ./staff-objs/gpio-int.o 
 # STAFF_OBJS += staff-objs/interrupts-asm.o
 # STAFF_OBJS += staff-objs/sw-uart.o

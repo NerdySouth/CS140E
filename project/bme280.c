@@ -1,6 +1,8 @@
 #include "rpi.h"
 #include "i2c.h"
+#include "stdint.h"
 #include "bme280.h"
+// #include "simple-boot.h"z	
 
 // i2c addr for bme280 sensor
 #define BME_I2C 0x77
@@ -27,6 +29,7 @@
 	
 	uint8_t reg_val;
     i2c_read(BME_I2C, &reg_val, 1);
+
     return reg_val;
  }
 
@@ -37,11 +40,11 @@
  */
 uint16_t bme280_read16(uint8_t reg) {
 	i2c_write(BME_I2C, &reg, 1);
-	
+
 	uint8_t reg_val[2];
     i2c_read(BME_I2C, &reg_val[0], 2);
 
-	return (reg_val[0] >> 8) | (reg_val[1] << 8);
+	return (uint16_t)(reg_val[0]) | (uint16_t)(reg_val[1] << 8);
 }
 
 /* Function to read a 3 byte value from BME280 Sensor
@@ -55,8 +58,15 @@ int32_t bme280_read24(uint8_t reg) {
 	uint8_t reg_val[3];
     i2c_read(BME_I2C, &reg_val[0], 3);
 
-	return ( (int32_t)(reg_val[0]) << 16 | (int32_t)(reg_val[1]) << 8 |
-         (int32_t)(reg_val[2]) );
+	uint32_t msb = (uint32_t)reg_val[0];
+	uint32_t middle = (uint32_t)reg_val[1];
+	uint32_t lsb = (uint32_t)reg_val[2];
+
+	msb = (uint32_t)reg_val[0] << 16;
+	middle = (uint32_t)reg_val[1] << 8;
+	lsb = (uint32_t)reg_val[2];
+
+	return msb | middle | lsb;
 }
 
 /* bme280_write8(uint8_t reg_addr, uint8_t data)
@@ -97,7 +107,6 @@ uint8_t conf_reg_u8(conf_reg config_reg) {
  */
 uint8_t starting() {
 	const uint8_t status =  bme280_read8(STATUS_REG);
-
 	return status & 1;
 }
 
@@ -108,7 +117,7 @@ void read_calibration_data(void) {
 	calib_data.dig_T1 = bme280_read16(DIG_REG_T1);
 	calib_data.dig_T2 = (int16_t)bme280_read16(DIG_REG_T2);
 	calib_data.dig_T3 = (int16_t)bme280_read16(DIG_REG_T3);
-	printk("T1 = %d\nT2  = %d\nT3 = %d\n", calib_data.dig_T1, calib_data.dig_T2, calib_data.dig_T3);
+
 
 	calib_data.dig_P1 = bme280_read16(DIG_REG_P1);
 	calib_data.dig_P2 = (int16_t)bme280_read16(DIG_REG_P2);
@@ -122,9 +131,12 @@ void read_calibration_data(void) {
 
 	calib_data.dig_H1 = bme280_read8(DIG_REG_H1);
 	calib_data.dig_H2 = (int16_t)bme280_read16(DIG_REG_H2);
+
 	calib_data.dig_H3 = bme280_read8(DIG_REG_H3);
+	printk("reading dig  h4 reg...\n");
 	calib_data.dig_H4 = ((int8_t)bme280_read8(DIG_REG_H4) << 4) |
 							(bme280_read8(DIG_REG_H4 + 1) & 0xF);
+	printk("reading dig h5 reg...\n");
 	calib_data.dig_H5 = ((int8_t)bme280_read8(DIG_REG_H5 + 1) << 4) |
 							(bme280_read8(DIG_REG_H5) >> 4);
 	calib_data.dig_H6 = (int8_t)bme280_read8(DIG_REG_H6);
@@ -168,7 +180,6 @@ void bme280_config(uint32_t mode, uint32_t tempSampling, uint32_t pressSampling,
 uint8_t take_measurement(void) {
 	ctrl_meas.mode = MODE_FORCED;
 	bme280_write8(CONTROL_REG, ctrl_reg_u8(ctrl_meas));
-
 	while (bme280_read8(STATUS_REG) & 0x08) {delay_ms(1);}
 	return  1;
 		
@@ -179,20 +190,94 @@ uint8_t take_measurement(void) {
  * returns  number like "6054"
  */
 int32_t bme280_read_temp(void) {
-	uint8_t temp_data_msb = bme280_read8(TEMPDATA_REG1);
-	uint8_t temp_data_lsb = bme280_read8(TEMPDATA_REG2);
-	uint8_t temp_data_xlsb = bme280_read8(TEMPDATA_REG3);
-	int32_t temp_data = temp_data_msb << 24 | temp_data_lsb  << 16 | temp_data_xlsb << 8;
-	uint8_t conf = bme280_read8(CONFIG_REG);
-	// printk("conf  val = %b\n", conf); 
+	take_measurement();
+	int32_t temp_data = bme280_read24(TEMPDATA_REG1);
+
 	temp_data >>= 4;
 	int32_t var1, var2, real_temp;
-	var1 = (int32_t)((temp_data >> 3)  - ((int32_t)calib_data.dig_T1 << 1)) * ((int32_t)calib_data.dig_T2) >> 11;
-	var2 = (((((temp_data >> 4) - ((int32_t)calib_data.dig_T1)) * ((temp_data >> 4) - ((int32_t)calib_data.dig_T1))) >> 12) * ((int32_t)calib_data.dig_T3)) >> 14;
-	int32_t t_fine = var1 + var2;
-	real_temp = (t_fine * 5 + 128) >> 8;
-	return real_temp;
+	var1 = (int32_t)((temp_data >> 3) - ((int32_t)calib_data.dig_T1 << 1));
+	var1 = (var1 * ((int32_t)calib_data.dig_T2)) >> 11;
+	var2 = (int32_t)((temp_data >> 4) - ((int32_t)calib_data.dig_T1));
+	var2 = (((var2 * var2) >> 12) * ((int32_t)calib_data.dig_T3)) >> 14;
+
+	//update t_fine from .h
+	t_fine = var1 + var2;
+
+	real_temp = (t_fine * 5 + 128) / 256;
+	//fareinheight conversion
+	int32_t far = ((real_temp  * 9) / 5) + 3200;
+
+	return far;
 	
+}
+
+/* Function to take a pressure reading from the bme280 sensor
+ * Returns a 32 bit signed int. uses 64 bit long div, unusable on pi zero
+ * returns  number like "60540978" which means 60540978 / 256 = 
+ */
+	// uint32_t bme280_read_pressure(void) {
+	// 	int32_t press_data = bme280_read24(TEMPDATA_REG1);
+
+	// 	int64_t var1, var2, real_press;
+	// 	var1 = ((int64_t)t_fine) - 128000;
+	// 	var2 = var1 * var1 * (int64_t)calib_data.dig_P6;
+	// 	var2 += ((var1  * (int64_t)calib_data.dig_P5) << 17);
+	// 	var2 += (((int64_t)calib_data.dig_P4) << 35);
+	// 	var1 = ((var1 * var1 * (int64_t)calib_data.dig_P3) >> 8) + ((var1 *  (int64_t)calib_data.dig_P2) << 12);
+	// 	var1 = (((((int64_t)1) << 47) + var1)) * ((int64_t)calib_data.dig_P1) >> 33;
+		
+	// 	// div by zero chance
+	// 	if (!var1)
+	// 		return 0;
+
+	// 	//update t_fine from .h
+	// 	real_press = 1048576 - press_data;
+	// 	real_press = (((real_press << 31) - var2) * 3125) / var1;
+	// 	var1 = (((int64_t)calib_data.dig_P9) * (real_press >> 13) * (real_press  >> 13) >> 25);
+	// 	var2 = (((int64_t)calib_data.dig_P8) * real_press) >> 19;
+	// 	real_press = ((real_press + var1 + var2) >> 8) + (((int64_t)calib_data.dig_P7) << 4);
+	// 	return real_press;
+		
+	// }
+
+int32_t bme_read_humidity(void) {
+
+	int32_t var1, var2, var3, var4, var5;
+
+	bme280_read_temp(); // must be done first to get t_fine
+
+	// int32_t adc_H = bme280_read16(HUMIDDATA_REG);
+	int32_t adc_H = 0x547e;	
+	if (adc_H == 0x8000) // value in case humidity measurement was disabled
+		return 0; //NaN
+
+	printk("adc_H: %x\n", adc_H);
+
+	printk("dig_H1: %x\n", calib_data.dig_H1);
+	printk("dig_H2: %x\n", calib_data.dig_H2);
+	printk("dig_H3: %x\n", calib_data.dig_H3);
+	printk("dig_H4: %x\n", calib_data.dig_H4);
+	printk("dig_H5: %x\n", calib_data.dig_H5);
+	printk("dig_H6: %x\n", calib_data.dig_H6);
+
+	var1 = t_fine - ((int32_t)76800);
+	var2 = (int32_t)(adc_H * 16384);
+	var3 = (int32_t)(((int32_t)calib_data.dig_H4) * 1048576);
+	var4 = ((int32_t)calib_data.dig_H5) * var1;
+	var5 = (((var2 - var3) - var4) + (int32_t)16384) / 32768;
+	var2 = (var1 * ((int32_t)calib_data.dig_H6)) / 1024;
+	var3 = (var1 * ((int32_t)calib_data.dig_H3)) / 2048;
+	var4 = ((var2 * (var3 + (int32_t)32768)) / 1024) + (int32_t)2097152;
+	var2 = ((var4 * ((int32_t)calib_data.dig_H2)) + 8192) / 16384;
+	var3 = var5 * var2;
+	var4 = ((var3 / 32768) * (var3 / 32768)) / 128;
+	var5 = var3 - ((var4 * ((int32_t)calib_data.dig_H1)) / 16);
+	var5 = (var5 < 0 ? 0 : var5);
+	var5 = (var5 > 419430400 ? 419430400 : var5);
+	uint32_t H = (uint32_t)(var5 / 4096);
+
+	return H / 1024;
+
 }
 
 
@@ -200,9 +285,9 @@ int32_t bme280_read_temp(void) {
 // 	uint32_t hum_data = bme280_read24
 // }
 
-/* bme280_init()
-* Initialize the BME280  Sensor
-*/
+// /* bme280_init()
+// * Initialize the BME280  Sensor
+// */
 void bme280_init(void) {
 	dev_barrier();
 
@@ -242,9 +327,6 @@ void bme280_init(void) {
 
 
 
-/**********************************************************************
- * trivial driver.
- */
 void notmain(void) {
     uart_init();
 
@@ -257,14 +339,18 @@ void notmain(void) {
 
 	// dance so that we discard the first (unreliable) measurement
 	take_measurement();
-	signed int temp = bme280_read_temp();
+	int32_t temp = bme280_read_temp();
 	//now take real new measurements
 	take_measurement();
 
 	while (1) {
 		temp = bme280_read_temp();
-		printk("Temp = %d\n",temp);
+		printk("Temp = %d\n", temp);
+		delay_ms(5000);
+
 		take_measurement();
+		int32_t hum = bme_read_humidity();
+		printk("Humidity = %d\n", hum);
 		delay_ms(5000);
 	}
     clean_reboot();

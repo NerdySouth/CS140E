@@ -26,7 +26,7 @@ fat32_fs_t fat32_mk(mbr_partition_ent_t *partition) {
 	unsigned cluster_begin_lba = fat_begin_lba + (boot_sec->nsec_per_fat * boot_sec->nfats); // the beginning of the FAT, plus the combined length of all the FATs
 	unsigned sec_per_cluster = boot_sec->sec_per_cluster; // from the boot sector
 	unsigned root_first_cluster = boot_sec->first_cluster; // from the boot sector
-	unsigned n_entries = boot_sec->nsec_per_fat * boot_sec->bytes_per_sec / 4; // from the boot sector
+	unsigned n_entries = boot_sec->nsec_per_fat * boot_sec->bytes_per_sec / sizeof(uint32_t); // from the boot sector
 
 
   /*
@@ -204,13 +204,9 @@ pi_dirent_t *fat32_stat(fat32_fs_t *fs, pi_dirent_t *directory, char *filename) 
   demand(init_p, "fat32 not initialized!");
   demand(directory->is_dir_p, "tried to use a file as a directory");
 
-  // TODO: use `get_dirents` to read the raw dirent structures from the disk
   	uint32_t n_dirs;
 	fat32_dirent_t *fat32_dirents = get_dirents(fs, directory->cluster_id, &n_dirs);
 
-  // TODO: Iterate through the directory's entries and find a dirent with the
-  // provided name.  Return NULL if no such dirent exists.  You can use
-  // `find_dirent_with_name` if you've implemented it.
 	const int dirent_index = find_dirent_with_name(fat32_dirents, n_dirs, filename);
 	if (dirent_index == -1) {
 		return NULL;
@@ -231,6 +227,16 @@ pi_file_t *fat32_read(fat32_fs_t *fs, pi_dirent_t *directory, char *filename) {
 	demand(directory->is_dir_p, "tried to use a file as a directory!");
 
 	pi_dirent_t *pi_dirent = fat32_stat(fs, directory, filename);
+	if(pi_dirent->nbytes == 0) {
+		pi_file_t *file = kmalloc(pi_file_t);
+		*file = (pi_file_t) {
+		.data = NULL,
+		.n_data = pi_dirent->nbytes,
+		.n_alloc = 0,
+		};
+
+		return file;
+	}
 
 	// TODO: figure out the length of the cluster chain
 	uint32_t chain_len = get_cluster_chain_length(fs, pi_dirent->cluster_id);
