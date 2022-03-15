@@ -1,4 +1,4 @@
-LINK_OBJS := i2c.o
+LINK_OBJS := my-i2c.o
 OBJS := bme280.o $(LINK_OBJS)
 
 # check that your path is defined.

@@ -195,6 +195,13 @@ void bme280_write8(uint8_t reg_addr, uint8_t data);
  */
 uint16_t bme280_read16(uint8_t reg);
 
+/* Function to read a 2 byte value from BME280 Sensor
+ * NOTE: THE SENSOR IS  IN  LITTLE ENDIAN
+ * so we correct that in our read16() 
+* THIS FUNCTION READS/RETURNS AN UNSIGNED VALUE
+ */
+uint16_t bme280_read16_meas(uint8_t reg);
+
 /* Function to read a 3 byte value from BME280 Sensor
  * NOTE: THE SENSOR IS  IN  LITTLE ENDIAN
  * so we correct that in our read24() 

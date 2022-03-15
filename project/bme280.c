@@ -1,13 +1,28 @@
 #include "rpi.h"
 #include "i2c.h"
-#include "stdint.h"
 #include "bme280.h"
+#include "nrf.h"
+#include "nrf-test.h"
+#include "rf-support.h"
 // #include "simple-boot.h"z	
 
 // i2c addr for bme280 sensor
 #define BME_I2C 0x77
 // chip id for bme280 sensor
 #define BME_CHIPID 0x60
+
+// for nrf
+#define NTRIAL 1000
+#define TIMEOUT_USEC 1000
+#define NBYTES 32
+
+#define REBOOT 0x42069
+
+const static unsigned server = 1;
+// enum {
+//     server_addr = 0xd5d5d5,
+//     client_addr = 0xe5e5e5,
+// };
 
 /* TODO:
  * 1. read_temp
@@ -45,6 +60,21 @@ uint16_t bme280_read16(uint8_t reg) {
     i2c_read(BME_I2C, &reg_val[0], 2);
 
 	return (uint16_t)(reg_val[0]) | (uint16_t)(reg_val[1] << 8);
+}
+
+/* Function to read a 2 byte value from BME280 Sensor
+ * NOTE: THE SENSOR IS  IN  LITTLE ENDIAN
+ * so we correct that in our read16() 
+* THIS FUNCTION READS/RETURNS AN UNSIGNED VALUE
+ */
+uint16_t bme280_read16_meas(uint8_t reg) {
+	i2c_write(BME_I2C, &reg, 1);
+
+	uint8_t reg_val[2];
+    i2c_read(BME_I2C, &reg_val[0], 2);
+
+	// return (uint16_t)(reg_val[0]) | (uint16_t)(reg_val[1] << 8);
+	return (uint16_t)(reg_val[0]) << 8 | (uint16_t)(reg_val[1]);
 }
 
 /* Function to read a 3 byte value from BME280 Sensor
@@ -246,8 +276,7 @@ int32_t bme_read_humidity(void) {
 
 	bme280_read_temp(); // must be done first to get t_fine
 
-	// int32_t adc_H = bme280_read16(HUMIDDATA_REG);
-	int32_t adc_H = 0x547e;	
+	int32_t adc_H = bme280_read16_meas(HUMIDDATA_REG);	
 	if (adc_H == 0x8000) // value in case humidity measurement was disabled
 		return 0; //NaN
 
@@ -326,32 +355,110 @@ void bme280_init(void) {
 }
 
 
+// should add a checksum to see if things are getting corrupted.
+static inline msg_send_t mk_test_msg(uint32_t i, unsigned nbytes) {
+    struct { uint32_t v; uint8_t pad[32-4]; } test_msg = { .v = i };
+#if 0
+    return msg_mk_pkt(nbytes, &test_msg, nbytes);
+#else
+    msg_send_t m = msg_send_mk(nbytes);
+    msg_put_n(&m, &test_msg, nbytes);
+    return m;
+
+#endif
+}
+// returns number of lost packets
+static void
+send_reboot(nrf_t *server_nic, int verbose_p) {
+	// only server can send reboots
+	assert(server);
+    unsigned nbytes = NBYTES;
+
+	//build message to send
+	msg_send_t reboot_msg = msg_send_mk(nbytes);
+	struct { uint32_t v; uint8_t pad[32-4]; } test_msg = { .v = REBOOT };
+	msg_put_n(&reboot_msg, &test_msg, nbytes);
+
+	//send msg
+	nrf_send_msg_ack(server_nic, client_addr, reboot_msg);
+	
+}
+
+// returns number of lost packets
+static void
+client_listen(nrf_t *client_nic, int verbose_p) {
+	nrf_pipe_t *client = nrf_get_pipe(client_nic, 0);
+	while (1) {
+		unsigned timeout = TIMEOUT_USEC;
+		unsigned nbytes = NBYTES;
+		unsigned ntimeout = 0, npackets = 0;
+		// receive from client nic
+		msg_recv_t m;
+		if(nrf_get_msg_exact_timeout(client, &m, nbytes, timeout) == nbytes) {
+			assert(msg_nbytes_get(&m) == nbytes);
+			unsigned x = msg_get32(&m);
+
+			if(x != REBOOT)
+				debug("client: received %d (expected=%d)\n", x, REBOOT);
+			assert(x == REBOOT);
+			output("received reboot command.\n");
+			clean_reboot();
+			npackets++;
+		} else {
+			if(verbose_p) 
+				debug("receive failed for packet=%d\n", npackets);
+			ntimeout++;
+		}
+		output("trial: total successfully sent %d ack'd packets lost %d\n",
+			npackets, ntimeout);
+		delay_ms(5000);
+	}
+}
 
 void notmain(void) {
     uart_init();
 
-    delay_ms(100);   // allow time for device to boot up.
-    i2c_init();
-    delay_ms(100);   // allow time to settle after init.
+    // delay_ms(100);   // allow time for device to boot up.
+    // i2c_init();
+    // delay_ms(100);   // allow time to settle after init.
 
 
-	bme280_init();
+	// bme280_init();
 
-	// dance so that we discard the first (unreliable) measurement
-	take_measurement();
-	int32_t temp = bme280_read_temp();
-	//now take real new measurements
-	take_measurement();
+	// // dance so that we discard the first (unreliable) measurement
+	// take_measurement();
+	// int32_t temp = bme280_read_temp();
+	// //now take real new measurements
+	// take_measurement();
 
-	while (1) {
-		temp = bme280_read_temp();
-		printk("Temp = %d\n", temp);
-		delay_ms(5000);
+	// while (1) {
+	// 	temp = bme280_read_temp();
+	// 	printk("Temp = %d\n", temp);
+	// 	delay_ms(5000);
 
-		take_measurement();
-		int32_t hum = bme_read_humidity();
-		printk("Humidity = %d\n", hum);
-		delay_ms(5000);
+	// 	take_measurement();
+	// 	int32_t hum = bme_read_humidity();
+	// 	printk("Humidity = %d\n", hum);
+	// 	delay_ms(5000);
+	// }
+
+	unsigned nbytes = 32;
+    int ack_p = 1;
+	
+	
+	
+	if (server) {
+		// client
+		output("about to configure ack'd server\n");
+		nrf_t *server_nic = server_config(nbytes, ack_p);
+		send_reboot(server_nic, 1);
+		while(1) {;}
+	} else {
+		// client
+		output("about to configure ack'd client\n");
+		nrf_t *client_nic = client_config(nbytes, ack_p);
+		client_listen(client_nic, 1);
 	}
+    
     clean_reboot();
 }
