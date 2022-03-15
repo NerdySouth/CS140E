@@ -487,7 +487,8 @@ int nrf_tx_send_ack(nrf_t *n, uint32_t txaddr, const void *msg, unsigned nbytes)
             // have to flush and clear the rt interrupt.
             nrf_dump("max inter config", n);
 			nrf_rt_intr_clr(n);
-            panic("max intr\n");
+			nrf_tx_flush(n);
+            // panic("max intr\n");
         }
 
         // XXX: if we transition to RX, do we lose all the TX setup?

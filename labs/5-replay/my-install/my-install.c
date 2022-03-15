@@ -24,7 +24,7 @@
 //      my-install /dev/<ttyusb name> <program.name>
 //      my-install /dev/<ttyusb name> <program.name>  -exec [...]
 #include <ctype.h>
-int main(int argc, char *argv[]) { 
+int notmain(int argc, char *argv[]) { 
     char *progname = argv[0];
 
     // we don't use the -exec option til lab 11.  we just put it in now to save
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     // 1. get the name of the ttyUSB.
     char *dev_name;
     if(argc == 2)
-        dev_name = find_ttyusb_last();
+        dev_name = find_ttyusb_first();
     else if(argc == 3)
         dev_name = argv[1];
     else

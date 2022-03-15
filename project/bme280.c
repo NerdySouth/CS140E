@@ -4,7 +4,7 @@
 #include "nrf.h"
 #include "nrf-test.h"
 #include "rf-support.h"
-// #include "simple-boot.h"z	
+#include "../labs/5-replay/my-install/simple-boot-defs.h"
 
 // i2c addr for bme280 sensor
 #define BME_I2C 0x77
@@ -16,8 +16,10 @@
 #define TIMEOUT_USEC 1000
 #define NBYTES 32
 
-#define REBOOT 0x42069
-#define REBOOT 0xFFFFFFFF
+#define REBOOT 0xFFFFFFFE
+#define EXIT 0xFFFFFFFF
+#define MEAS_TEMP 0xFFFFFFFD
+#define MEAS_HUM 0xFFFFFFFC
 
 // blocking calls to send / receive a single byte from the uart.
 #define server_put8       uart_putc
@@ -28,17 +30,17 @@
 // the machine if you lose data or it does not show up.
 // based on boot_put32
 uint32_t server_get32(void) {
-    uint32_t u = boot_get8();
-        u |= boot_get8() << 8;
-        u |= boot_get8() << 16;
-        u |= boot_get8() << 24;
+    uint32_t u = server_get8();
+        u |= server_get8() << 8;
+        u |= server_get8() << 16;
+        u |= server_get8() << 24;
     return u;
 }
 void server_put32(uint32_t u) {
-    boot_put8((u >> 0)  & 0xff);
-    boot_put8((u >> 8)  & 0xff);
-    boot_put8((u >> 16) & 0xff);
-    boot_put8((u >> 24) & 0xff);
+    server_put8((u >> 0)  & 0xff);
+    server_put8((u >> 8)  & 0xff);
+    server_put8((u >> 16) & 0xff);
+    server_put8((u >> 24) & 0xff);
 }
 
 // send a string <msg> to the unix side to print.  
@@ -59,10 +61,10 @@ static void server_putk(const char *msg) {
     int n;
     for(n = 0; msg[n]; n++)
         ;
-    boot_put32(PRINT_STRING);
-    boot_put32(n);
+    server_put32(PRINT_STRING);
+    server_put32(n);
     for(n = 0; msg[n]; n++)
-        boot_put8(msg[n]);
+        server_put8(msg[n]);
 }
 
 const static unsigned server = 1;
@@ -317,7 +319,7 @@ int32_t bme280_read_temp(void) {
 		
 	// }
 
-int32_t bme_read_humidity(void) {
+int32_t bme280_read_humidity(void) {
 
 	int32_t var1, var2, var3, var4, var5;
 
@@ -326,15 +328,6 @@ int32_t bme_read_humidity(void) {
 	int32_t adc_H = bme280_read16_meas(HUMIDDATA_REG);	
 	if (adc_H == 0x8000) // value in case humidity measurement was disabled
 		return 0; //NaN
-
-	printk("adc_H: %x\n", adc_H);
-
-	printk("dig_H1: %x\n", calib_data.dig_H1);
-	printk("dig_H2: %x\n", calib_data.dig_H2);
-	printk("dig_H3: %x\n", calib_data.dig_H3);
-	printk("dig_H4: %x\n", calib_data.dig_H4);
-	printk("dig_H5: %x\n", calib_data.dig_H5);
-	printk("dig_H6: %x\n", calib_data.dig_H6);
 
 	var1 = t_fine - ((int32_t)76800);
 	var2 = (int32_t)(adc_H * 16384);
@@ -416,44 +409,15 @@ static inline msg_send_t mk_test_msg(uint32_t i, unsigned nbytes) {
 }
 
 
-static void print_welcome(void) {
-	printk("------------------------------------\n");
-	// todo: implement a welcome.
-}
-
-static void server_get_command(nrf_t *server_nic, int verbose_p) {
-	// TODO
-	// 1. how do we send a command from our unix laptop to the serverr pi
-	//		-> likely a 3rd  terminal window open with a unix program open  (analog to my-install)
-	//			that can read in user input from the terminal, and send that a command to the pi over uart
-	// 2. server pi should be listening until it gets a new command. uart_getc blocks until it has something
-	// 3. move all this  code to a separate file (main.c)
-
-	print_welcome();
-	 // 1. get the name of the ttyUSB.
-    char *dev_name;
-	dev_name = find_ttyusb_last();
-    // 2. open the ttyUSB in 115200, 8n1 mode
-    int fd = set_tty_to_8n1(open_tty(dev_name), B115200, 1);
-
-	// should be able to use uart_putc again
-	while (1) {
-		uint32_t command = server_get32();
-		if (command == REBOOT) {
-			send_reboot(server_nic, verbose_p);
-		} else if (command == EXIT) {
-			clean_reboot();
-		}
-	}
-}
-
 
 // returns number of lost packets
 static void
 send_reboot(nrf_t *server_nic, int verbose_p) {
 	// only server can send reboots
+	nrf_pipe_t *server = nrf_get_pipe(server_nic, 0);
 	assert(server);
     unsigned nbytes = NBYTES;
+	unsigned timeout = TIMEOUT_USEC;
 
 	//build message to send
 	msg_send_t reboot_msg = msg_send_mk(nbytes);
@@ -462,8 +426,72 @@ send_reboot(nrf_t *server_nic, int verbose_p) {
 
 	//send msg
 	nrf_send_msg_ack(server_nic, client_addr, reboot_msg);
+	msg_recv_t m;
+	while(1) {
+		if(nrf_get_msg_exact_timeout(server, &m, nbytes, timeout) == nbytes) {
+			assert(msg_nbytes_get(&m) == nbytes);
+			unsigned x = msg_get32(&m);
+			printk("server received temp = %x F\n", x);
+			assert(x == REBOOT);
+			break;
+		}
+		delay_ms(5000);
+	}
 	
 }
+
+// returns number of lost packets
+static int32_t
+req(nrf_t *server_nic, int verbose_p, uint32_t req) {
+	nrf_pipe_t *server = nrf_get_pipe(server_nic, 0);
+	// only server can send reboots
+	assert(server);
+    unsigned nbytes = NBYTES;
+
+	//build message to send
+	msg_send_t req_msg = msg_send_mk(nbytes);
+	struct { uint32_t v; uint8_t pad[32-4]; } test_msg = { .v = req };
+	msg_put_n(&req_msg, &test_msg, nbytes);
+
+	//send msg
+	nrf_send_msg_ack(server_nic, client_addr, req_msg);
+	
+
+	unsigned timeout = TIMEOUT_USEC;
+	// receive from client nic
+
+	msg_recv_t m;
+	while(1) {
+		if(nrf_get_msg_exact_timeout(server, &m, nbytes, timeout) == nbytes) {
+			assert(msg_nbytes_get(&m) == nbytes);
+			unsigned x = msg_get32(&m);
+			return x;
+		}
+		delay_ms(5000);
+	}
+
+}
+
+
+
+// returns number of lost packets
+static void
+send_data(nrf_t *client, int verbose_p, uint32_t data) {
+	// only server can send reboots
+    unsigned nbytes = NBYTES;
+	assert(!server);
+
+	//build message to send
+	msg_send_t data_msg = msg_send_mk(nbytes);
+	struct { uint32_t v; uint8_t pad[32-4]; } test_msg = { .v = data };
+	msg_put_n(&data_msg, &test_msg, nbytes);
+
+	//send msg
+	nrf_send_msg_ack(client, server_addr, data_msg);
+	
+}
+
+
 
 // returns number of lost packets
 static void
@@ -479,11 +507,24 @@ client_listen(nrf_t *client_nic, int verbose_p) {
 			assert(msg_nbytes_get(&m) == nbytes);
 			unsigned x = msg_get32(&m);
 
-			if(x != REBOOT)
-				debug("client: received %d (expected=%d)\n", x, REBOOT);
-			assert(x == REBOOT);
-			output("received reboot command.\n");
-			clean_reboot();
+			if(x == REBOOT) {
+				output("received reboot command.\n");
+				send_data(client_nic, 1, REBOOT);
+				return;
+				// clean_reboot();
+			} else if (x == MEAS_TEMP) {
+				take_measurement();
+				int32_t temp = bme280_read_temp();
+				// printk("temp at client = %d F\n", temp);
+				send_data(client_nic, 1, temp);
+			} else if (x == MEAS_HUM) {
+				take_measurement();
+				int32_t hum = bme280_read_humidity();
+				// printk("temp at client = %d F\n", temp);
+				send_data(client_nic, 1, hum);
+			}
+			
+			
 			npackets++;
 		} else {
 			if(verbose_p) 
@@ -499,43 +540,39 @@ client_listen(nrf_t *client_nic, int verbose_p) {
 void notmain(void) {
     uart_init();
 
-    // delay_ms(100);   // allow time for device to boot up.
-    // i2c_init();
-    // delay_ms(100);   // allow time to settle after init.
-
-
-	// bme280_init();
-
-	// // dance so that we discard the first (unreliable) measurement
-	// take_measurement();
-	// int32_t temp = bme280_read_temp();
-	// //now take real new measurements
-	// take_measurement();
-
-	// while (1) {
-	// 	temp = bme280_read_temp();
-	// 	printk("Temp = %d\n", temp);
-	// 	delay_ms(5000);
-
-	// 	take_measurement();
-	// 	int32_t hum = bme_read_humidity();
-	// 	printk("Humidity = %d\n", hum);
-	// 	delay_ms(5000);
-	// }
-
 	unsigned nbytes = 32;
     int ack_p = 1;
-	
-	
-	
+
 	if (server) {
-		// client
+		// server
 		output("about to configure ack'd server\n");
 		nrf_t *server_nic = server_config(nbytes, ack_p);
-		send_reboot(server_nic, 1);
-		while(1){;}
+		dev_barrier();
+		// send_reboot(server_nic, 1);
+		while(1){
+			int32_t temp = req(server_nic, 1, MEAS_TEMP);
+			printk("temp = %d\n", temp);
+			int32_t hum = req(server_nic, 1, MEAS_HUM);
+			printk("hum = %d\n", hum);
+			printk("-------------------------\n", temp);
+			delay_ms(5000);
+		}
 	} else {
 		// client
+		delay_ms(100);   // allow time for device to boot up.
+		i2c_init();
+		delay_ms(100);   // allow time to settle after init.
+
+		bme280_init();
+
+		// dance so that we discard the first (unreliable) measurement
+		take_measurement();
+		int32_t temp = bme280_read_temp();
+		//now take real new measurements
+		take_measurement();
+
+		dev_barrier();
+
 		output("about to configure ack'd client\n");
 		nrf_t *client_nic = client_config(nbytes, ack_p);
 		client_listen(client_nic, 1);

@@ -1,5 +1,5 @@
 CC = gcc
-SRC = my-install.c simple-boot.c 
+SRC = my-install.c simple-boot.c server-sh.c
 OBJS = $(SRC:.c=.o)
 PI_SIDE = ../../3-bootloader/pi-side
 
@@ -10,7 +10,7 @@ endif
 
 PATH_LIBUNIX = $(CS140E_2022_PATH)/libunix
 LIBUNIX = $(PATH_LIBUNIX)/libunix.a
-CFLAGS = -Wall -Werror -g  -Og -I$(PATH_LIBUNIX) -I$(PI_SIDE) -Wno-unused-function -I.
+CFLAGS = -Wall -Werror -g  -Og -I$(PATH_LIBUNIX) -I$(PI_SIDE) -Wno-unused-function -Wno-unused-variable -I.
 
 # massively over depend to keep things simple.
 DEPS := $(wildcard ./*.c) $(LIBUNIX) $(wildcard ./*.h $(PI_SIDE)/*.h) ./Makefile 
@@ -19,7 +19,7 @@ DEPS := $(wildcard ./*.c) $(LIBUNIX) $(wildcard ./*.h $(PI_SIDE)/*.h) ./Makefile
 #   - the 'run' target to automatically run the hello.bin code.
 #   - the 'tags' target to run tags on the code.  this is super
 #     helpful.
-all : libunix my-install # run # tags 
+all : libunix my-install server-sh# run # tags 
 
 libunix:
 	make -C $(PATH_LIBUNIX)
@@ -28,6 +28,9 @@ $(OBJS): $(DEPS)
 
 my-install:  $(OBJS) $(DEPS)
 	$(CC) $(CFLAGS) $(OBJS) -o my-install -lm $(LIBUNIX)
+
+server-sh:  $(OBJS) $(DEPS)
+	$(CC) $(CFLAGS) $(OBJS) -o server-sh -lm $(LIBUNIX)
 
 tags:
 	ctags *.[ch]
