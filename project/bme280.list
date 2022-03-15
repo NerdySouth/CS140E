@@ -43963,7 +43963,7 @@ Disassembly of section .debug_line:
      920:	03050106 	movweq	r0, #20742	; 0x5106
      924:	02006706 	andeq	r6, r0, #1572864	; 0x180000
      928:	054b0104 	strbeq	r0, [fp, #-260]	; 0xfffffefc
-     92c:	0402000d 	streq	r0, [r2], #-13
+     92c:	0402000c 	streq	r0, [r2], #-12
      930:	08050101 	stmdaeq	r5, {r0, r8}
      934:	01040200 	mrseq	r0, R12_usr
      938:	00040201 	andeq	r0, r4, r1, lsl #4

@@ -35,6 +35,12 @@
 		"libos.h": "c",
 		"stdint.h": "c",
 		"armv6-debug-impl.h": "c",
-		"cpsr-util.h": "c"
+		"cpsr-util.h": "c",
+		"iosfwd": "c",
+		"istream": "c",
+		"limits": "c",
+		"sstream": "c",
+		"stop_token": "c",
+		"streambuf": "c"
 	}
 }

@@ -264,6 +264,9 @@ bpf98
 bpf99
 console
 cu.BLTH
+cu.Bluetooth-Incoming-Port
+cu.SLAB_USBtoUART
+cu.usbserial-0001
 disk0
 disk0s1
 disk0s2
@@ -441,6 +444,9 @@ stdout@
 systrace
 tty
 tty.BLTH
+tty.Bluetooth-Incoming-Port
+tty.SLAB_USBtoUART
+tty.usbserial-0001
 ttyp0
 ttyp1
 ttyp2

@@ -19,6 +19,7 @@
  * for other devices later on and not pay any overhead (the pi is
  * slow and the input device might not have much buffering)
  */
+
 // blocking calls to send / receive a single byte from the uart.
 #define boot_put8       uart_putc
 #define boot_get8       uart_getc

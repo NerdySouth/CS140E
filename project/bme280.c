@@ -18,6 +18,52 @@
 
 #define REBOOT 0x42069
 
+// blocking calls to send / receive a single byte from the uart.
+#define server_put8       uart_putc
+#define server_get8       uart_getc
+
+
+// note: these calls will lock up 
+// the machine if you lose data or it does not show up.
+// based on boot_put32
+uint32_t server_get32(void) {
+    uint32_t u = boot_get8();
+        u |= boot_get8() << 8;
+        u |= boot_get8() << 16;
+        u |= boot_get8() << 24;
+    return u;
+}
+void server_put32(uint32_t u) {
+    boot_put8((u >> 0)  & 0xff);
+    boot_put8((u >> 8)  & 0xff);
+    boot_put8((u >> 16) & 0xff);
+    boot_put8((u >> 24) & 0xff);
+}
+
+// send a string <msg> to the unix side to print.  
+// message format:
+//  [PRINT_STRING, strlen(msg), <msg>]
+//
+// DANGER DANGER DANGER!!!  Be careful WHEN you call this!
+// DANGER DANGER DANGER!!!  Be careful WHEN you call this!
+// DANGER DANGER DANGER!!!  Be careful WHEN you call this!
+// Why:
+//      We do not have interrupts and the UART can only hold 8 bytes
+//      before it starts dropping them.   so if you print at the same
+//      time the UNIX end can send you data, you will likely lose some,
+//      leading to weird bugs.  If you print, safest is to do right
+//      after you have completely received a message.
+static void server_putk(const char *msg) {
+    // lame strlen since we do not have one atm.
+    int n;
+    for(n = 0; msg[n]; n++)
+        ;
+    boot_put32(PRINT_STRING);
+    boot_put32(n);
+    for(n = 0; msg[n]; n++)
+        boot_put8(msg[n]);
+}
+
 const static unsigned server = 1;
 // enum {
 //     server_addr = 0xd5d5d5,
@@ -367,6 +413,32 @@ static inline msg_send_t mk_test_msg(uint32_t i, unsigned nbytes) {
 
 #endif
 }
+
+
+static void print_welcome(void) {
+	printk("------------------------------------\n");
+}
+
+static void server_get_command(nrf_t *server_nic, int verbose_p) {
+	print_welcome();
+	 // 1. get the name of the ttyUSB.
+    char *dev_name;
+	dev_name = find_ttyusb_last();
+    // 2. open the ttyUSB in 115200, 8n1 mode
+    int fd = set_tty_to_8n1(open_tty(dev_name), B115200, 1);
+
+	// should be able to use uart_putc again
+	while (1) {
+		uint32_t command = server_get32();
+		if (command == REBOOT) {
+			send_reboot(server_nic, verbose_p);
+		} else if (command == EXIT) {
+			clean_reboot();
+		}
+	}
+}
+
+
 // returns number of lost packets
 static void
 send_reboot(nrf_t *server_nic, int verbose_p) {
@@ -452,7 +524,7 @@ void notmain(void) {
 		output("about to configure ack'd server\n");
 		nrf_t *server_nic = server_config(nbytes, ack_p);
 		send_reboot(server_nic, 1);
-		while(1) {;}
+		while(1){;}
 	} else {
 		// client
 		output("about to configure ack'd client\n");
