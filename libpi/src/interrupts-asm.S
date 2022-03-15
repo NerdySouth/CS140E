@@ -124,15 +124,7 @@ software_interrupt_asm:
 	@ return from interrupt handler: will re-enable general ints.
     movs pc, lr
 
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@ we don't generate any of these, will just panic and halt.
-@
-reset_asm:
-  sub   lr, lr, #4
-  bl    reset_vector
-undefined_instruction_asm:
-  sub   lr, lr, #4
-  bl    undefined_instruction_vector
+
 prefetch_abort_asm:
   mov sp, #INT_STACK_ADDR   @ i believe we have 512mb - 16mb, so this should be safe
   sub   lr, lr, #4
@@ -169,3 +161,13 @@ data_abort_asm:
   movs    pc, lr        @ moves the link register into the pc and implicitly
                         @ loads the PC with the result, then copies the 
                         @ SPSR to the CPSR.
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ we don't generate any of these, will just panic and halt.
+@
+reset_asm:
+  sub   lr, lr, #4
+  bl    reset_vector
+undefined_instruction_asm:
+  sub   lr, lr, #4
+  bl    undefined_instruction_vector

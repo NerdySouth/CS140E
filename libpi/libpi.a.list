@@ -9362,8 +9362,8 @@ Disassembly of section .text:
   20:	e59ff054 	ldr	pc, [pc, #84]	; 7c <_reset_asm>
   24:	e59ff054 	ldr	pc, [pc, #84]	; 80 <_undefined_instruction_asm>
   28:	e59ff054 	ldr	pc, [pc, #84]	; 84 <_software_interrupt_asm>
-  2c:	e59ff0a8 	ldr	pc, [pc, #168]	; dc <prefetch_abort_asm>
-  30:	e59ff0c0 	ldr	pc, [pc, #192]	; f8 <data_abort_asm>
+  2c:	e59ff098 	ldr	pc, [pc, #152]	; cc <prefetch_abort_asm>
+  30:	e59ff0b0 	ldr	pc, [pc, #176]	; e8 <data_abort_asm>
   34:	e59ff040 	ldr	pc, [pc, #64]	; 7c <_reset_asm>
   38:	e59ff050 	ldr	pc, [pc, #80]	; 90 <_interrupt_asm>
 
@@ -9382,25 +9382,25 @@ Disassembly of section .text:
   60:	ea000005 	b	7c <_reset_asm>
   64:	ea000005 	b	80 <_undefined_instruction_asm>
   68:	ea000010 	b	b0 <software_interrupt_asm>
-  6c:	ea00001a 	b	dc <prefetch_abort_asm>
-  70:	ea000020 	b	f8 <data_abort_asm>
+  6c:	ea000016 	b	cc <prefetch_abort_asm>
+  70:	ea00001c 	b	e8 <data_abort_asm>
   74:	ea000000 	b	7c <_reset_asm>
   78:	ea000005 	b	94 <_interrupt_table_end>
 
 0000007c <_reset_asm>:
-  7c:	000000cc 	andeq	r0, r0, ip, asr #1
+  7c:	00000104 	andeq	r0, r0, r4, lsl #2
 
 00000080 <_undefined_instruction_asm>:
-  80:	000000d4 	ldrdeq	r0, [r0], -r4
+  80:	0000010c 	andeq	r0, r0, ip, lsl #2
 
 00000084 <_software_interrupt_asm>:
   84:	000000b0 	strheq	r0, [r0], -r0	; <UNPREDICTABLE>
 
 00000088 <_prefetch_abort_asm>:
-  88:	000000dc 	ldrdeq	r0, [r0], -ip
+  88:	000000cc 	andeq	r0, r0, ip, asr #1
 
 0000008c <_data_abort_asm>:
-  8c:	000000f8 	strdeq	r0, [r0], -r8
+  8c:	000000e8 	andeq	r0, r0, r8, ror #1
 
 00000090 <_interrupt_asm>:
   90:	00000094 	muleq	r0, r4, r0
@@ -9423,31 +9423,31 @@ Disassembly of section .text:
   c4:	e8bd5ffe 	pop	{r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
   c8:	e1b0f00e 	movs	pc, lr
 
-000000cc <reset_asm>:
-  cc:	e24ee004 	sub	lr, lr, #4, 0
-  d0:	ebfffffe 	bl	0 <reset_vector>
+000000cc <prefetch_abort_asm>:
+  cc:	e3a0d409 	mov	sp, #150994944	; 0x9000000
+  d0:	e24ee004 	sub	lr, lr, #4, 0
+  d4:	e92d5fff 	push	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
+  d8:	e1a0000e 	mov	r0, lr
+  dc:	ebfffffe 	bl	0 <prefetch_abort_vector>
+  e0:	e8bd5fff 	pop	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
+  e4:	e1b0f00e 	movs	pc, lr
 
-000000d4 <undefined_instruction_asm>:
-  d4:	e24ee004 	sub	lr, lr, #4, 0
-  d8:	ebfffffe 	bl	0 <undefined_instruction_vector>
+000000e8 <data_abort_asm>:
+  e8:	e3a0d409 	mov	sp, #150994944	; 0x9000000
+  ec:	e24ee008 	sub	lr, lr, #8, 0
+  f0:	e92d5fff 	push	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
+  f4:	e1a0000e 	mov	r0, lr
+  f8:	ebfffffe 	bl	0 <data_abort_vector>
+  fc:	e8bd5fff 	pop	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
+ 100:	e1b0f00e 	movs	pc, lr
 
-000000dc <prefetch_abort_asm>:
-  dc:	e3a0d409 	mov	sp, #150994944	; 0x9000000
-  e0:	e24ee004 	sub	lr, lr, #4, 0
-  e4:	e92d5fff 	push	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
-  e8:	e1a0000e 	mov	r0, lr
-  ec:	ebfffffe 	bl	0 <prefetch_abort_vector>
-  f0:	e8bd5fff 	pop	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
-  f4:	e1b0f00e 	movs	pc, lr
+00000104 <reset_asm>:
+ 104:	e24ee004 	sub	lr, lr, #4, 0
+ 108:	ebfffffe 	bl	0 <reset_vector>
 
-000000f8 <data_abort_asm>:
-  f8:	e3a0d409 	mov	sp, #150994944	; 0x9000000
-  fc:	e24ee008 	sub	lr, lr, #8, 0
- 100:	e92d5fff 	push	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
- 104:	e1a0000e 	mov	r0, lr
- 108:	ebfffffe 	bl	0 <data_abort_vector>
- 10c:	e8bd5fff 	pop	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
- 110:	e1b0f00e 	movs	pc, lr
+0000010c <undefined_instruction_asm>:
+ 10c:	e24ee004 	sub	lr, lr, #4, 0
+ 110:	ebfffffe 	bl	0 <undefined_instruction_vector>
 
 Disassembly of section .ARM.attributes:
 
@@ -9456,7 +9456,7 @@ Disassembly of section .ARM.attributes:
    4:	61656100 	cmnvs	r5, r0, lsl #2
    8:	01006962 	tsteq	r0, r2, ror #18
    c:	00000012 	andeq	r0, r0, r2, lsl r0
-  10:	4b5a3605 	blmi	168d82c <data_abort_asm+0x168d734>
+  10:	4b5a3605 	blmi	168d82c <undefined_instruction_asm+0x168d720>
   14:	08070600 	stmdaeq	r7, {r9, sl}
   18:	44010901 	strmi	r0, [r1], #-2305	; 0xfffff6ff
   1c:	Address 0x000000000000001c is out of bounds.
