@@ -5,6 +5,7 @@
 .gdb_history
 .vscode/
 .ccls-cache/
+*.d
 # Prerequisites
 
 # Object files
