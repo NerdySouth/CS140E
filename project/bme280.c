@@ -17,6 +17,7 @@
 #define NBYTES 32
 
 #define REBOOT 0x42069
+#define REBOOT 0xFFFFFFFF
 
 // blocking calls to send / receive a single byte from the uart.
 #define server_put8       uart_putc
@@ -417,9 +418,17 @@ static inline msg_send_t mk_test_msg(uint32_t i, unsigned nbytes) {
 
 static void print_welcome(void) {
 	printk("------------------------------------\n");
+	// todo: implement a welcome.
 }
 
 static void server_get_command(nrf_t *server_nic, int verbose_p) {
+	// TODO
+	// 1. how do we send a command from our unix laptop to the serverr pi
+	//		-> likely a 3rd  terminal window open with a unix program open  (analog to my-install)
+	//			that can read in user input from the terminal, and send that a command to the pi over uart
+	// 2. server pi should be listening until it gets a new command. uart_getc blocks until it has something
+	// 3. move all this  code to a separate file (main.c)
+
 	print_welcome();
 	 // 1. get the name of the ttyUSB.
     char *dev_name;
