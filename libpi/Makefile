@@ -12,6 +12,8 @@
 # tip: if you want to automatically add all .S and .c files 
 # in src/ do:
 SRC := $(wildcard ./src/*.[Sc])
+
+
 #
 # currently not defined to hold anything
 # SRC := src/gpio.c
@@ -42,3 +44,6 @@ SRC :=  $(SRC)                              \
 DEPS += ./Makefile ./manifest.mk
 
 include ./manifest.mk
+
+
+

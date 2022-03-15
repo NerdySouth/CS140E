@@ -81,6 +81,7 @@ uint8_t nrf_put8(nrf_t *n, uint8_t reg, uint8_t v) {
 uint8_t nrf_put8_chk_helper(src_loc_t loc, nrf_t *nic, uint8_t reg, uint8_t v) {
     uint8_t status = nrf_put8(nic, reg, v);
 
+
     // doing this *always* ran into problems during message sending.
     // so made this seperate routine.
     uint8_t x = nrf_get8(nic, reg);

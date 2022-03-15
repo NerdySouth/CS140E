@@ -4,6 +4,11 @@
 // verify!
 #include "rpi.h"
 #include "msg2.h"
+#include "timer-interrupt.h"
+static volatile int n_interrupt;
+
+enum { client_pin = 6, server_pin = 12 };
+static volatile unsigned n_rising_edge, n_falling_edge;
 
 static uint32_t data_val(const void *data, unsigned size) {
     uint32_t x = 0;
@@ -79,6 +84,20 @@ static uint32_t data_get(const void *data, unsigned off, unsigned size) {
 }
 
 void notmain(void) { 
+
+	uart_init();
+	extern unsigned _fast_interrupt_table;
+    int_init_reg(&_fast_interrupt_table);
+
+    output("going to test rising and falling edges:\n");
+    output("\tmake sure to loop back (attach a jumper to) pins 20 & 21\n");
+
+    gpio_set_input(client_pin);
+    gpio_set_input(server_pin);
+    gpio_int_falling_edge(client_pin);
+    gpio_int_falling_edge(server_pin);
+	system_enable_interrupts();
+
     unsigned msg_nbytes = 32;
 
     // check that putting in different ways works out.

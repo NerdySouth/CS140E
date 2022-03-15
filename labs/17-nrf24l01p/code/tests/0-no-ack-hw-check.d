@@ -5,9 +5,11 @@ tests/0-no-ack-hw-check.o: tests/0-no-ack-hw-check.c \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/../libc/assert.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi-constants.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi-extra.h \
- nrf.h nrf-config.h \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/nrf.h \
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/nrf-config.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/libc/circular.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi-interrupts.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/rpi.h \
  /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/spi.h \
- msg2.h tests/nrf-test.h
+ /Users/tristennollman/Documents/Winter_Qtr_2022/CS140E/CS140E/libpi/include/msg2.h \
+ tests/nrf-test.h

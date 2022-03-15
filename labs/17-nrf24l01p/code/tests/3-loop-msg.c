@@ -134,7 +134,7 @@ one_way_test(nrf_t *server_nic, nrf_t *client_nic, trial_conf_t c, int verbose_p
 void notmain(void) {
     enable_cache();
     unsigned nbytes = 32;
-    unsigned ack_p = 0;
+    unsigned ack_p = 1;
     //nrf_t *server_nic = server_config(nbytes, ack_p);
 
     output("about to configure client\n");

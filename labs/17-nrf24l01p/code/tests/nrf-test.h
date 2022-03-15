@@ -37,8 +37,8 @@ static nrf_t *client_config(unsigned nbytes, int ack_p) {
     nrf_config_t c = ack_p ?
             nrf_conf_reliable_mk(retran, retran_delay) :
             nrf_conf_unreliable_mk();
-    c = nrf_conf_spi(c,1);
-    c = nrf_conf_ce(c, 21);
+    c = nrf_conf_spi(c,0);
+    c = nrf_conf_ce(c, 20);
     c = nrf_set_Mhz_delta(c,  MY_NRF_CHANNEL);
 
     return ack_p ?
@@ -52,8 +52,9 @@ static nrf_t *server_config(unsigned nbytes, int ack_p) {
     nrf_config_t c = ack_p ?
             nrf_conf_reliable_mk(retran, retran_delay) :
             nrf_conf_unreliable_mk();
-    c = nrf_conf_spi(c,0);
-    c = nrf_conf_ce(c, 20);
+    
+	c = nrf_conf_spi(c,1);
+    c = nrf_conf_ce(c, 21);
     c = nrf_set_Mhz_delta(c,  MY_NRF_CHANNEL);
     return ack_p ?
         nrf_init_acked(c, server_addr, nbytes) :

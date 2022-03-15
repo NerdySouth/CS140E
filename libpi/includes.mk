@@ -16,6 +16,7 @@ OD  = $(ARM)-objdump
 OCP = $(ARM)-objcopy
 LPP = $(LIBPI_PATH)
 LPI = $(LIBPI_PATH)/libpi.a
+
 START = $(LPP)/staff-start.o
 
 MEMMAP=$(LPP)/memmap
